@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Securacy threat check for GitHub Actions.
+"""SecuracyAI Gate for GitHub Actions.
 
 The project's threat model is fixed and lives in Securacy. This action has
 the repository's own coding agent check the code against its rules, then
@@ -823,7 +823,7 @@ def check() -> int:
         result = wait_for(url, key, result, _minutes(_input("timeout-minutes", "15")) * 60)
 
     outcome = result.get("outcome") or "warn"
-    summary = result.get("summary_markdown") or f"### Securacy threat check\n\n{result.get('message', '')}"
+    summary = result.get("summary_markdown") or f"### SecuracyAI Gate\n\n{result.get('message', '')}"
     write_summary(summary + (f"\n\n{override_note}" if override_note else ""))
 
     comment = result.get("comment_markdown")
@@ -838,7 +838,7 @@ def check() -> int:
     set_output("sarif-file", sarif or "")
     set_output("run-url", result.get("web_url") or "")
 
-    message = result.get("message") or f"Securacy threat check: {outcome}."
+    message = result.get("message") or f"SecuracyAI Gate: {outcome}."
     if outcome == "block":
         log("error", message if result.get("status") == "error" else "Securacy blocked this change. See the PR comment.")
         return 1
@@ -851,7 +851,7 @@ def check() -> int:
 # sync: a pull request that updates .securacy/guardrails/
 # ---------------------------------------------------------------------------
 
-SYNC_TITLE = "Update the Securacy guardrails"
+SYNC_TITLE = "SecuracyAI Gate: update guardrails"
 SYNC_BODY = ("Securacy regenerated the guardrail files: the rule statuses changed after the last check on "
              "the default branch. Merge this so everyone's coding agent sees the current state. "
              "The rules themselves are unchanged; don't edit these files by hand.")

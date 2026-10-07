@@ -1,10 +1,10 @@
 # Copy to .github/workflows/securacy.yml. The setup bundle from Securacy
 # (Settings > CI/CD) generates this file with your server-url and agent filled in.
-# Securacy threat check: checks the code against the project's threat model.
+# SecuracyAI Gate: checks the code against the project's threat model.
 # Claude Code reads the code here, in your CI, with your model key.
 # Securacy gets only its report: rule IDs, statuses and file locations.
 # Docs: https://app.securacy.ai/home/settings?section=cicd
-name: Securacy threat check
+name: SecuracyAI Gate
 
 on:
   pull_request:
@@ -25,7 +25,7 @@ concurrency:
 
 jobs:
   threat-check:
-    name: Securacy threat check
+    name: SecuracyAI Gate
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:

@@ -16,7 +16,7 @@ request with what the change **fixed** and what it **made worse**.
 ```
 [Securacy logo]
 
-### Threat check: Blocked
+### SecuracyAI Gate: Blocked
 
 This change removes security controls or adds code the threat model forbids.
 
