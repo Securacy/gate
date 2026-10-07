@@ -33,7 +33,7 @@ jobs:
         with:
           fetch-depth: 0      # the agent reads the change with git diff
       - id: securacy
-        uses: securacy-ai/gate@v1
+        uses: securacy/gate@v1
         with:
           api-key: ${{ secrets.SECURACY_CI_KEY }}
           server-url: "https://api.example.securacy.ai"
@@ -61,7 +61,7 @@ jobs:
       pull-requests: write
     steps:
       - uses: actions/checkout@v4
-      - uses: securacy-ai/gate@v1
+      - uses: securacy/gate@v1
         with:
           command: sync-guardrails
           api-key: ${{ secrets.SECURACY_CI_KEY }}

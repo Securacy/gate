@@ -5,7 +5,7 @@
   </picture>
 </p>
 
-# Securacy Gate
+# SecuracyAI Gate
 
 Checks your code against your threat model on every pull request. The threat model is fixed and
 lives in Securacy. Its threats become **rules** with **controls** (`T005.C1`, `T005.C2`, …) in a
@@ -70,7 +70,7 @@ prompt and writes its whole reply to `report-file`, and `submit` checks and send
 
 ```yaml
       - id: prepare
-        uses: securacy-ai/gate@v1
+        uses: securacy/gate@v1
         with:
           command: prepare
           api-key: ${{ secrets.SECURACY_CI_KEY }}
@@ -82,7 +82,7 @@ prompt and writes its whole reply to `report-file`, and `submit` checks and send
           REPORT_FILE: ${{ steps.prepare.outputs.report-file }}
         run: my-agent --read-only --prompt-file "$PROMPT_FILE" > "$REPORT_FILE"   # your agent here
       - id: securacy
-        uses: securacy-ai/gate@v1
+        uses: securacy/gate@v1
         with:
           command: submit
           api-key: ${{ secrets.SECURACY_CI_KEY }}

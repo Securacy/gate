@@ -1,4 +1,4 @@
-name: Securacy Gate
+name: SecuracyAI Gate
 description: Check your code against your Securacy threat model with your own coding agent, and report on the pull request which controls a change fixed or removed.
 author: Securacy
 branding:
