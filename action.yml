@@ -1,0 +1,170 @@
+name: Securacy Gate
+description: Check your code against your Securacy threat model with your own coding agent, and report on the pull request which controls a change fixed or removed.
+author: Securacy
+branding:
+  icon: shield
+  color: blue
+
+inputs:
+  command:
+    description: "check (the default): prepare, run the built-in agent, and submit. For your own agent: prepare, then your step, then submit. sync-guardrails: open a pull request that updates .securacy/guardrails/ (the workflow's guardrails job)."
+    default: check
+  api-key:
+    description: The repository's sk-ci- key from Securacy (Settings > CI/CD). Pass it from a secret.
+    required: false
+  server-url:
+    description: The Securacy API URL from your setup bundle.
+    required: true
+  agent:
+    description: "The built-in coding agent that reads the code: claude (Claude Code) or codex (OpenAI Codex). Use command: prepare and submit to run any other agent yourself."
+    default: claude
+  agent-api-key:
+    description: Your model key for the agent (ANTHROPIC_API_KEY for claude, OPENAI_API_KEY for codex). Pass it from a secret. It stays in GitHub; Securacy never receives it.
+    required: false
+  claude-oauth-token:
+    description: For claude, instead of an API key, a Claude Pro or Max subscription's token from `claude setup-token` (the CLAUDE_CODE_OAUTH_TOKEN secret). Securacy never receives it.
+    required: false
+  agent-model:
+    description: The model the agent uses (empty for the agent's default).
+    default: ""
+  agent-max-turns:
+    description: How many turns Claude may take.
+    default: "100"
+  mode:
+    description: "auto (a full sweep by hand or before the first check; otherwise a check of the change), sweep or diff."
+    default: auto
+  report-file:
+    description: The path, in the workspace, of a securacy-report:v2 reply your own step wrote. Without it, submit reads the report-file output of prepare.
+    default: ""
+  comment:
+    description: Post the result as a pull request comment.
+    default: "true"
+  github-token:
+    description: Token used to comment, list changed files, check who added the override label, and open the guardrails pull request.
+    default: ${{ github.token }}
+  timeout-minutes:
+    description: How long to wait for Securacy's answer (1-60).
+    default: "15"
+  retention-days:
+    description: How long to keep the uploaded report files.
+    default: "30"
+
+outputs:
+  outcome:
+    description: pass, warn, block or skipped (check, submit); proposed or unchanged (sync-guardrails).
+    value: ${{ steps.check.outputs.outcome || steps.sync.outputs.outcome }}
+  mode:
+    description: sweep or diff.
+    value: ${{ steps.prepare.outputs.mode }}
+  run-agent:
+    description: (prepare) true when there is something for the agent to check.
+    value: ${{ steps.prepare.outputs.run-agent }}
+  prompt-file:
+    description: (prepare) The agent's prompt. It names the guardrail file and, for a change, the diff to read.
+    value: ${{ steps.prepare.outputs.prompt-file }}
+  report-file:
+    description: (prepare) Where your agent writes its reply for submit to read.
+    value: ${{ steps.prepare.outputs.report-file }}
+  guardrails-file:
+    description: (prepare) The current guardrail file, with each rule's state.
+    value: ${{ steps.prepare.outputs.guardrails-file }}
+  sarif-file:
+    description: Path to the SARIF file (empty for public repositories).
+    value: ${{ steps.check.outputs.sarif-file }}
+  run-url:
+    description: The threat model in Securacy.
+    value: ${{ steps.check.outputs.run-url }}
+
+runs:
+  using: composite
+  steps:
+    - id: prepare
+      if: inputs.command == 'check' || inputs.command == 'prepare'
+      shell: bash
+      run: '"$(command -v python3 || command -v python)" "$GITHUB_ACTION_PATH/securacy_ci.py" prepare'
+      env:
+        INPUT_COMMAND: ${{ inputs.command }}
+        INPUT_API_KEY: ${{ inputs.api-key }}
+        INPUT_SERVER_URL: ${{ inputs.server-url }}
+        INPUT_AGENT: ${{ inputs.agent }}
+        INPUT_AGENT_KEY_SET: ${{ inputs.agent-api-key != '' || (inputs.agent == 'claude' && inputs.claude-oauth-token != '') }}
+        INPUT_AGENT_MODEL: ${{ inputs.agent-model }}
+        INPUT_AGENT_MAX_TURNS: ${{ inputs.agent-max-turns }}
+        INPUT_MODE: ${{ inputs.mode }}
+        INPUT_REPORT_FILE: ${{ inputs.report-file }}
+        INPUT_GITHUB_TOKEN: ${{ inputs.github-token }}
+
+    # Keys pasted into a secret often carry a stray space, line break or quote.
+    - id: keys
+      if: inputs.command == 'check' && steps.prepare.outputs.run-agent == 'true'
+      shell: bash
+      run: |
+        clean() { printf '%s' "$1" | tr -d '[:space:][:cntrl:]\042\047' | sed -e 's/^export//' -e 's/^[A-Za-z_]*=//'; }
+        api="$(clean "$AGENT_API_KEY")"
+        oauth="$(clean "$OAUTH_TOKEN")"
+        [ -n "$api" ] && echo "::add-mask::$api"
+        [ -n "$oauth" ] && echo "::add-mask::$oauth"
+        echo "agent-api-key=$api" >> "$GITHUB_OUTPUT"
+        echo "claude-oauth-token=$oauth" >> "$GITHUB_OUTPUT"
+      env:
+        AGENT_API_KEY: ${{ inputs.agent-api-key }}
+        OAUTH_TOKEN: ${{ inputs.claude-oauth-token }}
+
+    # The built-in agents: read-only, the customer's own model key, and no
+    # Securacy key in their environment. Their reply is the report.
+    - id: claude
+      if: inputs.command == 'check' && inputs.agent == 'claude' && steps.prepare.outputs.run-agent == 'true'
+      continue-on-error: true
+      # The base action, not claude-code-action itself: that one rejects `push`
+      # events, and the push to the default branch is what saves the state.
+      # Pinned to a commit: this action gets the customer's model key.
+      uses: anthropics/claude-code-action/base-action@86d88e619d8e6caf07b5c3944dd14f441c533718 # v1
+      with:
+        anthropic_api_key: ${{ steps.keys.outputs.agent-api-key }}
+        claude_code_oauth_token: ${{ steps.keys.outputs.claude-oauth-token }}
+        prompt: ${{ steps.prepare.outputs.prompt }}
+        claude_args: ${{ steps.prepare.outputs.claude-args }}
+
+    - id: codex
+      if: inputs.command == 'check' && inputs.agent == 'codex' && steps.prepare.outputs.run-agent == 'true'
+      continue-on-error: true
+      # Pinned to a commit: this action gets the customer's model key.
+      uses: openai/codex-action@bdf19a4a223ec2549a3e2274a0cf61556bc07675 # v1
+      with:
+        openai-api-key: ${{ steps.keys.outputs.agent-api-key }}
+        prompt: ${{ steps.prepare.outputs.prompt }}
+        safety-strategy: read-only
+        model: ${{ inputs.agent-model }}
+        output-file: ${{ steps.prepare.outputs.report-file }}
+
+    - id: check
+      if: inputs.command == 'check' || inputs.command == 'submit'
+      shell: bash
+      run: '"$(command -v python3 || command -v python)" "$GITHUB_ACTION_PATH/securacy_ci.py" check'
+      env:
+        INPUT_API_KEY: ${{ inputs.api-key }}
+        INPUT_SERVER_URL: ${{ inputs.server-url }}
+        INPUT_REPORT_FILE: ${{ inputs.report-file }}
+        INPUT_AGENT_OUTPUT: ${{ steps.claude.outputs.execution_file }}
+        INPUT_AGENT_MESSAGE: ${{ steps.codex.outputs.final-message }}
+        INPUT_AGENT_OUTCOME: ${{ steps.claude.outcome || steps.codex.outcome }}
+        INPUT_COMMENT: ${{ inputs.comment }}
+        INPUT_GITHUB_TOKEN: ${{ inputs.github-token }}
+        INPUT_TIMEOUT_MINUTES: ${{ inputs.timeout-minutes }}
+
+    - if: always() && (inputs.command == 'check' || inputs.command == 'submit') && steps.check.outputs.artifacts-dir != ''
+      uses: actions/upload-artifact@v4
+      with:
+        name: securacy-gate-${{ github.run_id }}-${{ github.run_attempt }}
+        path: ${{ steps.check.outputs.artifacts-dir }}
+        retention-days: ${{ inputs.retention-days }}
+        if-no-files-found: ignore
+
+    - id: sync
+      if: inputs.command == 'sync-guardrails'
+      shell: bash
+      run: '"$(command -v python3 || command -v python)" "$GITHUB_ACTION_PATH/securacy_ci.py" sync'
+      env:
+        INPUT_API_KEY: ${{ inputs.api-key }}
+        INPUT_SERVER_URL: ${{ inputs.server-url }}
+        INPUT_GITHUB_TOKEN: ${{ inputs.github-token }}
