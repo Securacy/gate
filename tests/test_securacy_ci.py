@@ -740,3 +740,97 @@ def test_dropped_design_changes_are_counted_for_securacy(repo):
     cleaned, _ = ci.clean_report(dict(report, design_changes=report["design_changes"][:1]), repo, "diff",
                                  ["api/orders.py"])
     assert "design_changes_dropped" not in cleaned
+
+
+# ---------------------------------------------------------------------------
+# Never patterns, the re-check list and the merged pull request
+# ---------------------------------------------------------------------------
+
+def test_never_patterns_keep_only_real_evidence_and_a_removal_only_in_the_change(repo):
+    report = dict(REPORT, rules=[{"id": "T001", "controls": [], "never": [
+        _claim("T001.N1", "RESOLVED", {"path": "api/db.py", "lines": "3"}),
+        _claim("T001.N2", "RESOLVED", {"path": "api/orders.py", "lines": "1"}),   # not in the change
+        _claim("T001.N3", "PRESENT", {"path": "api/orders.py", "lines": "1"}),    # still there elsewhere: kept
+        _claim("T001.N4", "PRESENT", {"path": "api/invented.py", "lines": "1"}),  # no such file
+        _claim("T001.N5", "ABSENT")]}])
+    cleaned, dropped = ci.clean_report(report, repo, "diff", ["api/db.py"])
+    assert [(p["id"], p["status"]) for p in cleaned["rules"][0]["never"]] == [
+        ("T001.N1", "RESOLVED"), ("T001.N3", "PRESENT"), ("T001.N5", "ABSENT")]
+    assert dropped == 2
+
+
+def test_a_report_without_patterns_is_sent_as_before(repo):
+    cleaned, _ = ci.clean_report(dict(REPORT, rules=[{"id": "T001", "controls": []}]), repo, "diff", [])
+    assert cleaned["rules"] == [{"id": "T001", "controls": []}]
+
+
+def test_the_recheck_list_is_what_securacy_last_saw_in_the_changed_files():
+    state = {"items": {
+        "T001.N1": {"status": "PRESENT", "evidence": [{"path": "api/db.py", "lines": "3"}]},
+        "T001.C1": {"status": "MISSING", "evidence": [{"path": "api/"}]},           # a folder holding a change
+        "T001.C2": {"status": "IMPLEMENTED", "evidence": [{"path": "api/orders.py"}]},
+        "T002.N1": {"status": "ABSENT", "evidence": [{"path": "api/db.py"}]},       # nothing to re-check
+        "T002.C1": {"status": "NOT_APPLICABLE", "evidence": [{"path": "api/db.py"}]},
+        "bad id": {"status": "MISSING", "evidence": [{"path": "api/db.py"}]},
+        "T003.C1": {"status": "MISSING", "evidence": [{"path": "../api/db.py"}]},
+    }}
+    assert ci.recheck_ids(state, ["api/db.py"]) == ["T001.C1", "T001.N1"]
+    assert ci.recheck_ids(None, ["api/db.py"]) == [] and ci.recheck_ids({"items": "x"}, ["api/db.py"]) == []
+
+
+def test_prepare_names_the_items_to_recheck_in_the_diff_prompt(workflow, monkeypatch):
+    state = {"items": {"T001.N1": {"status": "PRESENT", "evidence": [{"path": "api/db.py", "lines": "3"}]}}}
+    _server(monkeypatch, guardrails=dict(GUARDRAILS, state=state))
+    ci.main(["prepare"])
+    agent = workflow / "temp" / "securacy-agent"
+    assert json.loads((agent / "context.json").read_text())["recheck"] == ["T001.N1"]
+    prompt = (agent / "prompt.md").read_text(encoding="utf-8")
+    assert "Securacy last saw these in the files this change touches: `T001.N1`." in prompt
+    assert "{{" not in prompt
+
+
+def test_a_diff_prompt_with_nothing_to_recheck_says_none():
+    prompt = ci.build_prompt("diff", guardrails_file="g.md", baseline_version=1, base="c" * 40,
+                             changed_files_file="c.txt", report_example="{}")
+    assert "the files this change touches: none." in prompt
+
+
+@pytest.mark.parametrize("mode", ["sweep", "diff"])
+def test_both_prompts_ask_about_never_patterns(mode):
+    prompt = ci.build_prompt(mode, guardrails_file="g.md", baseline_version=1, base="c" * 40,
+                             changed_files_file="c.txt", report_example="{}")
+    assert "`T005.N1`" in prompt and "`PRESENT`" in prompt and '"never"' in prompt
+
+
+@pytest.mark.parametrize("message,number", [
+    ("Merge pull request #12 from acme/fix-secret\n\nMask it", 12),
+    ("Mask the database URL (#260)", 260),
+    ("Mask the database URL (#260) and more", None),
+    ("Fix #12", None),
+    ("", None),
+    (None, None),
+])
+def test_the_merged_pull_request_from_the_commit_message(message, number):
+    assert ci.merged_pr_from_message(message) == number
+
+
+def test_a_push_payload_names_the_merged_pull_request_and_a_pr_payload_never_does():
+    env = {"GITHUB_REPOSITORY": "acme/payments", "GITHUB_SHA": "b" * 40, "GITHUB_REF": "refs/heads/main"}
+    push = ci.build_payload("push", {}, env, mode="diff", changed=[], agent_report=None, override=None, merged_pr=9)
+    assert push["merged_pr"] == 9
+    pull = ci.build_payload("pull_request", {"pull_request": {"number": 7}}, env, mode="diff", changed=[],
+                            agent_report=None, override=None, merged_pr=9)
+    assert "merged_pr" not in pull and pull["pr_number"] == 7
+    assert "merged_pr" not in ci.build_payload("push", {}, env, mode="diff", changed=[], agent_report=None,
+                                               override=None)
+
+
+def test_github_names_the_merged_pull_request_of_a_commit(monkeypatch):
+    calls = []
+
+    def fake(method, url, headers, payload=None, timeout=60):
+        calls.append(url)
+        return ci.HttpResult(200, [{"number": 3, "merged_at": None}, {"number": 4, "merged_at": "2026-10-16T07:00:00Z"}])
+    monkeypatch.setattr(ci, "http", fake)
+    assert ci.GitHub("t", "acme/payments", "https://api.github.com").merged_pr("b" * 40) == 4
+    assert calls == ["https://api.github.com/repos/acme/payments/commits/" + "b" * 40 + "/pulls"]

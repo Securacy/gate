@@ -35,12 +35,16 @@ This change removes security controls or adds code the threat model forbids.
 ## How it works
 
 1. **First run: a full sweep.** The agent reads the whole repository against every control and
-   reports `IMPLEMENTED`, `MISSING` or `NOT_APPLICABLE`, with the file and lines. Securacy saves this
-   as the starting state. It never blocks.
+   reports `IMPLEMENTED`, `MISSING` or `NOT_APPLICABLE`, with the file and lines. It also reports each
+   rule's **Never** patterns the code already has (`PRESENT`, for example a secret printed to a log).
+   Securacy saves this as the starting state. It never blocks.
 2. **Every pull request: a change check.** The agent reads only the diff, together with the guardrail
    file, which shows each control's state and where it lives. It reports controls the change
-   `FIXED` or `REGRESSED`, and Never patterns it introduced. Only a CRITICAL or HIGH rule made worse
-   can block. Controls that were already missing are backlog, not the PR's fault.
+   `FIXED` or `REGRESSED`, and Never patterns it `RESOLVED` or introduced. The action names the
+   controls and patterns Securacy last saw in the changed files, and the agent must answer each one.
+   The comment shows what the change fixed, what is still open, and what earlier PRs fixed. Only a
+   CRITICAL or HIGH rule made worse can block. Controls that were already missing are backlog, not
+   the PR's fault.
 3. **Merge: the state moves on.** The push to the default branch runs the same check and saves the
    new state. The workflow's guardrails job then opens a pull request that updates
    `.securacy/guardrails/` with the new statuses. Only the statuses change, never the rules, and

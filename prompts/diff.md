@@ -4,15 +4,23 @@ The rules are in `{{GUARDRAILS_FILE}}`. Read that whole file first. Each rule co
 
 This run is a **change check**. The change is everything between commit `{{BASE}}` and `HEAD`. The changed files are listed in `{{CHANGED_FILES_FILE}}`. Read the change with `git diff {{BASE}}...HEAD` (add `-- <path>` for one file).
 
-Report only the controls this change touches:
+Report only the controls and Never patterns this change touches:
 
 - `REGRESSED`: a ✓ control that the change removes or weakens. Evidence: the changed file and lines.
 - `FIXED`: a ✗ control that the change adds. Evidence: the changed file and lines that implement it.
 - `IMPLEMENTED` or `MISSING`: another control whose code the change touches, with its state after the change.
 
-On a rule, set `"introduced": true` with `"evidence"` when the change adds code that matches one of its **Never** patterns, or a ✗ pattern of an `SC-*` check it cites. The evidence must be the changed lines.
+Never patterns (IDs like `T005.N1`) go in the rule's `"never"` list. The **State** marks with ! the ones Securacy last found in the code:
 
-Leave out every control and rule the change does not touch: their state carries over. An empty `"rules": []` is the right answer for a change that touches no control. Cite only files and line ranges you actually read. Paths are relative to the repository root. `lines` is `"12"` or `"12-18"`.
+- `RESOLVED`: a ! pattern that the change removes. Evidence: the changed file and lines.
+- `PRESENT`: a pattern the code still has after the change, or one the change adds: specific lines do the forbidden thing themselves. Evidence: those lines. An attack that works only because a control is missing is that control's `MISSING`, not a `PRESENT` pattern.
+- `ABSENT`: a pattern whose code the change touches and that is not there after the change.
+
+Securacy last saw these in the files this change touches: {{RECHECK}}. Give each of them a status after the change, even when the change leaves it as it was.
+
+On a rule, set `"introduced": true` with `"evidence"` when the change adds code that matches a ✗ pattern of an `SC-*` check it cites. The evidence must be the changed lines.
+
+Leave out every other control, pattern and rule the change does not touch: their state carries over. An empty `"rules": []` is the right answer for a change that touches no control. Cite only files and line ranges you actually read. Paths are relative to the repository root. `lines` is `"12"` or `"12-18"`.
 
 Also report **design changes**: things this change adds to the system's design that match nothing in the **Component map** or its **Design inventory**. Use the kinds listed in the **Completion report** section. Name each in a few plain words ("Stripe", "S3 bucket vote-audit"). Its evidence must be the changed lines that add it. A new instance of something the threat model already has (another route on an existing API) is not a design change. A new kind of thing (a MongoDB where the threat model has only PostgreSQL) is. Leave `"design_changes": []` when there are none.
 

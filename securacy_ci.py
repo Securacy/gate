@@ -58,7 +58,8 @@ GUARDRAILS_DIR = ".securacy/guardrails/"
 GUARDRAILS_BRANCH = "securacy/guardrails"
 AGENT_DIR = "securacy-agent"          # under RUNNER_TEMP
 ZERO_SHA = "0" * 40
-NEEDS_EVIDENCE = {"IMPLEMENTED", "FIXED", "REGRESSED"}
+NEEDS_EVIDENCE = {"IMPLEMENTED", "FIXED", "REGRESSED", "PRESENT", "RESOLVED"}
+MAX_RECHECK = 200      # IDs named in a change check's prompt
 MAX_DESIGN_CHANGES_SENT = 200  # Securacy keeps 50 after merging duplicates
 PROMPTS = Path(__file__).resolve().parent / "prompts"
 PROMPT_NAME = "prompt.md"
@@ -74,6 +75,8 @@ _SAFE_NAME = re.compile(r"^[A-Za-z0-9._-]{1,100}$")
 _PATH = re.compile(r"^(?!/)(?!.*//)(?!.*(?:^|/)\.{1,2}(?:/|$))[A-Za-z0-9_.@+/-]{1,300}$")
 _LINES = re.compile(r"^\d{1,7}(?:-\d{1,7})?$")
 _SHA = re.compile(r"^[0-9a-f]{7,64}$")
+# The pull request a merge commit names: "Merge pull request #12 from ..." or a squash "Title (#12)".
+_MERGED_PR = re.compile(r"^Merge pull request #(\d{1,9}) |\(#(\d{1,9})\)$")
 
 
 class SetupError(Exception):
@@ -229,6 +232,18 @@ class GitHub:
         if result.status != 200 or not isinstance(result.body, dict):
             return None
         return [f.get("filename", "") for f in result.body.get("files") or []]
+
+    def merged_pr(self, sha: str) -> Optional[int]:
+        """The merged pull request whose merge commit is `sha`, if GitHub knows one.
+        Only a label for the state, so no failure here may stop the check."""
+        try:
+            result = self._call("GET", f"/commits/{sha}/pulls")
+        except Exception:  # noqa: BLE001
+            return None
+        for pull in result.body if result.status == 200 and isinstance(result.body, list) else []:
+            if isinstance(pull, dict) and pull.get("merged_at") and isinstance(pull.get("number"), int):
+                return pull["number"]
+        return None
 
     def override(self, pr_number: int, labels: List[str]) -> Tuple[Optional[Dict[str, str]], Optional[str]]:
         """(override, note). The label alone isn't enough: it must come from
@@ -413,11 +428,29 @@ def changed_files(workspace: Path, event_name: str, event: Dict[str, Any], base:
     return sorted({f for f in files if _PATH.fullmatch(f)})[:MAX_CHANGED_FILES]
 
 
+def recheck_ids(state: Any, changed: List[str]) -> List[str]:
+    """Controls and Never patterns Securacy last saw in a file this change
+    touches: the ones a change check must answer, picked here, not by the agent."""
+    items = (state or {}).get("items") if isinstance(state, dict) else None
+    changed_set = set(changed)
+    ids = []
+    for item_id, entry in (items if isinstance(items, dict) else {}).items():
+        if not isinstance(entry, dict) or entry.get("status") not in ("IMPLEMENTED", "MISSING", "PRESENT"):
+            continue
+        evidence = [e for e in entry.get("evidence") or []
+                    if isinstance(e, dict) and _PATH.fullmatch(str(e.get("path") or ""))]
+        if re.fullmatch(r"[A-Za-z0-9_-]{1,32}\.[CN]\d{1,4}", str(item_id)) and _touches(evidence, changed_set):
+            ids.append(str(item_id))
+    return sorted(ids)[:MAX_RECHECK]
+
+
 def build_prompt(mode: str, *, guardrails_file: str, baseline_version: Any, base: Optional[str],
-                 changed_files_file: str, report_example: str) -> str:
+                 changed_files_file: str, report_example: str, recheck: Optional[List[str]] = None) -> str:
     text = (PROMPTS / f"{mode}.md").read_text(encoding="utf-8")
+    listed = ", ".join(f"`{i}`" for i in recheck or []) or "none"
     values = {"GUARDRAILS_FILE": guardrails_file, "BASELINE_VERSION": str(baseline_version),
-              "BASE": base or "", "CHANGED_FILES_FILE": changed_files_file, "REPORT_EXAMPLE": report_example}
+              "BASE": base or "", "CHANGED_FILES_FILE": changed_files_file, "REPORT_EXAMPLE": report_example,
+              "RECHECK": listed}
     for name, value in values.items():
         text = text.replace("{{" + name + "}}", value)
     return text
@@ -469,6 +502,7 @@ def prepare() -> int:
             mode = context["mode"] = "sweep"
         else:
             context["changed_files"] = changed
+            context["recheck"] = recheck_ids((current or {}).get("state"), changed)
     set_output("mode", mode)
 
     if agent_file and _SAFE_NAME.match(str(agent_file.get("filename") or "")):
@@ -497,7 +531,8 @@ def prepare() -> int:
     example = report_example(mode, context["baseline_version"])
     prompt = build_prompt(mode, guardrails_file=guardrails_path.as_posix(),
                           baseline_version=context["baseline_version"], base=base,
-                          changed_files_file=changed_path.as_posix(), report_example=example)
+                          changed_files_file=changed_path.as_posix(), report_example=example,
+                          recheck=context.get("recheck"))
     prompt_path = directory / PROMPT_NAME
     prompt_path.write_text(prompt, encoding="utf-8")
     set_output("prompt-file", prompt_path.as_posix())
@@ -667,8 +702,8 @@ def clean_report(report: Dict[str, Any], workspace: Path, mode: str,
                  changed: Optional[List[str]]) -> Tuple[Dict[str, Any], int]:
     """The report with evidence checked against the checkout. A claim that a
     control is in place, or that the change removed one, keeps only evidence
-    that exists, and a regression or a forbidden pattern only evidence in a
-    changed file. Claims left without evidence are dropped. Design changes
+    that exists, and a regression, a forbidden pattern added or one removed
+    only evidence in a changed file. Claims left without evidence are dropped. Design changes
     keep only real evidence too, and in a change check only evidence in a
     changed file. Returns the cleaned report and how many claims were dropped."""
     changed_set = set(changed or [])
@@ -697,6 +732,19 @@ def clean_report(report: Dict[str, Any], workspace: Path, mode: str,
                 dropped += 1
                 continue
             cleaned["controls"].append({"id": control.get("id"), "status": status, "evidence": evidence})
+        if isinstance(rule.get("never"), list):
+            cleaned["never"] = []
+            for pattern in rule["never"]:
+                if not isinstance(pattern, dict):
+                    continue
+                status = str(pattern.get("status") or "").strip().upper()
+                evidence = clean_evidence(pattern.get("evidence"), workspace)
+                if status == "RESOLVED" and mode == "diff":
+                    evidence = [e for e in evidence if _touches([e], changed_set)]
+                if status in NEEDS_EVIDENCE and not evidence:
+                    dropped += 1
+                    continue
+                cleaned["never"].append({"id": pattern.get("id"), "status": status, "evidence": evidence})
         rules.append(cleaned)
     component_map = report.get("component_map") if isinstance(report.get("component_map"), dict) else {}
     cleaned = {"schema": report.get("schema"), "mode": report.get("mode"),
@@ -712,9 +760,17 @@ def clean_report(report: Dict[str, Any], workspace: Path, mode: str,
     return cleaned, dropped
 
 
+def merged_pr_from_message(message: Any) -> Optional[int]:
+    """The pull request a merge or squash commit's first line names."""
+    first = str(message or "").splitlines()[0].strip() if str(message or "").strip() else ""
+    match = _MERGED_PR.search(first)
+    number = int(match.group(1) or match.group(2)) if match else 0
+    return number or None
+
+
 def build_payload(event_name: str, event: Dict[str, Any], env: Dict[str, str], *, mode: str,
                   changed: Optional[List[str]], agent_report: Optional[Dict[str, Any]],
-                  override: Optional[Dict[str, str]]) -> Dict[str, Any]:
+                  override: Optional[Dict[str, str]], merged_pr: Optional[int] = None) -> Dict[str, Any]:
     pull = event.get("pull_request") or {}
     head_commit = event.get("head_commit") or {}
     events = ("pull_request", "push", "workflow_dispatch", "schedule")
@@ -731,6 +787,8 @@ def build_payload(event_name: str, event: Dict[str, Any], env: Dict[str, str], *
     }
     if event_name == "pull_request":
         payload["pr_number"] = pull.get("number") or event.get("number")
+    elif event_name == "push" and merged_pr:
+        payload["merged_pr"] = merged_pr
     if head_commit.get("timestamp"):
         payload["commit_time"] = head_commit["timestamp"]
     return payload
@@ -816,8 +874,13 @@ def check() -> int:
     if override_note:
         log("warning", override_note)
 
+    merged_pr = None
+    if event_name == "push":
+        # So Securacy can say which pull request fixed what. GitHub knows; the commit message is the fallback.
+        merged_pr = (github.merged_pr(env["GITHUB_SHA"]) if github else None) or \
+            merged_pr_from_message((event.get("head_commit") or {}).get("message"))
     payload = build_payload(event_name, event, dict(env), mode=mode, changed=changed, agent_report=report,
-                            override=override)
+                            override=override, merged_pr=merged_pr)
     result = submit(url, key, payload)
     if result.get("status") in ("queued", "running"):
         result = wait_for(url, key, result, _minutes(_input("timeout-minutes", "15")) * 60)
