@@ -10,9 +10,17 @@ permissions:
 jobs:
   test:
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
         python: ["3.8", "3.12"]
+        # setup-python has no 3.8 build for ubuntu-latest (26.04); 24.04 still has one.
+        exclude:
+          - os: ubuntu-latest
+            python: "3.8"
+        include:
+          - os: ubuntu-24.04
+            python: "3.8"
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
