@@ -118,7 +118,7 @@ runs:
       # The base action, not claude-code-action itself: that one rejects `push`
       # events, and the push to the default branch is what saves the state.
       # Pinned to a commit: this action gets the customer's model key.
-      uses: anthropics/claude-code-action/base-action@86d88e619d8e6caf07b5c3944dd14f441c533718 # v1
+      uses: anthropics/claude-code-action/base-action@925afb53776cf1a2b738c6bdbed37b4d4000ef13 # v1
       with:
         anthropic_api_key: ${{ steps.keys.outputs.agent-api-key }}
         claude_code_oauth_token: ${{ steps.keys.outputs.claude-oauth-token }}
