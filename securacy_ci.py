@@ -47,6 +47,11 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Set, Tuple
 
 COMMENT_MARKER = "<!-- securacy-ci -->"
+# The result as its own check run, so a warning can be neutral (grey): a step
+# can only end green or red. GitHub treats neutral as passing for required checks.
+CHECK_NAME = "SecuracyAI Gate result"
+CHECK_CONCLUSIONS = {"pass": "success", "warn": "neutral", "block": "failure"}
+MAX_CHECK_SUMMARY = 60_000  # GitHub's limit is 65,535
 OVERRIDE_LABEL = "securacy-override"
 OVERRIDE_COMMAND = "/securacy-override"
 REPORT_SCHEMA = "securacy-report:v2"
@@ -268,6 +273,12 @@ class GitHub:
         if not reason:
             return None, f"Override not applied: @{actor}, comment `{OVERRIDE_COMMAND} <reason>` on the PR to give a reason."
         return {"by": actor, "reason": reason}, None
+
+    def create_check(self, sha: str, conclusion: str, title: str, summary: str) -> int:
+        """A finished check run on `sha`; returns GitHub's status (403 without checks: write)."""
+        return self._call("POST", "/check-runs", {
+            "name": CHECK_NAME, "head_sha": sha, "status": "completed", "conclusion": conclusion,
+            "output": {"title": title[:100], "summary": summary[:MAX_CHECK_SUMMARY]}}).status
 
     def upsert_comment(self, pr_number: int, body: str) -> bool:
         for comment in self._pages(f"/issues/{pr_number}/comments"):
@@ -905,17 +916,29 @@ def check() -> int:
     set_output("sarif-file", sarif or "")
     set_output("run-url", result.get("web_url") or "")
 
-    title = headline or {"block": "Blocked", "warn": "Needs attention"}.get(outcome, "")
+    title = headline or {"block": "Blocked", "warn": "Needs attention"}.get(outcome, "Passed")
     message = f"SecuracyAI Gate: {title}. See the PR comment."
     if result.get("status") == "error":
         message = result.get("message") or f"SecuracyAI Gate: {outcome}."
+    if github and outcome in CHECK_CONCLUSIONS:
+        # A pull request's checks live on its head commit, not on the merge commit the workflow runs.
+        sha = ((event.get("pull_request") or {}).get("head") or {}).get("sha") or env["GITHUB_SHA"]
+        try:
+            status = github.create_check(sha, CHECK_CONCLUSIONS[outcome], title, summary)
+        except Exception:  # noqa: BLE001  (only a display: it must never change the step's result)
+            status = 0
+        if status == 403:
+            log("notice", "Add `checks: write` to the workflow's permissions to see the result as its own check: "
+                          "green, grey when it needs a look, or red.")
+        elif status != 201:
+            log("notice", "Couldn't add the result check; the step's own result still stands.")
     if outcome == "block":
         log("error", message)
         return 1
     if outcome == "warn":
         log("warning", message)
-    elif headline and headline != "Passed":
-        log("notice", message)  # e.g. made worse while the gate is off: green, but worth seeing
+    elif headline and not headline.startswith("Passed"):
+        log("notice", message)  # e.g. made worse under the Pass gate: green, but worth seeing
     return 0
 
 

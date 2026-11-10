@@ -16,6 +16,7 @@ on:
 permissions:
   contents: read          # read the code
   pull-requests: write    # post the result as a PR comment
+  checks: write           # show the result as a check: green, grey (needs a look) or red
   issues: read            # see who added the securacy-override label
   security-events: write  # upload SARIF to code scanning
   actions: read           # the Claude Code step reads its own workflow run

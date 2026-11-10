@@ -561,6 +561,63 @@ def test_a_plain_pass_adds_no_annotation(workflow, monkeypatch, capsys):
     assert "headline=Passed\n" in (workflow / "output").read_text()
 
 
+def _with_github(monkeypatch, outcome, headline, checks_status=201):
+    """Securacy answers `outcome`; GitHub takes comments and check runs."""
+    monkeypatch.setenv("INPUT_GITHUB_TOKEN", "ghs_token")
+    checks = []
+
+    def fake(method, url, headers, payload=None, timeout=60):
+        if url.endswith("/check-runs"):
+            checks.append(payload)
+            return ci.HttpResult(checks_status, {})
+        if url.startswith("https://api.github.com"):
+            return ci.HttpResult(201 if method == "POST" else 200, [] if method == "GET" else {})
+        return ci.HttpResult(200, {"status": "complete", "outcome": outcome, "headline": headline,
+                                   "summary_markdown": "### SecuracyAI Gate: " + headline,
+                                   "comment_markdown": "<!-- securacy-ci -->"})
+    monkeypatch.setattr(ci, "http", fake)
+    return checks
+
+
+@pytest.mark.parametrize("outcome,conclusion,code", [("pass", "success", 0), ("warn", "neutral", 0),
+                                                     ("block", "failure", 1)])
+def test_the_result_is_its_own_check_on_the_pr_head(workflow, monkeypatch, outcome, conclusion, code):
+    checks = _with_github(monkeypatch, outcome, "Made worse")
+    assert ci.main(["check"]) == code
+    assert checks == [{"name": "SecuracyAI Gate result", "head_sha": "a" * 40, "status": "completed",
+                       "conclusion": conclusion,
+                       "output": {"title": "Made worse", "summary": "### SecuracyAI Gate: Made worse"}}]
+
+
+def test_without_checks_write_the_step_result_still_stands(workflow, monkeypatch, capsys):
+    _with_github(monkeypatch, "block", "Blocked", checks_status=403)
+    assert ci.main(["check"]) == 1
+    assert "Add `checks: write`" in capsys.readouterr().out
+
+
+def test_a_broken_check_call_never_turns_a_block_into_a_pass(workflow, monkeypatch, capsys):
+    _with_github(monkeypatch, "block", "Blocked")
+
+    def broken(*args, **kwargs):
+        raise RuntimeError("boom")
+    monkeypatch.setattr(ci.GitHub, "create_check", broken)
+    assert ci.main(["check"]) == 1
+    assert "outcome=block" in (workflow / "output").read_text() and "Couldn't add the result check" in \
+        capsys.readouterr().out
+
+
+def test_a_skipped_run_adds_no_check(workflow, monkeypatch):
+    checks = _with_github(monkeypatch, "pass", "Passed")
+    monkeypatch.setenv("INPUT_API_KEY", "")
+    assert ci.main(["check"]) == 0 and checks == []
+
+
+def test_passed_with_open_threats_adds_no_annotation(workflow, monkeypatch, capsys):
+    _server(monkeypatch, headline="Passed, 4 still open")
+    assert ci.main(["check"]) == 0
+    assert "::notice::SecuracyAI" not in capsys.readouterr().out
+
+
 def test_the_headline_stays_on_one_short_line(workflow, monkeypatch):
     _server(monkeypatch, outcome="warn", headline="Made\nworse " + "x" * 200)
     ci.main(["check"])
