@@ -151,20 +151,43 @@ skipped waiting forever. A change that touches no files sends an empty report wi
 | Output | |
 |---|---|
 | `outcome` | `pass`, `warn`, `block` or `skipped` (`proposed` or `unchanged` for `sync-guardrails`) |
+| `headline` | What happened, in words, as in the PR comment title: `Passed`, `Made worse`, `Not checked`, `Blocked`... |
 | `mode` | `sweep` or `diff` |
 | `run-agent`, `prompt-file`, `report-file`, `guardrails-file` | From `prepare`, for your own agent's step |
 | `sarif-file` | SARIF for code scanning (empty for public repositories) |
 | `run-url` | The threat model in Securacy |
 
-The step fails only when the outcome is `block`. Whether a change can block is your organisation
-admin's setting in Securacy (`warn`, `block` or `off`). A missing agent report, an unreachable
-Securacy or anything else on our side **warns and passes**: the check never stops a deploy because of us.
+## Gate modes and results
+
+The step fails only when the outcome is `block`. With `checks: write` in the workflow's permissions
+(as in [the example](examples/securacy.yml)), the action also adds a **SecuracyAI Gate result**
+check: green for `pass`, grey (neutral) for `warn`, red for `block`. GitHub counts a neutral check as
+passing, so a warning never blocks a merge, even when the check is required.
+
+The gate mode is your organisation admin's setting in Securacy:
+
+| Case | Block | Warn | Pass |
+|---|---|---|---|
+| Nothing made worse | green · Passed | green | green |
+| Critical or high rule made worse | **red** · Blocked | grey · Made worse | green · Made worse |
+| Medium, low or accepted rule made worse | grey · Made worse | grey | green |
+| Design not in the threat model | grey · Threat model out of date | grey | green |
+| No usable report from the coding agent | **red** · Not checked | grey · Not checked | green |
+| Securacy unreachable, or anything else on our side | grey · Not checked | grey | green |
+| Bad Securacy key or invalid request | red · Could not run | red | red |
+
+Threats that were already open are listed and counted ("Passed, 4 still open") but never fail a
+change: they are backlog, not the PR's fault. Nothing on our side ever stops a deploy. A missing
+agent report fails in Block mode because otherwise a broken or timed-out agent step would let any
+change through.
 
 ## When a change is blocked
 
+- **Not checked?** Open the coding agent's step in the workflow run: its model key, its quota or a
+  timeout is the usual cause. Fix it and re-run.
 - **Put the control back.** The comment names the control and the lines that removed it.
 - **Accept the risk in Securacy.** Mark the threat *Accepted* and re-run. Removing a control from an
-  accepted threat never blocks.
+  accepted threat only warns.
 - **Override, for emergencies, or when the agent is wrong.** A repository admin or maintainer adds
   the `securacy-override` label and comments `/securacy-override <reason>`. The check then warns
   instead of blocking, and the override is logged in Securacy and shown on the PR. A label alone, or
