@@ -151,6 +151,7 @@ skipped waiting forever. A change that touches no files sends an empty report wi
 | Output | |
 |---|---|
 | `outcome` | `pass`, `warn`, `block` or `skipped` (`proposed` or `unchanged` for `sync-guardrails`) |
+| `headline` | What happened, in words, as in the PR comment title: `Passed`, `Made worse`, `Not checked`, `Blocked`... |
 | `mode` | `sweep` or `diff` |
 | `run-agent`, `prompt-file`, `report-file`, `guardrails-file` | From `prepare`, for your own agent's step |
 | `sarif-file` | SARIF for code scanning (empty for public repositories) |

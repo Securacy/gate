@@ -53,6 +53,9 @@ outputs:
   outcome:
     description: pass, warn, block or skipped (check, submit); proposed or unchanged (sync-guardrails).
     value: ${{ steps.check.outputs.outcome || steps.sync.outputs.outcome }}
+  headline:
+    description: (check, submit) What happened, in words, e.g. Made worse or Not checked. Empty when skipped.
+    value: ${{ steps.check.outputs.headline }}
   mode:
     description: sweep or diff.
     value: ${{ steps.prepare.outputs.mode }}

@@ -894,19 +894,28 @@ def check() -> int:
         if not github.upsert_comment(pr_number, comment):
             log("warning", "Couldn't post the PR comment (the token needs pull-requests: write).")
 
+    # What happened, in words ("Made worse", "Not checked"). Servers older
+    # than this field send none, so the fallbacks never claim a pass.
+    headline = " ".join(str(result.get("headline") or "").split())[:80]
     artifacts = Path(env.get("RUNNER_TEMP") or workspace) / "securacy"
     sarif = write_artifacts(artifacts, result)
     set_output("outcome", outcome)
+    set_output("headline", headline)
     set_output("artifacts-dir", str(artifacts))
     set_output("sarif-file", sarif or "")
     set_output("run-url", result.get("web_url") or "")
 
-    message = result.get("message") or f"SecuracyAI Gate: {outcome}."
+    title = headline or {"block": "Blocked", "warn": "Needs attention"}.get(outcome, "")
+    message = f"SecuracyAI Gate: {title}. See the PR comment."
+    if result.get("status") == "error":
+        message = result.get("message") or f"SecuracyAI Gate: {outcome}."
     if outcome == "block":
-        log("error", message if result.get("status") == "error" else "Securacy blocked this change. See the PR comment.")
+        log("error", message)
         return 1
     if outcome == "warn":
-        log("warning", message if result.get("status") == "error" else "Securacy passed with warnings. See the PR comment.")
+        log("warning", message)
+    elif headline and headline != "Passed":
+        log("notice", message)  # e.g. made worse while the gate is off: green, but worth seeing
     return 0
 
 

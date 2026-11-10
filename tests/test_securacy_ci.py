@@ -456,7 +456,7 @@ def _outputs(repo):
     return text, single
 
 
-def _server(monkeypatch, outcome="pass", guardrails=GUARDRAILS):
+def _server(monkeypatch, outcome="pass", guardrails=GUARDRAILS, headline=None):
     sent = []
 
     def fake(method, url, headers, payload=None, timeout=60):
@@ -464,7 +464,8 @@ def _server(monkeypatch, outcome="pass", guardrails=GUARDRAILS):
         if url.endswith("/cicd/guardrails"):
             return ci.HttpResult(200, guardrails)
         return ci.HttpResult(200, {"status": "complete", "outcome": outcome, "summary_markdown": f"verdict {outcome}",
-                                   "comment_markdown": "<!-- securacy-ci -->", "sarif": {"version": "2.1.0"}})
+                                   "comment_markdown": "<!-- securacy-ci -->", "sarif": {"version": "2.1.0"},
+                                   **({"headline": headline} if headline is not None else {})})
     monkeypatch.setattr(ci, "http", fake)
     return sent
 
@@ -536,6 +537,35 @@ def test_check_without_a_report_still_asks_securacy(workflow, monkeypatch, capsy
     monkeypatch.setenv("INPUT_AGENT_OUTCOME", "failure")
     assert ci.main(["check"]) == 0
     assert sent[-1][2]["agent_report"] is None and "without a usable report" in capsys.readouterr().out
+
+
+@pytest.mark.parametrize("outcome,headline,annotation,code", [
+    ("warn", "Made worse", "::warning::SecuracyAI Gate: Made worse. See the PR comment.", 0),
+    ("warn", "Not checked", "::warning::SecuracyAI Gate: Not checked. See the PR comment.", 0),
+    ("block", "Blocked", "::error::SecuracyAI Gate: Blocked. See the PR comment.", 1),
+    ("pass", "Made worse", "::notice::SecuracyAI Gate: Made worse. See the PR comment.", 0),  # gate off
+    ("warn", None, "::warning::SecuracyAI Gate: Needs attention. See the PR comment.", 0),  # older server
+])
+def test_the_check_says_what_happened(workflow, monkeypatch, capsys, outcome, headline, annotation, code):
+    _server(monkeypatch, outcome=outcome, headline=headline)
+    assert ci.main(["check"]) == code
+    printed = capsys.readouterr().out
+    assert annotation in printed and "passed with warnings" not in printed.lower()
+    assert f"headline={headline or ''}\n" in (workflow / "output").read_text()
+
+
+def test_a_plain_pass_adds_no_annotation(workflow, monkeypatch, capsys):
+    _server(monkeypatch, headline="Passed")
+    assert ci.main(["check"]) == 0
+    assert "::notice::SecuracyAI" not in capsys.readouterr().out
+    assert "headline=Passed\n" in (workflow / "output").read_text()
+
+
+def test_the_headline_stays_on_one_short_line(workflow, monkeypatch):
+    _server(monkeypatch, outcome="warn", headline="Made\nworse " + "x" * 200)
+    ci.main(["check"])
+    line = next(l for l in (workflow / "output").read_text().splitlines() if l.startswith("headline="))
+    assert line.startswith("headline=Made worse x") and len(line) == len("headline=") + 80
 
 
 def test_a_report_file_from_your_own_agent(workflow, monkeypatch):
