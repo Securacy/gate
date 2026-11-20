@@ -227,3 +227,17 @@ def test_action_yml_scan_step_gets_no_secret_inputs():
     for forbidden in ("api-key", "agent-api-key", "claude-oauth-token", "github-token", "INPUT_API_KEY"):
         assert forbidden not in step, forbidden
     assert text.index("- id: scan") < text.index("- id: claude")  # before the agent
+
+
+def test_securacy_ci_finds_its_scan_module_when_loaded_by_path(tmp_path, monkeypatch):
+    """Callers (the backend's contract test, other runners) load securacy_ci.py
+    by path, without its folder on sys.path."""
+    import importlib.util
+    monkeypatch.setattr(sys, "path", [p for p in sys.path if Path(p).resolve() != ROOT])
+    for name in ("securacy_scan", "securacy_tools"):
+        monkeypatch.delitem(sys.modules, name, raising=False)
+    spec = importlib.util.spec_from_file_location("securacy_ci_by_path", ROOT / "securacy_ci.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    monkeypatch.setenv("RUNNER_TEMP", str(tmp_path))
+    assert module.scan_report() is None

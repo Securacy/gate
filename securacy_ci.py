@@ -1011,11 +1011,21 @@ def sync() -> int:
 # ---------------------------------------------------------------------------
 
 SCAN_NAME = "scan.json"
+_HERE = str(Path(__file__).resolve().parent)
+
+
+def _scan_module():
+    """securacy_scan, from this file's folder even when this file was loaded by path."""
+    if _HERE not in sys.path:
+        sys.path.insert(0, _HERE)
+    import securacy_scan
+
+    return securacy_scan
 
 
 def scan_report() -> Optional[Dict[str, Any]]:
     """What the scan step left for submit, if it ran and the file is sane."""
-    import securacy_scan
+    securacy_scan = _scan_module()
 
     path = agent_dir() / SCAN_NAME
     try:
@@ -1030,7 +1040,7 @@ def scan_report() -> Optional[Dict[str, Any]]:
 def scan() -> int:
     """Run the scanners. Never fails the job: a scanner problem only means
     that part wasn't scanned, and the check says so."""
-    import securacy_scan
+    securacy_scan = _scan_module()
 
     try:
         options = securacy_scan.ScanOptions(
