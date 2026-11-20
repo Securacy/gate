@@ -14,7 +14,7 @@ import json
 import os
 import re
 import shutil
-import subprocess  # nosec B404  (fixed argument lists, never a shell)
+import subprocess  # nosec B404
 import time
 from pathlib import Path, PurePosixPath
 from typing import Any, Dict, Iterable, List, Optional, Tuple
@@ -656,7 +656,7 @@ class _Runner:
         try:
             proc = self.runner(argv, cwd=str(self.workspace), env=dict(self.env, **(extra_env or {})),
                                stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                               timeout=min(limit, remaining))  # nosec B603
+                               timeout=min(limit, remaining))
         except subprocess.TimeoutExpired:
             self.status[name]["status"] = "timeout"
             self.notices.append(f"{name} timed out.")
@@ -685,7 +685,7 @@ class _Runner:
 
     def commit_exists(self, sha: str) -> bool:
         proc = self.runner(["git", "cat-file", "-e", sha + "^{commit}"], cwd=str(self.workspace), env=self.env,
-                           stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=30)  # nosec B603 B607
+                           stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=30)
         return proc.returncode == 0
 
 
