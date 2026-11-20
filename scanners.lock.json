@@ -1,0 +1,49 @@
+{
+  "_comment": "Pinned scanners. Each SHA-256 is from the release's own checksums file (zizmor publishes none: GitHub's asset digest). Releases were the newest at least two weeks old on 2026-11-20. Change a pin only with its checksum, in the same commit.",
+  "syft": {
+    "version": "1.57.0",
+    "assets": {
+      "linux-x64": {"url": "https://github.com/anchore/syft/releases/download/v1.57.0/syft_1.57.0_linux_amd64.tar.gz", "sha256": "9c077a7d43029b3b13e98a8db720661e700c4d58db6352153a06395ae4a2a704", "member": "syft"},
+      "linux-arm64": {"url": "https://github.com/anchore/syft/releases/download/v1.57.0/syft_1.57.0_linux_arm64.tar.gz", "sha256": "410cbfa0ae0f63246bc0057843760b1de2833cd23919e025e368fd7681308cdb", "member": "syft"}
+    }
+  },
+  "grype": {
+    "version": "0.121.2",
+    "assets": {
+      "linux-x64": {"url": "https://github.com/anchore/grype/releases/download/v0.121.2/grype_0.121.2_linux_amd64.tar.gz", "sha256": "9c8965ced9df657e5e851c14021bae838802f711edd7a48f9bc3c923a8d28f12", "member": "grype"},
+      "linux-arm64": {"url": "https://github.com/anchore/grype/releases/download/v0.121.2/grype_0.121.2_linux_arm64.tar.gz", "sha256": "d7d2e160255b0f087280feabf6f213cf4c45d475690f3f1fe5dc336eb1037bf0", "member": "grype"}
+    }
+  },
+  "osv-scanner": {
+    "version": "2.7.0",
+    "assets": {
+      "linux-x64": {"url": "https://github.com/google/osv-scanner/releases/download/v2.7.0/osv-scanner_linux_amd64", "sha256": "160c6253e2922e9e0a6a9771c5c4c40a4b3c6090b34a3cdd5e80c96cc2e4218b", "member": null},
+      "linux-arm64": {"url": "https://github.com/google/osv-scanner/releases/download/v2.7.0/osv-scanner_linux_arm64", "sha256": "4061ef4c021ed3c47f203b818f337e351336cc5cd67c0274fc36bd1dfc728dd7", "member": null}
+    }
+  },
+  "gitleaks": {
+    "version": "8.30.1",
+    "assets": {
+      "linux-x64": {"url": "https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz", "sha256": "551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb", "member": "gitleaks"},
+      "linux-arm64": {"url": "https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_arm64.tar.gz", "sha256": "e4a487ee7ccd7d3a7f7ec08657610aa3606637dab924210b3aee62570fb4b080", "member": "gitleaks"}
+    }
+  },
+  "trufflehog": {
+    "version": "3.99.8",
+    "assets": {
+      "linux-x64": {"url": "https://github.com/trufflesecurity/trufflehog/releases/download/v3.99.8/trufflehog_3.99.8_linux_amd64.tar.gz", "sha256": "7c3b02f160f28929a467e29e20fba98746e0729f6e37c3c25761e4f8789abe08", "member": "trufflehog"},
+      "linux-arm64": {"url": "https://github.com/trufflesecurity/trufflehog/releases/download/v3.99.8/trufflehog_3.99.8_linux_arm64.tar.gz", "sha256": "a0382d83dd58c967af5dd0175cc732c62c836ab1d15dc9ae71b01a2d3f0911b2", "member": "trufflehog"}
+    }
+  },
+  "zizmor": {
+    "version": "1.32.0",
+    "assets": {
+      "linux-x64": {"url": "https://github.com/zizmorcore/zizmor/releases/download/v1.32.0/zizmor-x86_64-unknown-linux-gnu.tar.gz", "sha256": "bb110cc765eca9cd7efb2e284a956be5974c60027b0970f16397d86208a9957b", "member": "zizmor"},
+      "linux-arm64": {"url": "https://github.com/zizmorcore/zizmor/releases/download/v1.32.0/zizmor-aarch64-unknown-linux-gnu.tar.gz", "sha256": "cb152b207f815116d7fa1c1ee4614f61578803351395052908095e79adfd9fd0", "member": "zizmor"}
+    }
+  },
+  "checkov": {
+    "version": "3.4.3",
+    "image": "bridgecrew/checkov:3.4.3@sha256:bfe9d70bb7f044aba49bd99675813445f106dee6072da583f51008cb667f3a63"
+  }
+}
