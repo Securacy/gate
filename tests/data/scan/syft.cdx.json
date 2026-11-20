@@ -1,0 +1,624 @@
+{
+ "$schema": "http://cyclonedx.org/schema/bom-1.7.schema.json",
+ "bomFormat": "CycloneDX",
+ "specVersion": "1.7",
+ "serialNumber": "urn:uuid:81cc5b29-a0a8-491d-bdae-a7c0fab8dd91",
+ "version": 1,
+ "metadata": {
+  "timestamp": "2026-11-20T22:04:14+05:30",
+  "tools": {
+   "components": [
+    {
+     "type": "application",
+     "author": "anchore",
+     "name": "syft",
+     "version": "1.57.0"
+    }
+   ]
+  },
+  "component": {
+   "bom-ref": "af63bd4c8601b7f1",
+   "type": "file",
+   "name": "."
+  }
+ },
+ "components": [
+  {
+   "bom-ref": "pkg:github/actions/checkout@v4?package-id=7a90248adb65df86",
+   "type": "library",
+   "name": "actions/checkout",
+   "version": "v4",
+   "cpe": "cpe:2.3:a:actions\\/checkout:actions\\/checkout:v4:*:*:*:*:*:*:*",
+   "purl": "pkg:github/actions/checkout@v4",
+   "properties": [
+    {
+     "name": "syft:package:foundBy",
+     "value": "github-actions-usage-cataloger"
+    },
+    {
+     "name": "syft:package:type",
+     "value": "github-action"
+    },
+    {
+     "name": "syft:package:metadataType",
+     "value": "github-actions-use-statement"
+    },
+    {
+     "name": "syft:location:0:path",
+     "value": "/.github/workflows/deploy.yml"
+    }
+   ]
+  },
+  {
+   "bom-ref": "pkg:github/actions/checkout@v4?package-id=1510250ec9f54007",
+   "type": "library",
+   "name": "actions/checkout",
+   "version": "v4",
+   "cpe": "cpe:2.3:a:actions\\/checkout:actions\\/checkout:v4:*:*:*:*:*:*:*",
+   "purl": "pkg:github/actions/checkout@v4",
+   "properties": [
+    {
+     "name": "syft:package:foundBy",
+     "value": "github-actions-usage-cataloger"
+    },
+    {
+     "name": "syft:package:type",
+     "value": "github-action"
+    },
+    {
+     "name": "syft:package:metadataType",
+     "value": "github-actions-use-statement"
+    },
+    {
+     "name": "syft:location:0:path",
+     "value": "/.github/workflows/terraform-plan.yml"
+    }
+   ]
+  },
+  {
+   "bom-ref": "pkg:github/actions/github-script@v7?package-id=d4928f06a374d0ac",
+   "type": "library",
+   "name": "actions/github-script",
+   "version": "v7",
+   "cpe": "cpe:2.3:a:actions\\/github-script:actions\\/github-script:v7:*:*:*:*:*:*:*",
+   "purl": "pkg:github/actions/github-script@v7",
+   "properties": [
+    {
+     "name": "syft:package:foundBy",
+     "value": "github-actions-usage-cataloger"
+    },
+    {
+     "name": "syft:package:type",
+     "value": "github-action"
+    },
+    {
+     "name": "syft:package:metadataType",
+     "value": "github-actions-use-statement"
+    },
+    {
+     "name": "syft:cpe23",
+     "value": "cpe:2.3:a:actions\\/github-script:actions\\/github_script:v7:*:*:*:*:*:*:*"
+    },
+    {
+     "name": "syft:cpe23",
+     "value": "cpe:2.3:a:actions\\/github_script:actions\\/github-script:v7:*:*:*:*:*:*:*"
+    },
+    {
+     "name": "syft:cpe23",
+     "value": "cpe:2.3:a:actions\\/github_script:actions\\/github_script:v7:*:*:*:*:*:*:*"
+    },
+    {
+     "name": "syft:cpe23",
+     "value": "cpe:2.3:a:actions\\/github:actions\\/github-script:v7:*:*:*:*:*:*:*"
+    },
+    {
+     "name": "syft:cpe23",
+     "value": "cpe:2.3:a:actions\\/github:actions\\/github_script:v7:*:*:*:*:*:*:*"
+    },
+    {
+     "name": "syft:location:0:path",
+     "value": "/.github/workflows/terraform-plan.yml"
+    }
+   ]
+  },
+  {
+   "bom-ref": "pkg:github/aws-actions/configure-aws-credentials@v4?package-id=db03b18b76451181",
+   "type": "library",
+   "name": "aws-actions/configure-aws-credentials",
+   "version": "v4",
+   "cpe": "cpe:2.3:a:aws-actions\\/configure-aws-credentials:aws-actions\\/configure-aws-credentials:v4:*:*:*:*:*:*:*",
+   "purl": "pkg:github/aws-actions/configure-aws-credentials@v4",
+   "properties": [
+    {
+     "name": "syft:package:foundBy",
+     "value": "github-actions-usage-cataloger"
+    },
+    {
+     "name": "syft:package:type",
+     "value": "github-action"
+    },
+    {
+     "name": "syft:package:metadataType",
+     "value": "github-actions-use-statement"
+    },
+    {
+     "name": "syft:cpe23",
+     "value": "cpe:2.3:a:aws-actions\\/configure-aws-credentials:aws_actions\\/configure_aws_credentials:v4:*:*:*:*:*:*:*"
+    },
+    {
+     "name": "syft:cpe23",
+     "value": "cpe:2.3:a:aws_actions\\/configure_aws_credentials:aws-actions\\/configure-aws-credentials:v4:*:*:*:*:*:*:*"
+    },
+    {
+     "name": "syft:cpe23",
+     "value": "cpe:2.3:a:aws_actions\\/configure_aws_credentials:aws_actions\\/configure_aws_credentials:v4:*:*:*:*:*:*:*"
+    },
+    {
+     "name": "syft:cpe23",
+     "value": "cpe:2.3:a:aws-actions\\/configure-aws:aws-actions\\/configure-aws-credentials:v4:*:*:*:*:*:*:*"
+    },
+    {
+     "name": "syft:cpe23",
+     "value": "cpe:2.3:a:aws-actions\\/configure-aws:aws_actions\\/configure_aws_credentials:v4:*:*:*:*:*:*:*"
+    },
+    {
+     "name": "syft:cpe23",
+     "value": "cpe:2.3:a:aws_actions\\/configure_aws:aws-actions\\/configure-aws-credentials:v4:*:*:*:*:*:*:*"
+    },
+    {
+     "name": "syft:cpe23",
+     "value": "cpe:2.3:a:aws_actions\\/configure_aws:aws_actions\\/configure_aws_credentials:v4:*:*:*:*:*:*:*"
+    },
+    {
+     "name": "syft:cpe23",
+     "value": "cpe:2.3:a:aws-actions\\/configure:aws-actions\\/configure-aws-credentials:v4:*:*:*:*:*:*:*"
+    },
+    {
+     "name": "syft:cpe23",
+     "value": "cpe:2.3:a:aws-actions\\/configure:aws_actions\\/configure_aws_credentials:v4:*:*:*:*:*:*:*"
+    },
+    {
+     "name": "syft:cpe23",
+     "value": "cpe:2.3:a:aws_actions\\/configure:aws-actions\\/configure-aws-credentials:v4:*:*:*:*:*:*:*"
+    },
+    {
+     "name": "syft:cpe23",
+     "value": "cpe:2.3:a:aws_actions\\/configure:aws_actions\\/configure_aws_credentials:v4:*:*:*:*:*:*:*"
+    },
+    {
+     "name": "syft:cpe23",
+     "value": "cpe:2.3:a:aws:aws-actions\\/configure-aws-credentials:v4:*:*:*:*:*:*:*"
+    },
+    {
+     "name": "syft:cpe23",
+     "value": "cpe:2.3:a:aws:aws_actions\\/configure_aws_credentials:v4:*:*:*:*:*:*:*"
+    },
+    {
+     "name": "syft:location:0:path",
+     "value": "/.github/workflows/deploy.yml"
+    }
+   ]
+  },
+  {
+   "bom-ref": "pkg:github/aws-actions/configure-aws-credentials@v4?package-id=3b504735f6a87735",
+   "type": "library",
+   "name": "aws-actions/configure-aws-credentials",
+   "version": "v4",
+   "cpe": "cpe:2.3:a:aws-actions\\/configure-aws-credentials:aws-actions\\/configure-aws-credentials:v4:*:*:*:*:*:*:*",
+   "purl": "pkg:github/aws-actions/configure-aws-credentials@v4",
+   "properties": [
+    {
+     "name": "syft:package:foundBy",
+     "value": "github-actions-usage-cataloger"
+    },
+    {
+     "name": "syft:package:type",
+     "value": "github-action"
+    },
+    {
+     "name": "syft:package:metadataType",
+     "value": "github-actions-use-statement"
+    },
+    {
+     "name": "syft:cpe23",
+     "value": "cpe:2.3:a:aws-actions\\/configure-aws-credentials:aws_actions\\/configure_aws_credentials:v4:*:*:*:*:*:*:*"
+    },
+    {
+     "name": "syft:cpe23",
+     "value": "cpe:2.3:a:aws_actions\\/configure_aws_credentials:aws-actions\\/configure-aws-credentials:v4:*:*:*:*:*:*:*"
+    },
+    {
+     "name": "syft:cpe23",
+     "value": "cpe:2.3:a:aws_actions\\/configure_aws_credentials:aws_actions\\/configure_aws_credentials:v4:*:*:*:*:*:*:*"
+    },
+    {
+     "name": "syft:cpe23",
+     "value": "cpe:2.3:a:aws-actions\\/configure-aws:aws-actions\\/configure-aws-credentials:v4:*:*:*:*:*:*:*"
+    },
+    {
+     "name": "syft:cpe23",
+     "value": "cpe:2.3:a:aws-actions\\/configure-aws:aws_actions\\/configure_aws_credentials:v4:*:*:*:*:*:*:*"
+    },
+    {
+     "name": "syft:cpe23",
+     "value": "cpe:2.3:a:aws_actions\\/configure_aws:aws-actions\\/configure-aws-credentials:v4:*:*:*:*:*:*:*"
+    },
+    {
+     "name": "syft:cpe23",
+     "value": "cpe:2.3:a:aws_actions\\/configure_aws:aws_actions\\/configure_aws_credentials:v4:*:*:*:*:*:*:*"
+    },
+    {
+     "name": "syft:cpe23",
+     "value": "cpe:2.3:a:aws-actions\\/configure:aws-actions\\/configure-aws-credentials:v4:*:*:*:*:*:*:*"
+    },
+    {
+     "name": "syft:cpe23",
+     "value": "cpe:2.3:a:aws-actions\\/configure:aws_actions\\/configure_aws_credentials:v4:*:*:*:*:*:*:*"
+    },
+    {
+     "name": "syft:cpe23",
+     "value": "cpe:2.3:a:aws_actions\\/configure:aws-actions\\/configure-aws-credentials:v4:*:*:*:*:*:*:*"
+    },
+    {
+     "name": "syft:cpe23",
+     "value": "cpe:2.3:a:aws_actions\\/configure:aws_actions\\/configure_aws_credentials:v4:*:*:*:*:*:*:*"
+    },
+    {
+     "name": "syft:cpe23",
+     "value": "cpe:2.3:a:aws:aws-actions\\/configure-aws-credentials:v4:*:*:*:*:*:*:*"
+    },
+    {
+     "name": "syft:cpe23",
+     "value": "cpe:2.3:a:aws:aws_actions\\/configure_aws_credentials:v4:*:*:*:*:*:*:*"
+    },
+    {
+     "name": "syft:location:0:path",
+     "value": "/.github/workflows/terraform-plan.yml"
+    }
+   ]
+  },
+  {
+   "bom-ref": "pkg:npm/fixture-app@1.0.0?package-id=f232417aee3e71ee",
+   "type": "library",
+   "name": "fixture-app",
+   "version": "1.0.0",
+   "cpe": "cpe:2.3:a:fixture-app:fixture-app:1.0.0:*:*:*:*:*:*:*",
+   "purl": "pkg:npm/fixture-app@1.0.0",
+   "properties": [
+    {
+     "name": "syft:package:foundBy",
+     "value": "javascript-lock-cataloger"
+    },
+    {
+     "name": "syft:package:language",
+     "value": "javascript"
+    },
+    {
+     "name": "syft:package:type",
+     "value": "npm"
+    },
+    {
+     "name": "syft:package:metadataType",
+     "value": "javascript-npm-package-lock-entry"
+    },
+    {
+     "name": "syft:cpe23",
+     "value": "cpe:2.3:a:fixture-app:fixture_app:1.0.0:*:*:*:*:*:*:*"
+    },
+    {
+     "name": "syft:cpe23",
+     "value": "cpe:2.3:a:fixture_app:fixture-app:1.0.0:*:*:*:*:*:*:*"
+    },
+    {
+     "name": "syft:cpe23",
+     "value": "cpe:2.3:a:fixture_app:fixture_app:1.0.0:*:*:*:*:*:*:*"
+    },
+    {
+     "name": "syft:cpe23",
+     "value": "cpe:2.3:a:fixture:fixture-app:1.0.0:*:*:*:*:*:*:*"
+    },
+    {
+     "name": "syft:cpe23",
+     "value": "cpe:2.3:a:fixture:fixture_app:1.0.0:*:*:*:*:*:*:*"
+    },
+    {
+     "name": "syft:location:0:path",
+     "value": "/package-lock.json"
+    }
+   ]
+  },
+  {
+   "bom-ref": "pkg:github/hashicorp/setup-terraform@v3?package-id=4aad1c5f7239801a",
+   "type": "library",
+   "name": "hashicorp/setup-terraform",
+   "version": "v3",
+   "cpe": "cpe:2.3:a:hashicorp\\/setup-terraform:hashicorp\\/setup-terraform:v3:*:*:*:*:*:*:*",
+   "purl": "pkg:github/hashicorp/setup-terraform@v3",
+   "properties": [
+    {
+     "name": "syft:package:foundBy",
+     "value": "github-actions-usage-cataloger"
+    },
+    {
+     "name": "syft:package:type",
+     "value": "github-action"
+    },
+    {
+     "name": "syft:package:metadataType",
+     "value": "github-actions-use-statement"
+    },
+    {
+     "name": "syft:cpe23",
+     "value": "cpe:2.3:a:hashicorp\\/setup-terraform:hashicorp\\/setup_terraform:v3:*:*:*:*:*:*:*"
+    },
+    {
+     "name": "syft:cpe23",
+     "value": "cpe:2.3:a:hashicorp\\/setup_terraform:hashicorp\\/setup-terraform:v3:*:*:*:*:*:*:*"
+    },
+    {
+     "name": "syft:cpe23",
+     "value": "cpe:2.3:a:hashicorp\\/setup_terraform:hashicorp\\/setup_terraform:v3:*:*:*:*:*:*:*"
+    },
+    {
+     "name": "syft:cpe23",
+     "value": "cpe:2.3:a:hashicorp\\/setup:hashicorp\\/setup-terraform:v3:*:*:*:*:*:*:*"
+    },
+    {
+     "name": "syft:cpe23",
+     "value": "cpe:2.3:a:hashicorp\\/setup:hashicorp\\/setup_terraform:v3:*:*:*:*:*:*:*"
+    },
+    {
+     "name": "syft:location:0:path",
+     "value": "/.github/workflows/terraform-plan.yml"
+    }
+   ]
+  },
+  {
+   "bom-ref": "pkg:npm/lodash@4.17.20?package-id=8c42a92a78250355",
+   "type": "library",
+   "name": "lodash",
+   "version": "4.17.20",
+   "licenses": [
+    {
+     "license": {
+      "id": "MIT"
+     }
+    }
+   ],
+   "cpe": "cpe:2.3:a:lodash:lodash:4.17.20:*:*:*:*:node.js:*:*",
+   "purl": "pkg:npm/lodash@4.17.20",
+   "properties": [
+    {
+     "name": "syft:package:foundBy",
+     "value": "javascript-lock-cataloger"
+    },
+    {
+     "name": "syft:package:language",
+     "value": "javascript"
+    },
+    {
+     "name": "syft:package:type",
+     "value": "npm"
+    },
+    {
+     "name": "syft:package:metadataType",
+     "value": "javascript-npm-package-lock-entry"
+    },
+    {
+     "name": "syft:location:0:path",
+     "value": "/package-lock.json"
+    }
+   ]
+  },
+  {
+   "bom-ref": "pkg:pypi/pyyaml@5.3?package-id=fb05837ff0d809cd",
+   "type": "library",
+   "name": "pyyaml",
+   "version": "5.3",
+   "cpe": "cpe:2.3:a:python-pyyaml:python-pyyaml:5.3:*:*:*:*:*:*:*",
+   "purl": "pkg:pypi/pyyaml@5.3",
+   "properties": [
+    {
+     "name": "syft:package:foundBy",
+     "value": "python-package-cataloger"
+    },
+    {
+     "name": "syft:package:language",
+     "value": "python"
+    },
+    {
+     "name": "syft:package:type",
+     "value": "python"
+    },
+    {
+     "name": "syft:package:metadataType",
+     "value": "python-pip-requirements-entry"
+    },
+    {
+     "name": "syft:cpe23",
+     "value": "cpe:2.3:a:python-pyyaml:python_pyyaml:5.3:*:*:*:*:*:*:*"
+    },
+    {
+     "name": "syft:cpe23",
+     "value": "cpe:2.3:a:python_pyyaml:python-pyyaml:5.3:*:*:*:*:*:*:*"
+    },
+    {
+     "name": "syft:cpe23",
+     "value": "cpe:2.3:a:python_pyyaml:python_pyyaml:5.3:*:*:*:*:*:*:*"
+    },
+    {
+     "name": "syft:cpe23",
+     "value": "cpe:2.3:a:python-pyyaml:pyyaml:5.3:*:*:*:*:*:*:*"
+    },
+    {
+     "name": "syft:cpe23",
+     "value": "cpe:2.3:a:python:python-pyyaml:5.3:*:*:*:*:*:*:*"
+    },
+    {
+     "name": "syft:cpe23",
+     "value": "cpe:2.3:a:python:python_pyyaml:5.3:*:*:*:*:*:*:*"
+    },
+    {
+     "name": "syft:cpe23",
+     "value": "cpe:2.3:a:python_pyyaml:pyyaml:5.3:*:*:*:*:*:*:*"
+    },
+    {
+     "name": "syft:cpe23",
+     "value": "cpe:2.3:a:pyyaml:python-pyyaml:5.3:*:*:*:*:*:*:*"
+    },
+    {
+     "name": "syft:cpe23",
+     "value": "cpe:2.3:a:pyyaml:python_pyyaml:5.3:*:*:*:*:*:*:*"
+    },
+    {
+     "name": "syft:cpe23",
+     "value": "cpe:2.3:a:python:pyyaml:5.3:*:*:*:*:*:*:*"
+    },
+    {
+     "name": "syft:cpe23",
+     "value": "cpe:2.3:a:pyyaml:pyyaml:5.3:*:*:*:*:*:*:*"
+    },
+    {
+     "name": "syft:location:0:path",
+     "value": "/requirements.txt"
+    }
+   ]
+  },
+  {
+   "bom-ref": "pkg:pypi/requests@2.19.0?package-id=93a0daacc39c1a57",
+   "type": "library",
+   "name": "requests",
+   "version": "2.19.0",
+   "cpe": "cpe:2.3:a:python:requests:2.19.0:*:*:*:*:*:*:*",
+   "purl": "pkg:pypi/requests@2.19.0",
+   "properties": [
+    {
+     "name": "syft:package:foundBy",
+     "value": "python-package-cataloger"
+    },
+    {
+     "name": "syft:package:language",
+     "value": "python"
+    },
+    {
+     "name": "syft:package:type",
+     "value": "python"
+    },
+    {
+     "name": "syft:package:metadataType",
+     "value": "python-pip-requirements-entry"
+    },
+    {
+     "name": "syft:location:0:path",
+     "value": "/requirements.txt"
+    }
+   ]
+  },
+  {
+   "bom-ref": "pkg:npm/stripe@14.0.0?package-id=db41278002c7593e",
+   "type": "library",
+   "name": "stripe",
+   "version": "14.0.0",
+   "licenses": [
+    {
+     "license": {
+      "id": "MIT"
+     }
+    }
+   ],
+   "cpe": "cpe:2.3:a:stripe:stripe:14.0.0:*:*:*:*:*:*:*",
+   "purl": "pkg:npm/stripe@14.0.0",
+   "properties": [
+    {
+     "name": "syft:package:foundBy",
+     "value": "javascript-lock-cataloger"
+    },
+    {
+     "name": "syft:package:language",
+     "value": "javascript"
+    },
+    {
+     "name": "syft:package:type",
+     "value": "npm"
+    },
+    {
+     "name": "syft:package:metadataType",
+     "value": "javascript-npm-package-lock-entry"
+    },
+    {
+     "name": "syft:location:0:path",
+     "value": "/package-lock.json"
+    }
+   ]
+  },
+  {
+   "bom-ref": "a8993ed4bc0a831b",
+   "type": "file",
+   "name": "/.github/workflows/deploy.yml",
+   "hashes": [
+    {
+     "alg": "SHA-1",
+     "content": "09ba59ea040ac0f67c64f313513644721fb3a341"
+    },
+    {
+     "alg": "SHA-256",
+     "content": "d322dc486c633f3590c5537d625e79ce83bd5b3939f09e1a1a2f30356a752de6"
+    }
+   ]
+  },
+  {
+   "bom-ref": "eff8e567148f0f66",
+   "type": "file",
+   "name": "/.github/workflows/terraform-plan.yml",
+   "hashes": [
+    {
+     "alg": "SHA-1",
+     "content": "621920d51f07d5f42bd0baa62eed36d8ec1c5b6f"
+    },
+    {
+     "alg": "SHA-256",
+     "content": "dd071f5d31244e81ee2f7086e8f992ff7504c768d3c2e89b31154a875ce825f4"
+    }
+   ]
+  },
+  {
+   "bom-ref": "fd71c2238fc07657",
+   "type": "file",
+   "name": "/package-lock.json",
+   "hashes": [
+    {
+     "alg": "SHA-1",
+     "content": "20525aa2b8e1be04e09fb6fbefa113de5be498e1"
+    },
+    {
+     "alg": "SHA-256",
+     "content": "4b08156a45ce23f52114204efc3ac3eb2bf6766bde643248ed86b172f7a3cd0e"
+    }
+   ]
+  },
+  {
+   "bom-ref": "26ca2b7dc025d550",
+   "type": "file",
+   "name": "/requirements.txt",
+   "hashes": [
+    {
+     "alg": "SHA-1",
+     "content": "6c48034d7cdb715ff4cf68891c943977cd13879c"
+    },
+    {
+     "alg": "SHA-256",
+     "content": "1671f1676d27a96ce93a08d1117cb2d006e8cbd94b67e0e73354f2db2e88f008"
+    }
+   ]
+  }
+ ],
+ "dependencies": [
+  {
+   "ref": "pkg:npm/fixture-app@1.0.0?package-id=f232417aee3e71ee",
+   "dependsOn": [
+    "pkg:npm/lodash@4.17.20?package-id=8c42a92a78250355",
+    "pkg:npm/stripe@14.0.0?package-id=db41278002c7593e"
+   ]
+  }
+ ]
+}

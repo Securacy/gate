@@ -1,0 +1,18 @@
+{"matches": [
+  {"vulnerability": {"id": "GHSA-35jh-r3h4-6jhm", "dataSource": "https://github.com/advisories/GHSA-35jh-r3h4-6jhm", "namespace": "github:language:javascript",
+    "severity": "High", "urls": [], "description": "Command Injection in lodash",
+    "cvss": [{"version": "3.1", "vector": "CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:H/I:H/A:H", "metrics": {"baseScore": 7.2, "exploitabilityScore": 1.2, "impactScore": 5.9}}],
+    "fix": {"versions": ["4.17.21"], "state": "fixed"}, "advisories": []},
+   "relatedVulnerabilities": [{"id": "CVE-2021-23337", "dataSource": "https://nvd.nist.gov/vuln/detail/CVE-2021-23337", "namespace": "nvd:cpe", "severity": "High"}],
+   "matchDetails": [],
+   "artifact": {"id": "8c42a92a78250355", "name": "lodash", "version": "4.17.20", "type": "npm", "locations": [{"path": "/package-lock.json"}],
+    "language": "javascript", "licenses": ["MIT"], "cpes": [], "purl": "pkg:npm/lodash@4.17.20", "upstreams": []}},
+  {"vulnerability": {"id": "CVE-2020-14343", "namespace": "nvd:cpe", "severity": "Critical",
+    "cvss": [{"version": "3.1", "metrics": {"baseScore": 9.8}}], "fix": {"versions": [], "state": "unknown"}},
+   "relatedVulnerabilities": [{"id": "GHSA-8q59-q68h-6hv4"}],
+   "artifact": {"name": "pyyaml", "version": "5.3", "type": "python", "locations": [{"path": "/requirements.txt"}], "purl": "pkg:pypi/pyyaml@5.3"}},
+  {"vulnerability": {"id": "MAL-2025-9999", "namespace": "github:language:javascript", "severity": "Negligible", "fix": {"versions": [], "state": "not-fixed"}},
+   "relatedVulnerabilities": [],
+   "artifact": {"name": "evil-pkg", "version": "1.0.0", "type": "npm", "purl": "pkg:npm/evil-pkg@1.0.0"}}
+ ],
+ "source": {"type": "sbom"}, "descriptor": {"name": "grype", "version": "0.121.2"}}

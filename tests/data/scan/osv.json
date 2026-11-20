@@ -1,0 +1,6716 @@
+{
+ "results": [
+  {
+   "source": {
+    "path": "/github/workspace/package-lock.json",
+    "type": "lockfile"
+   },
+   "packages": [
+    {
+     "package": {
+      "name": "lodash",
+      "version": "4.17.20",
+      "ecosystem": "npm",
+      "purl": "pkg:npm/lodash@4.17.20?source=PUBLIC_REGISTRY"
+     },
+     "groups": [
+      {
+       "ids": [
+        "GHSA-29mw-wpgm-hmr9"
+       ],
+       "aliases": [
+        "CVE-2020-28500",
+        "GHSA-29mw-wpgm-hmr9"
+       ],
+       "max_severity": "5.3"
+      },
+      {
+       "ids": [
+        "GHSA-35jh-r3h4-6jhm"
+       ],
+       "aliases": [
+        "CVE-2021-23337",
+        "GHSA-35jh-r3h4-6jhm"
+       ],
+       "max_severity": "7.2"
+      },
+      {
+       "ids": [
+        "GHSA-r5fr-rjxr-66jc"
+       ],
+       "aliases": [
+        "CVE-2026-4800",
+        "GHSA-r5fr-rjxr-66jc"
+       ],
+       "max_severity": "8.1"
+      },
+      {
+       "ids": [
+        "GHSA-xxjr-mmjv-4gpg"
+       ],
+       "aliases": [
+        "CVE-2025-13465",
+        "GHSA-xxjr-mmjv-4gpg"
+       ],
+       "max_severity": "6.9"
+      }
+     ],
+     "vulnerabilities": [
+      {
+       "affected": [
+        {
+         "database_specific": {
+          "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2022/01/GHSA-29mw-wpgm-hmr9/GHSA-29mw-wpgm-hmr9.json"
+         },
+         "package": {
+          "ecosystem": "npm",
+          "name": "lodash",
+          "purl": "pkg:npm/lodash"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "4.0.0"
+            },
+            {
+             "fixed": "4.17.21"
+            }
+           ],
+           "type": "SEMVER"
+          }
+         ]
+        },
+        {
+         "database_specific": {
+          "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2022/01/GHSA-29mw-wpgm-hmr9/GHSA-29mw-wpgm-hmr9.json"
+         },
+         "package": {
+          "ecosystem": "npm",
+          "name": "lodash-es",
+          "purl": "pkg:npm/lodash-es"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "4.0.0"
+            },
+            {
+             "fixed": "4.17.21"
+            }
+           ],
+           "type": "SEMVER"
+          }
+         ]
+        },
+        {
+         "database_specific": {
+          "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2022/01/GHSA-29mw-wpgm-hmr9/GHSA-29mw-wpgm-hmr9.json"
+         },
+         "package": {
+          "ecosystem": "npm",
+          "name": "lodash.trimend",
+          "purl": "pkg:npm/lodash.trimend"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "4.0.0"
+            },
+            {
+             "last_affected": "4.5.1"
+            }
+           ],
+           "type": "SEMVER"
+          }
+         ]
+        },
+        {
+         "database_specific": {
+          "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2022/01/GHSA-29mw-wpgm-hmr9/GHSA-29mw-wpgm-hmr9.json"
+         },
+         "package": {
+          "ecosystem": "npm",
+          "name": "lodash.trim",
+          "purl": "pkg:npm/lodash.trim"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "4.0.0"
+            },
+            {
+             "last_affected": "4.5.1"
+            }
+           ],
+           "type": "SEMVER"
+          }
+         ]
+        },
+        {
+         "database_specific": {
+          "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2022/01/GHSA-29mw-wpgm-hmr9/GHSA-29mw-wpgm-hmr9.json"
+         },
+         "package": {
+          "ecosystem": "RubyGems",
+          "name": "lodash-rails",
+          "purl": "pkg:gem/lodash-rails"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "4.0.0"
+            },
+            {
+             "fixed": "4.17.21"
+            }
+           ],
+           "type": "ECOSYSTEM"
+          }
+         ],
+         "versions": [
+          "4.0.0",
+          "4.11.2",
+          "4.12.0",
+          "4.13.1",
+          "4.14.1",
+          "4.15.0",
+          "4.16.1",
+          "4.16.3",
+          "4.16.4",
+          "4.16.6",
+          "4.17.10",
+          "4.17.11",
+          "4.17.14",
+          "4.17.15",
+          "4.17.2",
+          "4.17.4",
+          "4.17.5",
+          "4.3.0",
+          "4.5.1",
+          "4.6.1"
+         ]
+        }
+       ],
+       "aliases": [
+        "CVE-2020-28500"
+       ],
+       "database_specific": {
+        "cwe_ids": [
+         "CWE-1333",
+         "CWE-400"
+        ],
+        "github_reviewed": true,
+        "github_reviewed_at": "2021-03-19T22:45:28Z",
+        "nvd_published_at": "2021-02-15T11:15:00Z",
+        "severity": "MODERATE"
+       },
+       "id": "GHSA-29mw-wpgm-hmr9",
+       "modified": "2025-09-29T21:12:31.102523Z",
+       "published": "2022-01-06T20:30:46Z",
+       "schema_version": "1.9.0",
+       "severity": [
+        {
+         "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L",
+         "type": "CVSS_V3"
+        }
+       ]
+      },
+      {
+       "affected": [
+        {
+         "database_specific": {
+          "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2021/05/GHSA-35jh-r3h4-6jhm/GHSA-35jh-r3h4-6jhm.json"
+         },
+         "package": {
+          "ecosystem": "npm",
+          "name": "lodash",
+          "purl": "pkg:npm/lodash"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "0"
+            },
+            {
+             "fixed": "4.17.21"
+            }
+           ],
+           "type": "SEMVER"
+          }
+         ]
+        },
+        {
+         "database_specific": {
+          "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2021/05/GHSA-35jh-r3h4-6jhm/GHSA-35jh-r3h4-6jhm.json"
+         },
+         "package": {
+          "ecosystem": "npm",
+          "name": "lodash-es",
+          "purl": "pkg:npm/lodash-es"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "0"
+            },
+            {
+             "fixed": "4.17.21"
+            }
+           ],
+           "type": "SEMVER"
+          }
+         ]
+        },
+        {
+         "database_specific": {
+          "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2021/05/GHSA-35jh-r3h4-6jhm/GHSA-35jh-r3h4-6jhm.json"
+         },
+         "package": {
+          "ecosystem": "npm",
+          "name": "lodash.template",
+          "purl": "pkg:npm/lodash.template"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "0"
+            },
+            {
+             "last_affected": "4.5.0"
+            }
+           ],
+           "type": "SEMVER"
+          }
+         ]
+        },
+        {
+         "database_specific": {
+          "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2021/05/GHSA-35jh-r3h4-6jhm/GHSA-35jh-r3h4-6jhm.json"
+         },
+         "package": {
+          "ecosystem": "npm",
+          "name": "lodash-template",
+          "purl": "pkg:npm/lodash-template"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "0"
+            },
+            {
+             "last_affected": "1.0.0"
+            }
+           ],
+           "type": "SEMVER"
+          }
+         ]
+        },
+        {
+         "database_specific": {
+          "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2021/05/GHSA-35jh-r3h4-6jhm/GHSA-35jh-r3h4-6jhm.json"
+         },
+         "package": {
+          "ecosystem": "RubyGems",
+          "name": "lodash-rails",
+          "purl": "pkg:gem/lodash-rails"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "0"
+            },
+            {
+             "fixed": "4.17.21"
+            }
+           ],
+           "type": "ECOSYSTEM"
+          }
+         ],
+         "versions": [
+          "0.10.0",
+          "0.7.0",
+          "0.8.1",
+          "0.8.2",
+          "0.9.0",
+          "0.9.1",
+          "0.9.2",
+          "1.0.0.rc.1",
+          "1.0.0.rc.2",
+          "1.0.0.rc.3",
+          "1.0.1",
+          "1.1.0",
+          "1.1.1",
+          "1.2.0",
+          "1.2.1",
+          "1.3.1",
+          "2.0.0",
+          "2.1.0",
+          "2.2.0",
+          "2.2.1",
+          "2.3.0",
+          "2.4.0",
+          "2.4.1",
+          "3.1.0",
+          "3.10.0",
+          "3.10.1",
+          "3.2.0",
+          "3.3.0",
+          "3.3.1",
+          "3.3.1.1",
+          "3.4.0",
+          "3.5.0",
+          "3.6.0",
+          "3.7.0",
+          "3.9.3",
+          "4.0.0",
+          "4.11.2",
+          "4.12.0",
+          "4.13.1",
+          "4.14.1",
+          "4.15.0",
+          "4.16.1",
+          "4.16.3",
+          "4.16.4",
+          "4.16.6",
+          "4.17.10",
+          "4.17.11",
+          "4.17.14",
+          "4.17.15",
+          "4.17.2",
+          "4.17.4",
+          "4.17.5",
+          "4.3.0",
+          "4.5.1",
+          "4.6.1"
+         ]
+        }
+       ],
+       "aliases": [
+        "CVE-2021-23337"
+       ],
+       "database_specific": {
+        "cwe_ids": [
+         "CWE-77",
+         "CWE-94"
+        ],
+        "github_reviewed": true,
+        "github_reviewed_at": "2021-03-31T23:59:26Z",
+        "nvd_published_at": "2021-02-15T13:15:00Z",
+        "severity": "HIGH"
+       },
+       "id": "GHSA-35jh-r3h4-6jhm",
+       "modified": "2026-10-17T02:55:38.085813876Z",
+       "published": "2021-05-06T16:05:51Z",
+       "schema_version": "1.9.0",
+       "severity": [
+        {
+         "score": "CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:H/I:H/A:H",
+         "type": "CVSS_V3"
+        }
+       ]
+      },
+      {
+       "affected": [
+        {
+         "database_specific": {
+          "last_known_affected_version_range": "<= 4.17.23",
+          "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2026/04/GHSA-r5fr-rjxr-66jc/GHSA-r5fr-rjxr-66jc.json"
+         },
+         "package": {
+          "ecosystem": "npm",
+          "name": "lodash",
+          "purl": "pkg:npm/lodash"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "4.0.0"
+            },
+            {
+             "fixed": "4.18.0"
+            }
+           ],
+           "type": "SEMVER"
+          }
+         ]
+        },
+        {
+         "database_specific": {
+          "last_known_affected_version_range": "<= 4.17.23",
+          "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2026/04/GHSA-r5fr-rjxr-66jc/GHSA-r5fr-rjxr-66jc.json"
+         },
+         "package": {
+          "ecosystem": "npm",
+          "name": "lodash-es",
+          "purl": "pkg:npm/lodash-es"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "4.0.0"
+            },
+            {
+             "fixed": "4.18.0"
+            }
+           ],
+           "type": "SEMVER"
+          }
+         ]
+        },
+        {
+         "database_specific": {
+          "last_known_affected_version_range": "<= 4.17.23",
+          "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2026/04/GHSA-r5fr-rjxr-66jc/GHSA-r5fr-rjxr-66jc.json"
+         },
+         "package": {
+          "ecosystem": "npm",
+          "name": "lodash-amd",
+          "purl": "pkg:npm/lodash-amd"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "4.0.0"
+            },
+            {
+             "fixed": "4.18.0"
+            }
+           ],
+           "type": "SEMVER"
+          }
+         ]
+        },
+        {
+         "database_specific": {
+          "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2026/04/GHSA-r5fr-rjxr-66jc/GHSA-r5fr-rjxr-66jc.json"
+         },
+         "package": {
+          "ecosystem": "npm",
+          "name": "lodash.template",
+          "purl": "pkg:npm/lodash.template"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "4.0.0"
+            },
+            {
+             "fixed": "4.18.0"
+            }
+           ],
+           "type": "SEMVER"
+          }
+         ]
+        }
+       ],
+       "aliases": [
+        "CVE-2026-4800"
+       ],
+       "database_specific": {
+        "cwe_ids": [
+         "CWE-94"
+        ],
+        "github_reviewed": true,
+        "github_reviewed_at": "2026-04-01T23:51:12Z",
+        "nvd_published_at": "2026-03-31T20:16:29Z",
+        "severity": "HIGH"
+       },
+       "id": "GHSA-r5fr-rjxr-66jc",
+       "modified": "2026-10-17T02:56:15.633068434Z",
+       "published": "2026-04-01T23:51:12Z",
+       "schema_version": "1.9.0",
+       "severity": [
+        {
+         "score": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H",
+         "type": "CVSS_V3"
+        }
+       ]
+      },
+      {
+       "affected": [
+        {
+         "database_specific": {
+          "last_known_affected_version_range": "<= 4.17.22",
+          "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2026/01/GHSA-xxjr-mmjv-4gpg/GHSA-xxjr-mmjv-4gpg.json"
+         },
+         "package": {
+          "ecosystem": "npm",
+          "name": "lodash",
+          "purl": "pkg:npm/lodash"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "4.0.0"
+            },
+            {
+             "fixed": "4.17.23"
+            }
+           ],
+           "type": "SEMVER"
+          }
+         ]
+        },
+        {
+         "database_specific": {
+          "last_known_affected_version_range": "<= 4.17.22",
+          "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2026/01/GHSA-xxjr-mmjv-4gpg/GHSA-xxjr-mmjv-4gpg.json"
+         },
+         "package": {
+          "ecosystem": "npm",
+          "name": "lodash-amd",
+          "purl": "pkg:npm/lodash-amd"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "4.0.0"
+            },
+            {
+             "fixed": "4.17.23"
+            }
+           ],
+           "type": "SEMVER"
+          }
+         ]
+        },
+        {
+         "database_specific": {
+          "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2026/01/GHSA-xxjr-mmjv-4gpg/GHSA-xxjr-mmjv-4gpg.json"
+         },
+         "package": {
+          "ecosystem": "npm",
+          "name": "lodash-es",
+          "purl": "pkg:npm/lodash-es"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "4.0.0"
+            },
+            {
+             "fixed": "4.17.23"
+            }
+           ],
+           "type": "SEMVER"
+          }
+         ]
+        },
+        {
+         "database_specific": {
+          "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2026/01/GHSA-xxjr-mmjv-4gpg/GHSA-xxjr-mmjv-4gpg.json"
+         },
+         "package": {
+          "ecosystem": "npm",
+          "name": "lodash.omit",
+          "purl": "pkg:npm/lodash.omit"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "4.0.0"
+            },
+            {
+             "fixed": "4.18.0"
+            }
+           ],
+           "type": "SEMVER"
+          }
+         ]
+        },
+        {
+         "database_specific": {
+          "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2026/01/GHSA-xxjr-mmjv-4gpg/GHSA-xxjr-mmjv-4gpg.json"
+         },
+         "package": {
+          "ecosystem": "npm",
+          "name": "lodash.unset",
+          "purl": "pkg:npm/lodash.unset"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "4.0.0"
+            },
+            {
+             "fixed": "4.18.0"
+            }
+           ],
+           "type": "SEMVER"
+          }
+         ]
+        }
+       ],
+       "aliases": [
+        "CVE-2025-13465"
+       ],
+       "database_specific": {
+        "cwe_ids": [
+         "CWE-1321"
+        ],
+        "github_reviewed": true,
+        "github_reviewed_at": "2026-01-21T23:01:22Z",
+        "nvd_published_at": "2026-01-21T20:16:05Z",
+        "severity": "MODERATE"
+       },
+       "id": "GHSA-xxjr-mmjv-4gpg",
+       "modified": "2026-11-04T03:15:10.832238351Z",
+       "published": "2026-01-21T23:01:22Z",
+       "schema_version": "1.9.2",
+       "severity": [
+        {
+         "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:L",
+         "type": "CVSS_V3"
+        },
+        {
+         "score": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:N/VI:L/VA:L/SC:H/SI:H/SA:H/E:P",
+         "type": "CVSS_V4"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "source": {
+    "path": "/github/workspace/requirements.txt",
+    "type": "lockfile"
+   },
+   "packages": [
+    {
+     "package": {
+      "name": "pyyaml",
+      "version": "5.3.0",
+      "ecosystem": "PyPI",
+      "purl": "pkg:pypi/pyyaml@5.3.0"
+     },
+     "groups": [
+      {
+       "ids": [
+        "PYSEC-2020-96",
+        "GHSA-6757-jp84-gxfx"
+       ],
+       "aliases": [
+        "CVE-2020-1747",
+        "GHSA-6757-jp84-gxfx",
+        "PYSEC-2020-96"
+       ],
+       "max_severity": "9.8"
+      },
+      {
+       "ids": [
+        "PYSEC-2021-142",
+        "GHSA-8q59-q68h-6hv4"
+       ],
+       "aliases": [
+        "CVE-2020-14343",
+        "GHSA-8q59-q68h-6hv4",
+        "PYSEC-2021-142"
+       ],
+       "max_severity": "9.8"
+      }
+     ],
+     "vulnerabilities": [
+      {
+       "affected": [
+        {
+         "database_specific": {
+          "source": "https://github.com/pypa/advisory-database/blob/main/vulns/pyyaml/PYSEC-2020-96.yaml"
+         },
+         "package": {
+          "ecosystem": "PyPI",
+          "name": "pyyaml",
+          "purl": "pkg:pypi/pyyaml"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "5.1"
+            },
+            {
+             "fixed": "5.3.1"
+            }
+           ],
+           "type": "ECOSYSTEM"
+          }
+         ],
+         "versions": [
+          "5.1",
+          "5.1.1",
+          "5.1.2",
+          "5.2b1",
+          "5.2",
+          "5.3b1",
+          "5.3"
+         ]
+        }
+       ],
+       "aliases": [
+        "CVE-2020-1747",
+        "GHSA-6757-jp84-gxfx"
+       ],
+       "id": "PYSEC-2020-96",
+       "modified": "2026-05-04T08:57:14.897560893Z",
+       "published": "2020-03-24T15:15:00Z",
+       "schema_version": "1.7.5"
+      },
+      {
+       "affected": [
+        {
+         "database_specific": {
+          "source": "https://github.com/pypa/advisory-database/blob/main/vulns/pyyaml/PYSEC-2021-142.yaml"
+         },
+         "package": {
+          "ecosystem": "PyPI",
+          "name": "pyyaml",
+          "purl": "pkg:pypi/pyyaml"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "0"
+            },
+            {
+             "fixed": "5.4"
+            }
+           ],
+           "type": "ECOSYSTEM"
+          }
+         ],
+         "versions": [
+          "3.01",
+          "3.02",
+          "3.03",
+          "3.04",
+          "3.05",
+          "3.06",
+          "3.07",
+          "3.08",
+          "3.09",
+          "3.10",
+          "3.11",
+          "3.12",
+          "3.13",
+          "3.13b1",
+          "3.13rc1",
+          "4.2b1",
+          "4.2b2",
+          "4.2b4",
+          "5.1",
+          "5.1.1",
+          "5.1.2",
+          "5.1b1",
+          "5.1b3",
+          "5.1b5",
+          "5.1b7",
+          "5.2",
+          "5.2b1",
+          "5.3",
+          "5.3.1",
+          "5.3b1",
+          "5.4b1",
+          "5.4b2"
+         ]
+        }
+       ],
+       "aliases": [
+        "CVE-2020-14343",
+        "GHSA-8q59-q68h-6hv4"
+       ],
+       "id": "PYSEC-2021-142",
+       "modified": "2023-11-08T04:02:26.414885Z",
+       "published": "2021-02-09T21:15:00Z",
+       "schema_version": "1.7.3"
+      },
+      {
+       "affected": [
+        {
+         "database_specific": {
+          "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2021/04/GHSA-6757-jp84-gxfx/GHSA-6757-jp84-gxfx.json"
+         },
+         "package": {
+          "ecosystem": "PyPI",
+          "name": "pyyaml",
+          "purl": "pkg:pypi/pyyaml"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "5.1b7"
+            },
+            {
+             "fixed": "5.3.1"
+            }
+           ],
+           "type": "ECOSYSTEM"
+          }
+         ],
+         "versions": [
+          "5.1",
+          "5.1.1",
+          "5.1.2",
+          "5.1b7",
+          "5.2",
+          "5.2b1",
+          "5.3",
+          "5.3b1"
+         ]
+        }
+       ],
+       "aliases": [
+        "CVE-2020-1747",
+        "PYSEC-2020-96"
+       ],
+       "database_specific": {
+        "cwe_ids": [
+         "CWE-20"
+        ],
+        "github_reviewed": true,
+        "github_reviewed_at": "2021-04-07T22:29:00Z",
+        "nvd_published_at": "2020-03-24T15:15:00Z",
+        "severity": "CRITICAL"
+       },
+       "id": "GHSA-6757-jp84-gxfx",
+       "modified": "2026-05-04T08:57:14.897560893Z",
+       "published": "2021-04-20T16:14:24Z",
+       "schema_version": "1.9.0",
+       "severity": [
+        {
+         "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+         "type": "CVSS_V3"
+        },
+        {
+         "score": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N",
+         "type": "CVSS_V4"
+        }
+       ]
+      },
+      {
+       "affected": [
+        {
+         "database_specific": {
+          "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2021/03/GHSA-8q59-q68h-6hv4/GHSA-8q59-q68h-6hv4.json"
+         },
+         "package": {
+          "ecosystem": "PyPI",
+          "name": "pyyaml",
+          "purl": "pkg:pypi/pyyaml"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "0"
+            },
+            {
+             "fixed": "5.4"
+            }
+           ],
+           "type": "ECOSYSTEM"
+          }
+         ],
+         "versions": [
+          "3.01",
+          "3.02",
+          "3.03",
+          "3.04",
+          "3.05",
+          "3.06",
+          "3.07",
+          "3.08",
+          "3.09",
+          "3.10",
+          "3.11",
+          "3.12",
+          "3.13",
+          "3.13b1",
+          "3.13rc1",
+          "4.2b1",
+          "4.2b2",
+          "4.2b4",
+          "5.1",
+          "5.1.1",
+          "5.1.2",
+          "5.1b1",
+          "5.1b3",
+          "5.1b5",
+          "5.1b7",
+          "5.2",
+          "5.2b1",
+          "5.3",
+          "5.3.1",
+          "5.3b1",
+          "5.4b1",
+          "5.4b2"
+         ]
+        }
+       ],
+       "aliases": [
+        "CVE-2020-14343",
+        "PYSEC-2021-142"
+       ],
+       "database_specific": {
+        "cwe_ids": [
+         "CWE-20"
+        ],
+        "github_reviewed": true,
+        "github_reviewed_at": "2021-03-25T21:15:23Z",
+        "nvd_published_at": "2021-02-09T21:15:00Z",
+        "severity": "CRITICAL"
+       },
+       "id": "GHSA-8q59-q68h-6hv4",
+       "modified": "2026-02-04T03:33:10.792778Z",
+       "published": "2021-03-25T21:26:26Z",
+       "related": [
+        "CVE-2026-24009"
+       ],
+       "schema_version": "1.9.0",
+       "severity": [
+        {
+         "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+         "type": "CVSS_V3"
+        },
+        {
+         "score": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N",
+         "type": "CVSS_V4"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "package": {
+      "name": "requests",
+      "version": "2.19.0",
+      "ecosystem": "PyPI",
+      "purl": "pkg:pypi/requests@2.19.0"
+     },
+     "groups": [
+      {
+       "ids": [
+        "PYSEC-2018-28",
+        "GHSA-x84v-xcm2-53pg"
+       ],
+       "aliases": [
+        "CVE-2018-18074",
+        "GHSA-x84v-xcm2-53pg",
+        "PYSEC-2018-28"
+       ],
+       "max_severity": "7.5"
+      },
+      {
+       "ids": [
+        "PYSEC-2023-74",
+        "GHSA-j8r2-6x86-q33q"
+       ],
+       "aliases": [
+        "CVE-2023-32681",
+        "GHSA-j8r2-6x86-q33q",
+        "PYSEC-2023-74"
+       ],
+       "max_severity": "6.1"
+      },
+      {
+       "ids": [
+        "PYSEC-2026-1872",
+        "GHSA-9hjg-9r4m-mvj7"
+       ],
+       "aliases": [
+        "CVE-2024-47081",
+        "GHSA-9hjg-9r4m-mvj7",
+        "PYSEC-2026-1872"
+       ],
+       "max_severity": "5.3"
+      },
+      {
+       "ids": [
+        "PYSEC-2026-1873",
+        "GHSA-9wx4-h78v-vm56"
+       ],
+       "aliases": [
+        "CVE-2024-35195",
+        "GHSA-9wx4-h78v-vm56",
+        "PYSEC-2026-1873"
+       ],
+       "max_severity": "5.6"
+      },
+      {
+       "ids": [
+        "PYSEC-2026-2275",
+        "GHSA-gc5v-m9x4-r6x2"
+       ],
+       "aliases": [
+        "CVE-2026-25645",
+        "GHSA-gc5v-m9x4-r6x2",
+        "PYSEC-2026-2275"
+       ],
+       "max_severity": "5.5"
+      }
+     ],
+     "vulnerabilities": [
+      {
+       "affected": [
+        {
+         "database_specific": {
+          "source": "https://github.com/pypa/advisory-database/blob/main/vulns/requests/PYSEC-2018-28.yaml"
+         },
+         "package": {
+          "ecosystem": "PyPI",
+          "name": "requests",
+          "purl": "pkg:pypi/requests"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "0"
+            },
+            {
+             "fixed": "c45d7c49ea75133e52ab22a8e9e13173938e36ff"
+            }
+           ],
+           "repo": "https://github.com/requests/requests",
+           "type": "GIT"
+          },
+          {
+           "events": [
+            {
+             "introduced": "0"
+            },
+            {
+             "fixed": "2.20.0"
+            }
+           ],
+           "type": "ECOSYSTEM"
+          }
+         ],
+         "versions": [
+          "0.0.1",
+          "0.10.0",
+          "0.10.1",
+          "0.10.2",
+          "0.10.3",
+          "0.10.4",
+          "0.10.6",
+          "0.10.7",
+          "0.10.8",
+          "0.11.1",
+          "0.11.2",
+          "0.12.0",
+          "0.12.01",
+          "0.12.1",
+          "0.13.0",
+          "0.13.1",
+          "0.13.2",
+          "0.13.3",
+          "0.13.4",
+          "0.13.5",
+          "0.13.6",
+          "0.13.7",
+          "0.13.8",
+          "0.13.9",
+          "0.14.0",
+          "0.14.1",
+          "0.14.2",
+          "0.2.0",
+          "0.2.1",
+          "0.2.2",
+          "0.2.3",
+          "0.2.4",
+          "0.3.0",
+          "0.3.1",
+          "0.3.2",
+          "0.3.3",
+          "0.3.4",
+          "0.4.0",
+          "0.4.1",
+          "0.5.0",
+          "0.5.1",
+          "0.6.0",
+          "0.6.1",
+          "0.6.2",
+          "0.6.3",
+          "0.6.4",
+          "0.6.5",
+          "0.6.6",
+          "0.7.0",
+          "0.7.1",
+          "0.7.2",
+          "0.7.3",
+          "0.7.4",
+          "0.7.5",
+          "0.7.6",
+          "0.8.0",
+          "0.8.1",
+          "0.8.2",
+          "0.8.3",
+          "0.8.4",
+          "0.8.5",
+          "0.8.6",
+          "0.8.7",
+          "0.8.8",
+          "0.8.9",
+          "0.9.0",
+          "0.9.1",
+          "0.9.2",
+          "0.9.3",
+          "1.0.0",
+          "1.0.1",
+          "1.0.2",
+          "1.0.3",
+          "1.0.4",
+          "1.1.0",
+          "1.2.0",
+          "1.2.1",
+          "1.2.2",
+          "1.2.3",
+          "2.0.0",
+          "2.0.1",
+          "2.1.0",
+          "2.10.0",
+          "2.11.0",
+          "2.11.1",
+          "2.12.0",
+          "2.12.1",
+          "2.12.2",
+          "2.12.3",
+          "2.12.4",
+          "2.12.5",
+          "2.13.0",
+          "2.14.0",
+          "2.14.1",
+          "2.14.2",
+          "2.15.0",
+          "2.15.1",
+          "2.16.0",
+          "2.16.1",
+          "2.16.2",
+          "2.16.3",
+          "2.16.4",
+          "2.16.5",
+          "2.17.0",
+          "2.17.1",
+          "2.17.2",
+          "2.17.3",
+          "2.18.0",
+          "2.18.1",
+          "2.18.2",
+          "2.18.3",
+          "2.18.4",
+          "2.19.0",
+          "2.19.1",
+          "2.2.0",
+          "2.2.1",
+          "2.3.0",
+          "2.4.0",
+          "2.4.1",
+          "2.4.2",
+          "2.4.3",
+          "2.5.0",
+          "2.5.1",
+          "2.5.2",
+          "2.5.3",
+          "2.6.0",
+          "2.6.1",
+          "2.6.2",
+          "2.7.0",
+          "2.8.0",
+          "2.8.1",
+          "2.9.0",
+          "2.9.1",
+          "2.9.2"
+         ]
+        }
+       ],
+       "aliases": [
+        "CVE-2018-18074",
+        "GHSA-x84v-xcm2-53pg"
+       ],
+       "id": "PYSEC-2018-28",
+       "modified": "2023-11-08T04:00:04.815794Z",
+       "published": "2018-10-09T17:29:00Z",
+       "schema_version": "1.7.3"
+      },
+      {
+       "affected": [
+        {
+         "database_specific": {
+          "source": "https://github.com/pypa/advisory-database/blob/main/vulns/requests/PYSEC-2023-74.yaml"
+         },
+         "package": {
+          "ecosystem": "PyPI",
+          "name": "requests",
+          "purl": "pkg:pypi/requests"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "0"
+            },
+            {
+             "fixed": "74ea7cf7a6a27a4eeb2ae24e162bcc942a6706d5"
+            }
+           ],
+           "repo": "https://github.com/psf/requests",
+           "type": "GIT"
+          },
+          {
+           "events": [
+            {
+             "introduced": "2.3.0"
+            },
+            {
+             "fixed": "2.31.0"
+            }
+           ],
+           "type": "ECOSYSTEM"
+          }
+         ],
+         "versions": [
+          "2.10.0",
+          "2.11.0",
+          "2.11.1",
+          "2.12.0",
+          "2.12.1",
+          "2.12.2",
+          "2.12.3",
+          "2.12.4",
+          "2.12.5",
+          "2.13.0",
+          "2.14.0",
+          "2.14.1",
+          "2.14.2",
+          "2.15.0",
+          "2.15.1",
+          "2.16.0",
+          "2.16.1",
+          "2.16.2",
+          "2.16.3",
+          "2.16.4",
+          "2.16.5",
+          "2.17.0",
+          "2.17.1",
+          "2.17.2",
+          "2.17.3",
+          "2.18.0",
+          "2.18.1",
+          "2.18.2",
+          "2.18.3",
+          "2.18.4",
+          "2.19.0",
+          "2.19.1",
+          "2.20.0",
+          "2.20.1",
+          "2.21.0",
+          "2.22.0",
+          "2.23.0",
+          "2.24.0",
+          "2.25.0",
+          "2.25.1",
+          "2.26.0",
+          "2.27.0",
+          "2.27.1",
+          "2.28.0",
+          "2.28.1",
+          "2.28.2",
+          "2.29.0",
+          "2.3.0",
+          "2.30.0",
+          "2.4.0",
+          "2.4.1",
+          "2.4.2",
+          "2.4.3",
+          "2.5.0",
+          "2.5.1",
+          "2.5.2",
+          "2.5.3",
+          "2.6.0",
+          "2.6.1",
+          "2.6.2",
+          "2.7.0",
+          "2.8.0",
+          "2.8.1",
+          "2.9.0",
+          "2.9.1",
+          "2.9.2"
+         ]
+        }
+       ],
+       "aliases": [
+        "CVE-2023-32681",
+        "GHSA-j8r2-6x86-q33q"
+       ],
+       "id": "PYSEC-2023-74",
+       "modified": "2023-11-08T04:12:35.436175Z",
+       "published": "2023-05-26T18:15:00Z",
+       "schema_version": "1.7.3"
+      },
+      {
+       "affected": [
+        {
+         "database_specific": {
+          "source": "https://github.com/pypa/advisory-database/blob/main/vulns/requests/PYSEC-2026-1872.yaml"
+         },
+         "package": {
+          "ecosystem": "PyPI",
+          "name": "requests",
+          "purl": "pkg:pypi/requests"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "0"
+            },
+            {
+             "fixed": "2.32.4"
+            }
+           ],
+           "type": "ECOSYSTEM"
+          }
+         ],
+         "versions": [
+          "0.0.1",
+          "0.10.0",
+          "0.10.1",
+          "0.10.2",
+          "0.10.3",
+          "0.10.4",
+          "0.10.6",
+          "0.10.7",
+          "0.10.8",
+          "0.11.1",
+          "0.11.2",
+          "0.12.0",
+          "0.12.01",
+          "0.12.1",
+          "0.13.0",
+          "0.13.1",
+          "0.13.2",
+          "0.13.3",
+          "0.13.4",
+          "0.13.5",
+          "0.13.6",
+          "0.13.7",
+          "0.13.8",
+          "0.13.9",
+          "0.14.0",
+          "0.14.1",
+          "0.14.2",
+          "0.2.0",
+          "0.2.1",
+          "0.2.2",
+          "0.2.3",
+          "0.2.4",
+          "0.3.0",
+          "0.3.1",
+          "0.3.2",
+          "0.3.3",
+          "0.3.4",
+          "0.4.0",
+          "0.4.1",
+          "0.5.0",
+          "0.5.1",
+          "0.6.0",
+          "0.6.1",
+          "0.6.2",
+          "0.6.3",
+          "0.6.4",
+          "0.6.5",
+          "0.6.6",
+          "0.7.0",
+          "0.7.1",
+          "0.7.2",
+          "0.7.3",
+          "0.7.4",
+          "0.7.5",
+          "0.7.6",
+          "0.8.0",
+          "0.8.1",
+          "0.8.2",
+          "0.8.3",
+          "0.8.4",
+          "0.8.5",
+          "0.8.6",
+          "0.8.7",
+          "0.8.8",
+          "0.8.9",
+          "0.9.0",
+          "0.9.1",
+          "0.9.2",
+          "0.9.3",
+          "1.0.0",
+          "1.0.1",
+          "1.0.2",
+          "1.0.3",
+          "1.0.4",
+          "1.1.0",
+          "1.2.0",
+          "1.2.1",
+          "1.2.2",
+          "1.2.3",
+          "2.0.0",
+          "2.0.1",
+          "2.1.0",
+          "2.10.0",
+          "2.11.0",
+          "2.11.1",
+          "2.12.0",
+          "2.12.1",
+          "2.12.2",
+          "2.12.3",
+          "2.12.4",
+          "2.12.5",
+          "2.13.0",
+          "2.14.0",
+          "2.14.1",
+          "2.14.2",
+          "2.15.0",
+          "2.15.1",
+          "2.16.0",
+          "2.16.1",
+          "2.16.2",
+          "2.16.3",
+          "2.16.4",
+          "2.16.5",
+          "2.17.0",
+          "2.17.1",
+          "2.17.2",
+          "2.17.3",
+          "2.18.0",
+          "2.18.1",
+          "2.18.2",
+          "2.18.3",
+          "2.18.4",
+          "2.19.0",
+          "2.19.1",
+          "2.2.0",
+          "2.2.1",
+          "2.20.0",
+          "2.20.1",
+          "2.21.0",
+          "2.22.0",
+          "2.23.0",
+          "2.24.0",
+          "2.25.0",
+          "2.25.1",
+          "2.26.0",
+          "2.27.0",
+          "2.27.1",
+          "2.28.0",
+          "2.28.1",
+          "2.28.2",
+          "2.29.0",
+          "2.3.0",
+          "2.30.0",
+          "2.31.0",
+          "2.32.0",
+          "2.32.1",
+          "2.32.2",
+          "2.32.3",
+          "2.4.0",
+          "2.4.1",
+          "2.4.2",
+          "2.4.3",
+          "2.5.0",
+          "2.5.1",
+          "2.5.2",
+          "2.5.3",
+          "2.6.0",
+          "2.6.1",
+          "2.6.2",
+          "2.7.0",
+          "2.8.0",
+          "2.8.1",
+          "2.9.0",
+          "2.9.1",
+          "2.9.2"
+         ]
+        }
+       ],
+       "aliases": [
+        "CVE-2024-47081",
+        "GHSA-9hjg-9r4m-mvj7"
+       ],
+       "id": "PYSEC-2026-1872",
+       "modified": "2026-07-07T17:47:00.332079836Z",
+       "published": "2026-07-07T16:02:54.151964Z",
+       "schema_version": "1.7.5",
+       "severity": [
+        {
+         "score": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:H/I:N/A:N",
+         "type": "CVSS_V3"
+        }
+       ]
+      },
+      {
+       "affected": [
+        {
+         "database_specific": {
+          "source": "https://github.com/pypa/advisory-database/blob/main/vulns/requests/PYSEC-2026-1873.yaml"
+         },
+         "package": {
+          "ecosystem": "PyPI",
+          "name": "requests",
+          "purl": "pkg:pypi/requests"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "0"
+            },
+            {
+             "fixed": "2.32.0"
+            }
+           ],
+           "type": "ECOSYSTEM"
+          }
+         ],
+         "versions": [
+          "0.0.1",
+          "0.10.0",
+          "0.10.1",
+          "0.10.2",
+          "0.10.3",
+          "0.10.4",
+          "0.10.6",
+          "0.10.7",
+          "0.10.8",
+          "0.11.1",
+          "0.11.2",
+          "0.12.0",
+          "0.12.01",
+          "0.12.1",
+          "0.13.0",
+          "0.13.1",
+          "0.13.2",
+          "0.13.3",
+          "0.13.4",
+          "0.13.5",
+          "0.13.6",
+          "0.13.7",
+          "0.13.8",
+          "0.13.9",
+          "0.14.0",
+          "0.14.1",
+          "0.14.2",
+          "0.2.0",
+          "0.2.1",
+          "0.2.2",
+          "0.2.3",
+          "0.2.4",
+          "0.3.0",
+          "0.3.1",
+          "0.3.2",
+          "0.3.3",
+          "0.3.4",
+          "0.4.0",
+          "0.4.1",
+          "0.5.0",
+          "0.5.1",
+          "0.6.0",
+          "0.6.1",
+          "0.6.2",
+          "0.6.3",
+          "0.6.4",
+          "0.6.5",
+          "0.6.6",
+          "0.7.0",
+          "0.7.1",
+          "0.7.2",
+          "0.7.3",
+          "0.7.4",
+          "0.7.5",
+          "0.7.6",
+          "0.8.0",
+          "0.8.1",
+          "0.8.2",
+          "0.8.3",
+          "0.8.4",
+          "0.8.5",
+          "0.8.6",
+          "0.8.7",
+          "0.8.8",
+          "0.8.9",
+          "0.9.0",
+          "0.9.1",
+          "0.9.2",
+          "0.9.3",
+          "1.0.0",
+          "1.0.1",
+          "1.0.2",
+          "1.0.3",
+          "1.0.4",
+          "1.1.0",
+          "1.2.0",
+          "1.2.1",
+          "1.2.2",
+          "1.2.3",
+          "2.0.0",
+          "2.0.1",
+          "2.1.0",
+          "2.10.0",
+          "2.11.0",
+          "2.11.1",
+          "2.12.0",
+          "2.12.1",
+          "2.12.2",
+          "2.12.3",
+          "2.12.4",
+          "2.12.5",
+          "2.13.0",
+          "2.14.0",
+          "2.14.1",
+          "2.14.2",
+          "2.15.0",
+          "2.15.1",
+          "2.16.0",
+          "2.16.1",
+          "2.16.2",
+          "2.16.3",
+          "2.16.4",
+          "2.16.5",
+          "2.17.0",
+          "2.17.1",
+          "2.17.2",
+          "2.17.3",
+          "2.18.0",
+          "2.18.1",
+          "2.18.2",
+          "2.18.3",
+          "2.18.4",
+          "2.19.0",
+          "2.19.1",
+          "2.2.0",
+          "2.2.1",
+          "2.20.0",
+          "2.20.1",
+          "2.21.0",
+          "2.22.0",
+          "2.23.0",
+          "2.24.0",
+          "2.25.0",
+          "2.25.1",
+          "2.26.0",
+          "2.27.0",
+          "2.27.1",
+          "2.28.0",
+          "2.28.1",
+          "2.28.2",
+          "2.29.0",
+          "2.3.0",
+          "2.30.0",
+          "2.31.0",
+          "2.4.0",
+          "2.4.1",
+          "2.4.2",
+          "2.4.3",
+          "2.5.0",
+          "2.5.1",
+          "2.5.2",
+          "2.5.3",
+          "2.6.0",
+          "2.6.1",
+          "2.6.2",
+          "2.7.0",
+          "2.8.0",
+          "2.8.1",
+          "2.9.0",
+          "2.9.1",
+          "2.9.2"
+         ]
+        }
+       ],
+       "aliases": [
+        "CVE-2024-35195",
+        "GHSA-9wx4-h78v-vm56"
+       ],
+       "id": "PYSEC-2026-1873",
+       "modified": "2026-07-07T17:46:36.762141019Z",
+       "published": "2026-07-07T11:45:42.890131Z",
+       "schema_version": "1.7.5",
+       "severity": [
+        {
+         "score": "CVSS:3.1/AV:L/AC:H/PR:H/UI:R/S:U/C:H/I:H/A:N",
+         "type": "CVSS_V3"
+        }
+       ]
+      },
+      {
+       "affected": [
+        {
+         "database_specific": {
+          "source": "https://github.com/pypa/advisory-database/blob/main/vulns/requests/PYSEC-2026-2275.yaml"
+         },
+         "ecosystem_specific": {},
+         "package": {
+          "ecosystem": "PyPI",
+          "name": "requests",
+          "purl": "pkg:pypi/requests"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "0"
+            },
+            {
+             "fixed": "2.33.0"
+            }
+           ],
+           "type": "ECOSYSTEM"
+          }
+         ],
+         "versions": [
+          "0.0.1",
+          "0.10.0",
+          "0.10.1",
+          "0.10.2",
+          "0.10.3",
+          "0.10.4",
+          "0.10.6",
+          "0.10.7",
+          "0.10.8",
+          "0.11.1",
+          "0.11.2",
+          "0.12.0",
+          "0.12.01",
+          "0.12.1",
+          "0.13.0",
+          "0.13.1",
+          "0.13.2",
+          "0.13.3",
+          "0.13.4",
+          "0.13.5",
+          "0.13.6",
+          "0.13.7",
+          "0.13.8",
+          "0.13.9",
+          "0.14.0",
+          "0.14.1",
+          "0.14.2",
+          "0.2.0",
+          "0.2.1",
+          "0.2.2",
+          "0.2.3",
+          "0.2.4",
+          "0.3.0",
+          "0.3.1",
+          "0.3.2",
+          "0.3.3",
+          "0.3.4",
+          "0.4.0",
+          "0.4.1",
+          "0.5.0",
+          "0.5.1",
+          "0.6.0",
+          "0.6.1",
+          "0.6.2",
+          "0.6.3",
+          "0.6.4",
+          "0.6.5",
+          "0.6.6",
+          "0.7.0",
+          "0.7.1",
+          "0.7.2",
+          "0.7.3",
+          "0.7.4",
+          "0.7.5",
+          "0.7.6",
+          "0.8.0",
+          "0.8.1",
+          "0.8.2",
+          "0.8.3",
+          "0.8.4",
+          "0.8.5",
+          "0.8.6",
+          "0.8.7",
+          "0.8.8",
+          "0.8.9",
+          "0.9.0",
+          "0.9.1",
+          "0.9.2",
+          "0.9.3",
+          "1.0.0",
+          "1.0.1",
+          "1.0.2",
+          "1.0.3",
+          "1.0.4",
+          "1.1.0",
+          "1.2.0",
+          "1.2.1",
+          "1.2.2",
+          "1.2.3",
+          "2.0.0",
+          "2.0.1",
+          "2.1.0",
+          "2.10.0",
+          "2.11.0",
+          "2.11.1",
+          "2.12.0",
+          "2.12.1",
+          "2.12.2",
+          "2.12.3",
+          "2.12.4",
+          "2.12.5",
+          "2.13.0",
+          "2.14.0",
+          "2.14.1",
+          "2.14.2",
+          "2.15.0",
+          "2.15.1",
+          "2.16.0",
+          "2.16.1",
+          "2.16.2",
+          "2.16.3",
+          "2.16.4",
+          "2.16.5",
+          "2.17.0",
+          "2.17.1",
+          "2.17.2",
+          "2.17.3",
+          "2.18.0",
+          "2.18.1",
+          "2.18.2",
+          "2.18.3",
+          "2.18.4",
+          "2.19.0",
+          "2.19.1",
+          "2.2.0",
+          "2.2.1",
+          "2.20.0",
+          "2.20.1",
+          "2.21.0",
+          "2.22.0",
+          "2.23.0",
+          "2.24.0",
+          "2.25.0",
+          "2.25.1",
+          "2.26.0",
+          "2.27.0",
+          "2.27.1",
+          "2.28.0",
+          "2.28.1",
+          "2.28.2",
+          "2.29.0",
+          "2.3.0",
+          "2.30.0",
+          "2.31.0",
+          "2.32.0",
+          "2.32.1",
+          "2.32.2",
+          "2.32.3",
+          "2.32.4",
+          "2.32.5",
+          "2.4.0",
+          "2.4.1",
+          "2.4.2",
+          "2.4.3",
+          "2.5.0",
+          "2.5.1",
+          "2.5.2",
+          "2.5.3",
+          "2.6.0",
+          "2.6.1",
+          "2.6.2",
+          "2.7.0",
+          "2.8.0",
+          "2.8.1",
+          "2.9.0",
+          "2.9.1",
+          "2.9.2"
+         ]
+        }
+       ],
+       "aliases": [
+        "CVE-2026-25645",
+        "GHSA-gc5v-m9x4-r6x2"
+       ],
+       "id": "PYSEC-2026-2275",
+       "modified": "2026-07-13T07:15:43.964902190Z",
+       "published": "2026-03-25T17:16:52.970Z",
+       "schema_version": "1.7.5",
+       "severity": [
+        {
+         "score": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:N/I:H/A:N",
+         "type": "CVSS_V3"
+        }
+       ]
+      },
+      {
+       "affected": [
+        {
+         "database_specific": {
+          "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2025/06/GHSA-9hjg-9r4m-mvj7/GHSA-9hjg-9r4m-mvj7.json"
+         },
+         "package": {
+          "ecosystem": "PyPI",
+          "name": "requests",
+          "purl": "pkg:pypi/requests"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "0"
+            },
+            {
+             "fixed": "2.32.4"
+            }
+           ],
+           "type": "ECOSYSTEM"
+          }
+         ],
+         "versions": [
+          "0.0.1",
+          "0.10.0",
+          "0.10.1",
+          "0.10.2",
+          "0.10.3",
+          "0.10.4",
+          "0.10.6",
+          "0.10.7",
+          "0.10.8",
+          "0.11.1",
+          "0.11.2",
+          "0.12.0",
+          "0.12.01",
+          "0.12.1",
+          "0.13.0",
+          "0.13.1",
+          "0.13.2",
+          "0.13.3",
+          "0.13.4",
+          "0.13.5",
+          "0.13.6",
+          "0.13.7",
+          "0.13.8",
+          "0.13.9",
+          "0.14.0",
+          "0.14.1",
+          "0.14.2",
+          "0.2.0",
+          "0.2.1",
+          "0.2.2",
+          "0.2.3",
+          "0.2.4",
+          "0.3.0",
+          "0.3.1",
+          "0.3.2",
+          "0.3.3",
+          "0.3.4",
+          "0.4.0",
+          "0.4.1",
+          "0.5.0",
+          "0.5.1",
+          "0.6.0",
+          "0.6.1",
+          "0.6.2",
+          "0.6.3",
+          "0.6.4",
+          "0.6.5",
+          "0.6.6",
+          "0.7.0",
+          "0.7.1",
+          "0.7.2",
+          "0.7.3",
+          "0.7.4",
+          "0.7.5",
+          "0.7.6",
+          "0.8.0",
+          "0.8.1",
+          "0.8.2",
+          "0.8.3",
+          "0.8.4",
+          "0.8.5",
+          "0.8.6",
+          "0.8.7",
+          "0.8.8",
+          "0.8.9",
+          "0.9.0",
+          "0.9.1",
+          "0.9.2",
+          "0.9.3",
+          "1.0.0",
+          "1.0.1",
+          "1.0.2",
+          "1.0.3",
+          "1.0.4",
+          "1.1.0",
+          "1.2.0",
+          "1.2.1",
+          "1.2.2",
+          "1.2.3",
+          "2.0.0",
+          "2.0.1",
+          "2.1.0",
+          "2.10.0",
+          "2.11.0",
+          "2.11.1",
+          "2.12.0",
+          "2.12.1",
+          "2.12.2",
+          "2.12.3",
+          "2.12.4",
+          "2.12.5",
+          "2.13.0",
+          "2.14.0",
+          "2.14.1",
+          "2.14.2",
+          "2.15.0",
+          "2.15.1",
+          "2.16.0",
+          "2.16.1",
+          "2.16.2",
+          "2.16.3",
+          "2.16.4",
+          "2.16.5",
+          "2.17.0",
+          "2.17.1",
+          "2.17.2",
+          "2.17.3",
+          "2.18.0",
+          "2.18.1",
+          "2.18.2",
+          "2.18.3",
+          "2.18.4",
+          "2.19.0",
+          "2.19.1",
+          "2.2.0",
+          "2.2.1",
+          "2.20.0",
+          "2.20.1",
+          "2.21.0",
+          "2.22.0",
+          "2.23.0",
+          "2.24.0",
+          "2.25.0",
+          "2.25.1",
+          "2.26.0",
+          "2.27.0",
+          "2.27.1",
+          "2.28.0",
+          "2.28.1",
+          "2.28.2",
+          "2.29.0",
+          "2.3.0",
+          "2.30.0",
+          "2.31.0",
+          "2.32.0",
+          "2.32.1",
+          "2.32.2",
+          "2.32.3",
+          "2.4.0",
+          "2.4.1",
+          "2.4.2",
+          "2.4.3",
+          "2.5.0",
+          "2.5.1",
+          "2.5.2",
+          "2.5.3",
+          "2.6.0",
+          "2.6.1",
+          "2.6.2",
+          "2.7.0",
+          "2.8.0",
+          "2.8.1",
+          "2.9.0",
+          "2.9.1",
+          "2.9.2"
+         ]
+        }
+       ],
+       "aliases": [
+        "CVE-2024-47081",
+        "PYSEC-2026-1872"
+       ],
+       "database_specific": {
+        "cwe_ids": [
+         "CWE-522"
+        ],
+        "github_reviewed": true,
+        "github_reviewed_at": "2025-06-09T19:06:08Z",
+        "nvd_published_at": "2025-06-09T18:15:24Z",
+        "severity": "MODERATE"
+       },
+       "id": "GHSA-9hjg-9r4m-mvj7",
+       "modified": "2026-10-19T20:00:04.716114530Z",
+       "published": "2025-06-09T19:06:08Z",
+       "schema_version": "1.9.0",
+       "severity": [
+        {
+         "score": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:H/I:N/A:N",
+         "type": "CVSS_V3"
+        }
+       ]
+      },
+      {
+       "affected": [
+        {
+         "database_specific": {
+          "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2024/05/GHSA-9wx4-h78v-vm56/GHSA-9wx4-h78v-vm56.json"
+         },
+         "package": {
+          "ecosystem": "PyPI",
+          "name": "requests",
+          "purl": "pkg:pypi/requests"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "0"
+            },
+            {
+             "fixed": "2.32.0"
+            }
+           ],
+           "type": "ECOSYSTEM"
+          }
+         ],
+         "versions": [
+          "0.0.1",
+          "0.10.0",
+          "0.10.1",
+          "0.10.2",
+          "0.10.3",
+          "0.10.4",
+          "0.10.6",
+          "0.10.7",
+          "0.10.8",
+          "0.11.1",
+          "0.11.2",
+          "0.12.0",
+          "0.12.01",
+          "0.12.1",
+          "0.13.0",
+          "0.13.1",
+          "0.13.2",
+          "0.13.3",
+          "0.13.4",
+          "0.13.5",
+          "0.13.6",
+          "0.13.7",
+          "0.13.8",
+          "0.13.9",
+          "0.14.0",
+          "0.14.1",
+          "0.14.2",
+          "0.2.0",
+          "0.2.1",
+          "0.2.2",
+          "0.2.3",
+          "0.2.4",
+          "0.3.0",
+          "0.3.1",
+          "0.3.2",
+          "0.3.3",
+          "0.3.4",
+          "0.4.0",
+          "0.4.1",
+          "0.5.0",
+          "0.5.1",
+          "0.6.0",
+          "0.6.1",
+          "0.6.2",
+          "0.6.3",
+          "0.6.4",
+          "0.6.5",
+          "0.6.6",
+          "0.7.0",
+          "0.7.1",
+          "0.7.2",
+          "0.7.3",
+          "0.7.4",
+          "0.7.5",
+          "0.7.6",
+          "0.8.0",
+          "0.8.1",
+          "0.8.2",
+          "0.8.3",
+          "0.8.4",
+          "0.8.5",
+          "0.8.6",
+          "0.8.7",
+          "0.8.8",
+          "0.8.9",
+          "0.9.0",
+          "0.9.1",
+          "0.9.2",
+          "0.9.3",
+          "1.0.0",
+          "1.0.1",
+          "1.0.2",
+          "1.0.3",
+          "1.0.4",
+          "1.1.0",
+          "1.2.0",
+          "1.2.1",
+          "1.2.2",
+          "1.2.3",
+          "2.0.0",
+          "2.0.1",
+          "2.1.0",
+          "2.10.0",
+          "2.11.0",
+          "2.11.1",
+          "2.12.0",
+          "2.12.1",
+          "2.12.2",
+          "2.12.3",
+          "2.12.4",
+          "2.12.5",
+          "2.13.0",
+          "2.14.0",
+          "2.14.1",
+          "2.14.2",
+          "2.15.0",
+          "2.15.1",
+          "2.16.0",
+          "2.16.1",
+          "2.16.2",
+          "2.16.3",
+          "2.16.4",
+          "2.16.5",
+          "2.17.0",
+          "2.17.1",
+          "2.17.2",
+          "2.17.3",
+          "2.18.0",
+          "2.18.1",
+          "2.18.2",
+          "2.18.3",
+          "2.18.4",
+          "2.19.0",
+          "2.19.1",
+          "2.2.0",
+          "2.2.1",
+          "2.20.0",
+          "2.20.1",
+          "2.21.0",
+          "2.22.0",
+          "2.23.0",
+          "2.24.0",
+          "2.25.0",
+          "2.25.1",
+          "2.26.0",
+          "2.27.0",
+          "2.27.1",
+          "2.28.0",
+          "2.28.1",
+          "2.28.2",
+          "2.29.0",
+          "2.3.0",
+          "2.30.0",
+          "2.31.0",
+          "2.4.0",
+          "2.4.1",
+          "2.4.2",
+          "2.4.3",
+          "2.5.0",
+          "2.5.1",
+          "2.5.2",
+          "2.5.3",
+          "2.6.0",
+          "2.6.1",
+          "2.6.2",
+          "2.7.0",
+          "2.8.0",
+          "2.8.1",
+          "2.9.0",
+          "2.9.1",
+          "2.9.2"
+         ]
+        }
+       ],
+       "aliases": [
+        "CVE-2024-35195",
+        "PYSEC-2026-1873"
+       ],
+       "database_specific": {
+        "cwe_ids": [
+         "CWE-670"
+        ],
+        "github_reviewed": true,
+        "github_reviewed_at": "2024-05-20T20:15:00Z",
+        "nvd_published_at": "2024-05-20T21:15:09Z",
+        "severity": "MODERATE"
+       },
+       "id": "GHSA-9wx4-h78v-vm56",
+       "modified": "2026-09-10T03:50:13.740879755Z",
+       "published": "2024-05-20T20:15:00Z",
+       "schema_version": "1.9.0",
+       "severity": [
+        {
+         "score": "CVSS:3.1/AV:L/AC:H/PR:H/UI:R/S:U/C:H/I:H/A:N",
+         "type": "CVSS_V3"
+        }
+       ]
+      },
+      {
+       "affected": [
+        {
+         "database_specific": {
+          "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2026/03/GHSA-gc5v-m9x4-r6x2/GHSA-gc5v-m9x4-r6x2.json"
+         },
+         "package": {
+          "ecosystem": "PyPI",
+          "name": "requests",
+          "purl": "pkg:pypi/requests"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "0"
+            },
+            {
+             "fixed": "2.33.0"
+            }
+           ],
+           "type": "ECOSYSTEM"
+          }
+         ],
+         "versions": [
+          "0.0.1",
+          "0.10.0",
+          "0.10.1",
+          "0.10.2",
+          "0.10.3",
+          "0.10.4",
+          "0.10.6",
+          "0.10.7",
+          "0.10.8",
+          "0.11.1",
+          "0.11.2",
+          "0.12.0",
+          "0.12.01",
+          "0.12.1",
+          "0.13.0",
+          "0.13.1",
+          "0.13.2",
+          "0.13.3",
+          "0.13.4",
+          "0.13.5",
+          "0.13.6",
+          "0.13.7",
+          "0.13.8",
+          "0.13.9",
+          "0.14.0",
+          "0.14.1",
+          "0.14.2",
+          "0.2.0",
+          "0.2.1",
+          "0.2.2",
+          "0.2.3",
+          "0.2.4",
+          "0.3.0",
+          "0.3.1",
+          "0.3.2",
+          "0.3.3",
+          "0.3.4",
+          "0.4.0",
+          "0.4.1",
+          "0.5.0",
+          "0.5.1",
+          "0.6.0",
+          "0.6.1",
+          "0.6.2",
+          "0.6.3",
+          "0.6.4",
+          "0.6.5",
+          "0.6.6",
+          "0.7.0",
+          "0.7.1",
+          "0.7.2",
+          "0.7.3",
+          "0.7.4",
+          "0.7.5",
+          "0.7.6",
+          "0.8.0",
+          "0.8.1",
+          "0.8.2",
+          "0.8.3",
+          "0.8.4",
+          "0.8.5",
+          "0.8.6",
+          "0.8.7",
+          "0.8.8",
+          "0.8.9",
+          "0.9.0",
+          "0.9.1",
+          "0.9.2",
+          "0.9.3",
+          "1.0.0",
+          "1.0.1",
+          "1.0.2",
+          "1.0.3",
+          "1.0.4",
+          "1.1.0",
+          "1.2.0",
+          "1.2.1",
+          "1.2.2",
+          "1.2.3",
+          "2.0.0",
+          "2.0.1",
+          "2.1.0",
+          "2.10.0",
+          "2.11.0",
+          "2.11.1",
+          "2.12.0",
+          "2.12.1",
+          "2.12.2",
+          "2.12.3",
+          "2.12.4",
+          "2.12.5",
+          "2.13.0",
+          "2.14.0",
+          "2.14.1",
+          "2.14.2",
+          "2.15.0",
+          "2.15.1",
+          "2.16.0",
+          "2.16.1",
+          "2.16.2",
+          "2.16.3",
+          "2.16.4",
+          "2.16.5",
+          "2.17.0",
+          "2.17.1",
+          "2.17.2",
+          "2.17.3",
+          "2.18.0",
+          "2.18.1",
+          "2.18.2",
+          "2.18.3",
+          "2.18.4",
+          "2.19.0",
+          "2.19.1",
+          "2.2.0",
+          "2.2.1",
+          "2.20.0",
+          "2.20.1",
+          "2.21.0",
+          "2.22.0",
+          "2.23.0",
+          "2.24.0",
+          "2.25.0",
+          "2.25.1",
+          "2.26.0",
+          "2.27.0",
+          "2.27.1",
+          "2.28.0",
+          "2.28.1",
+          "2.28.2",
+          "2.29.0",
+          "2.3.0",
+          "2.30.0",
+          "2.31.0",
+          "2.32.0",
+          "2.32.1",
+          "2.32.2",
+          "2.32.3",
+          "2.32.4",
+          "2.32.5",
+          "2.4.0",
+          "2.4.1",
+          "2.4.2",
+          "2.4.3",
+          "2.5.0",
+          "2.5.1",
+          "2.5.2",
+          "2.5.3",
+          "2.6.0",
+          "2.6.1",
+          "2.6.2",
+          "2.7.0",
+          "2.8.0",
+          "2.8.1",
+          "2.9.0",
+          "2.9.1",
+          "2.9.2"
+         ]
+        }
+       ],
+       "aliases": [
+        "CVE-2026-25645",
+        "PYSEC-2026-2275"
+       ],
+       "database_specific": {
+        "cwe_ids": [
+         "CWE-377"
+        ],
+        "github_reviewed": true,
+        "github_reviewed_at": "2026-03-25T16:56:28Z",
+        "nvd_published_at": "2026-03-25T17:16:52Z",
+        "severity": "MODERATE"
+       },
+       "id": "GHSA-gc5v-m9x4-r6x2",
+       "modified": "2026-09-10T03:50:39.207922076Z",
+       "published": "2026-03-25T16:56:28Z",
+       "schema_version": "1.9.0",
+       "severity": [
+        {
+         "score": "CVSS:3.1/AV:L/AC:H/PR:L/UI:R/S:U/C:N/I:H/A:N",
+         "type": "CVSS_V3"
+        }
+       ]
+      },
+      {
+       "affected": [
+        {
+         "database_specific": {
+          "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2023/05/GHSA-j8r2-6x86-q33q/GHSA-j8r2-6x86-q33q.json"
+         },
+         "package": {
+          "ecosystem": "PyPI",
+          "name": "requests",
+          "purl": "pkg:pypi/requests"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "2.3.0"
+            },
+            {
+             "fixed": "2.31.0"
+            }
+           ],
+           "type": "ECOSYSTEM"
+          }
+         ],
+         "versions": [
+          "2.10.0",
+          "2.11.0",
+          "2.11.1",
+          "2.12.0",
+          "2.12.1",
+          "2.12.2",
+          "2.12.3",
+          "2.12.4",
+          "2.12.5",
+          "2.13.0",
+          "2.14.0",
+          "2.14.1",
+          "2.14.2",
+          "2.15.0",
+          "2.15.1",
+          "2.16.0",
+          "2.16.1",
+          "2.16.2",
+          "2.16.3",
+          "2.16.4",
+          "2.16.5",
+          "2.17.0",
+          "2.17.1",
+          "2.17.2",
+          "2.17.3",
+          "2.18.0",
+          "2.18.1",
+          "2.18.2",
+          "2.18.3",
+          "2.18.4",
+          "2.19.0",
+          "2.19.1",
+          "2.20.0",
+          "2.20.1",
+          "2.21.0",
+          "2.22.0",
+          "2.23.0",
+          "2.24.0",
+          "2.25.0",
+          "2.25.1",
+          "2.26.0",
+          "2.27.0",
+          "2.27.1",
+          "2.28.0",
+          "2.28.1",
+          "2.28.2",
+          "2.29.0",
+          "2.3.0",
+          "2.30.0",
+          "2.4.0",
+          "2.4.1",
+          "2.4.2",
+          "2.4.3",
+          "2.5.0",
+          "2.5.1",
+          "2.5.2",
+          "2.5.3",
+          "2.6.0",
+          "2.6.1",
+          "2.6.2",
+          "2.7.0",
+          "2.8.0",
+          "2.8.1",
+          "2.9.0",
+          "2.9.1",
+          "2.9.2"
+         ]
+        }
+       ],
+       "aliases": [
+        "CVE-2023-32681",
+        "PYSEC-2023-74"
+       ],
+       "database_specific": {
+        "cwe_ids": [
+         "CWE-200"
+        ],
+        "github_reviewed": true,
+        "github_reviewed_at": "2023-05-22T20:36:32Z",
+        "nvd_published_at": "2023-05-26T18:15:14Z",
+        "severity": "MODERATE"
+       },
+       "id": "GHSA-j8r2-6x86-q33q",
+       "modified": "2026-09-10T03:50:01.756149727Z",
+       "published": "2023-05-22T20:36:32Z",
+       "schema_version": "1.9.0",
+       "severity": [
+        {
+         "score": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:C/C:H/I:N/A:N",
+         "type": "CVSS_V3"
+        }
+       ]
+      },
+      {
+       "affected": [
+        {
+         "database_specific": {
+          "last_known_affected_version_range": "<= 2.19.1",
+          "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2018/10/GHSA-x84v-xcm2-53pg/GHSA-x84v-xcm2-53pg.json"
+         },
+         "package": {
+          "ecosystem": "PyPI",
+          "name": "requests",
+          "purl": "pkg:pypi/requests"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "0"
+            },
+            {
+             "fixed": "2.20.0"
+            }
+           ],
+           "type": "ECOSYSTEM"
+          }
+         ],
+         "versions": [
+          "0.0.1",
+          "0.10.0",
+          "0.10.1",
+          "0.10.2",
+          "0.10.3",
+          "0.10.4",
+          "0.10.6",
+          "0.10.7",
+          "0.10.8",
+          "0.11.1",
+          "0.11.2",
+          "0.12.0",
+          "0.12.01",
+          "0.12.1",
+          "0.13.0",
+          "0.13.1",
+          "0.13.2",
+          "0.13.3",
+          "0.13.4",
+          "0.13.5",
+          "0.13.6",
+          "0.13.7",
+          "0.13.8",
+          "0.13.9",
+          "0.14.0",
+          "0.14.1",
+          "0.14.2",
+          "0.2.0",
+          "0.2.1",
+          "0.2.2",
+          "0.2.3",
+          "0.2.4",
+          "0.3.0",
+          "0.3.1",
+          "0.3.2",
+          "0.3.3",
+          "0.3.4",
+          "0.4.0",
+          "0.4.1",
+          "0.5.0",
+          "0.5.1",
+          "0.6.0",
+          "0.6.1",
+          "0.6.2",
+          "0.6.3",
+          "0.6.4",
+          "0.6.5",
+          "0.6.6",
+          "0.7.0",
+          "0.7.1",
+          "0.7.2",
+          "0.7.3",
+          "0.7.4",
+          "0.7.5",
+          "0.7.6",
+          "0.8.0",
+          "0.8.1",
+          "0.8.2",
+          "0.8.3",
+          "0.8.4",
+          "0.8.5",
+          "0.8.6",
+          "0.8.7",
+          "0.8.8",
+          "0.8.9",
+          "0.9.0",
+          "0.9.1",
+          "0.9.2",
+          "0.9.3",
+          "1.0.0",
+          "1.0.1",
+          "1.0.2",
+          "1.0.3",
+          "1.0.4",
+          "1.1.0",
+          "1.2.0",
+          "1.2.1",
+          "1.2.2",
+          "1.2.3",
+          "2.0.0",
+          "2.0.1",
+          "2.1.0",
+          "2.10.0",
+          "2.11.0",
+          "2.11.1",
+          "2.12.0",
+          "2.12.1",
+          "2.12.2",
+          "2.12.3",
+          "2.12.4",
+          "2.12.5",
+          "2.13.0",
+          "2.14.0",
+          "2.14.1",
+          "2.14.2",
+          "2.15.0",
+          "2.15.1",
+          "2.16.0",
+          "2.16.1",
+          "2.16.2",
+          "2.16.3",
+          "2.16.4",
+          "2.16.5",
+          "2.17.0",
+          "2.17.1",
+          "2.17.2",
+          "2.17.3",
+          "2.18.0",
+          "2.18.1",
+          "2.18.2",
+          "2.18.3",
+          "2.18.4",
+          "2.19.0",
+          "2.19.1",
+          "2.2.0",
+          "2.2.1",
+          "2.3.0",
+          "2.4.0",
+          "2.4.1",
+          "2.4.2",
+          "2.4.3",
+          "2.5.0",
+          "2.5.1",
+          "2.5.2",
+          "2.5.3",
+          "2.6.0",
+          "2.6.1",
+          "2.6.2",
+          "2.7.0",
+          "2.8.0",
+          "2.8.1",
+          "2.9.0",
+          "2.9.1",
+          "2.9.2"
+         ]
+        }
+       ],
+       "aliases": [
+        "CVE-2018-18074",
+        "PYSEC-2018-28"
+       ],
+       "database_specific": {
+        "cwe_ids": [
+         "CWE-522"
+        ],
+        "github_reviewed": true,
+        "github_reviewed_at": "2020-06-16T22:02:40Z",
+        "nvd_published_at": "2018-10-09T17:29:00Z",
+        "severity": "HIGH"
+       },
+       "id": "GHSA-x84v-xcm2-53pg",
+       "modified": "2024-10-21T21:42:55.896669Z",
+       "published": "2018-10-29T19:06:46Z",
+       "schema_version": "1.9.0",
+       "severity": [
+        {
+         "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N",
+         "type": "CVSS_V3"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "source": {
+    "path": "/github/workspace/requirements.txt",
+    "type": "unknown"
+   },
+   "packages": [
+    {
+     "package": {
+      "name": "certifi",
+      "version": "2026.7.22",
+      "ecosystem": "PyPI",
+      "purl": "pkg:pypi/certifi@2026.7.22"
+     },
+     "groups": [
+      {
+       "ids": [
+        "PYSEC-2026-4320",
+        "GHSA-6q48-6c7w-9gw2"
+       ],
+       "aliases": [
+        "GHSA-6q48-6c7w-9gw2",
+        "PYSEC-2026-4320"
+       ],
+       "max_severity": "9.1"
+      }
+     ],
+     "vulnerabilities": [
+      {
+       "affected": [
+        {
+         "database_specific": {
+          "source": "https://github.com/pypa/advisory-database/blob/main/vulns/certifi/PYSEC-2026-4320.yaml"
+         },
+         "package": {
+          "ecosystem": "PyPI",
+          "name": "certifi",
+          "purl": "pkg:pypi/certifi"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "2019.03.09"
+            },
+            {
+             "fixed": "2026.10.18"
+            }
+           ],
+           "type": "ECOSYSTEM"
+          }
+         ],
+         "versions": [
+          "2019.11.28",
+          "2019.3.9",
+          "2019.6.16",
+          "2019.9.11",
+          "2020.11.8",
+          "2020.12.5",
+          "2020.4.5",
+          "2020.4.5.1",
+          "2020.4.5.2",
+          "2020.6.20",
+          "2021.10.8",
+          "2021.5.30",
+          "2022.12.7",
+          "2022.5.18",
+          "2022.5.18.1",
+          "2022.6.15",
+          "2022.6.15.1",
+          "2022.6.15.2",
+          "2022.9.14",
+          "2022.9.24",
+          "2023.11.17",
+          "2023.5.7",
+          "2023.7.22",
+          "2024.12.14",
+          "2024.2.2",
+          "2024.6.2",
+          "2024.7.4",
+          "2024.8.30",
+          "2025.1.31",
+          "2025.10.5",
+          "2025.11.12",
+          "2025.4.26",
+          "2025.6.15",
+          "2025.7.14",
+          "2025.7.9",
+          "2025.8.3",
+          "2026.1.4",
+          "2026.2.25",
+          "2026.4.22",
+          "2026.5.20",
+          "2026.6.17",
+          "2026.7.22"
+         ]
+        }
+       ],
+       "aliases": [
+        "GHSA-6q48-6c7w-9gw2"
+       ],
+       "id": "PYSEC-2026-4320",
+       "modified": "2026-10-30T14:00:02.590922333Z",
+       "published": "2026-10-20T21:41:50.722083Z",
+       "schema_version": "1.9.2",
+       "severity": [
+        {
+         "score": "CVSS:4.0/AV:N/AC:H/AT:P/PR:N/UI:N/VC:H/VI:H/VA:N/SC:N/SI:N/SA:N",
+         "type": "CVSS_V4"
+        }
+       ]
+      },
+      {
+       "affected": [
+        {
+         "database_specific": {
+          "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2026/10/GHSA-6q48-6c7w-9gw2/GHSA-6q48-6c7w-9gw2.json"
+         },
+         "package": {
+          "ecosystem": "PyPI",
+          "name": "certifi",
+          "purl": "pkg:pypi/certifi"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "2019.03.09"
+            },
+            {
+             "fixed": "2026.10.18"
+            }
+           ],
+           "type": "ECOSYSTEM"
+          }
+         ],
+         "versions": [
+          "2019.11.28",
+          "2019.3.9",
+          "2019.6.16",
+          "2019.9.11",
+          "2020.11.8",
+          "2020.12.5",
+          "2020.4.5",
+          "2020.4.5.1",
+          "2020.4.5.2",
+          "2020.6.20",
+          "2021.10.8",
+          "2021.5.30",
+          "2022.12.7",
+          "2022.5.18",
+          "2022.5.18.1",
+          "2022.6.15",
+          "2022.6.15.1",
+          "2022.6.15.2",
+          "2022.9.14",
+          "2022.9.24",
+          "2023.11.17",
+          "2023.5.7",
+          "2023.7.22",
+          "2024.12.14",
+          "2024.2.2",
+          "2024.6.2",
+          "2024.7.4",
+          "2024.8.30",
+          "2025.1.31",
+          "2025.10.5",
+          "2025.11.12",
+          "2025.4.26",
+          "2025.6.15",
+          "2025.7.14",
+          "2025.7.9",
+          "2025.8.3",
+          "2026.1.4",
+          "2026.2.25",
+          "2026.4.22",
+          "2026.5.20",
+          "2026.6.17",
+          "2026.7.22"
+         ]
+        }
+       ],
+       "aliases": [
+        "PYSEC-2026-4320"
+       ],
+       "database_specific": {
+        "cwe_ids": [
+         "CWE-295"
+        ],
+        "github_reviewed": true,
+        "github_reviewed_at": "2026-10-20T19:35:05Z",
+        "nvd_published_at": null,
+        "severity": "CRITICAL"
+       },
+       "id": "GHSA-6q48-6c7w-9gw2",
+       "modified": "2026-10-26T16:15:35.371128995Z",
+       "published": "2026-10-20T19:35:05Z",
+       "schema_version": "1.9.0",
+       "severity": [
+        {
+         "score": "CVSS:4.0/AV:N/AC:H/AT:P/PR:N/UI:N/VC:H/VI:H/VA:N/SC:N/SI:N/SA:N",
+         "type": "CVSS_V4"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "package": {
+      "name": "idna",
+      "version": "2.7.0",
+      "ecosystem": "PyPI",
+      "purl": "pkg:pypi/idna@2.7.0"
+     },
+     "groups": [
+      {
+       "ids": [
+        "PYSEC-2024-60",
+        "GHSA-jjg7-2v4v-x38h"
+       ],
+       "aliases": [
+        "CVE-2024-3651",
+        "GHSA-jjg7-2v4v-x38h",
+        "PYSEC-2024-60"
+       ],
+       "max_severity": "7.5"
+      },
+      {
+       "ids": [
+        "PYSEC-2026-215",
+        "GHSA-65pc-fj4g-8rjx"
+       ],
+       "aliases": [
+        "CVE-2026-45409",
+        "GHSA-65pc-fj4g-8rjx",
+        "PYSEC-2026-215"
+       ],
+       "max_severity": "6.9"
+      }
+     ],
+     "vulnerabilities": [
+      {
+       "affected": [
+        {
+         "database_specific": {
+          "source": "https://github.com/pypa/advisory-database/blob/main/vulns/idna/PYSEC-2024-60.yaml"
+         },
+         "package": {
+          "ecosystem": "PyPI",
+          "name": "idna",
+          "purl": "pkg:pypi/idna"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "0"
+            },
+            {
+             "fixed": "1d365e17e10d72d0b7876316fc7b9ca0eebdd38d"
+            }
+           ],
+           "repo": "https://github.com/kjd/idna",
+           "type": "GIT"
+          },
+          {
+           "events": [
+            {
+             "introduced": "0.1"
+            },
+            {
+             "fixed": "3.7"
+            }
+           ],
+           "type": "ECOSYSTEM"
+          }
+         ],
+         "versions": [
+          "0.1",
+          "0.2",
+          "0.3",
+          "0.4",
+          "0.5",
+          "0.6",
+          "0.7",
+          "0.8",
+          "0.9",
+          "1.0",
+          "1.1",
+          "2.0",
+          "2.1",
+          "2.10",
+          "2.2",
+          "2.3",
+          "2.4",
+          "2.5",
+          "2.6",
+          "2.7",
+          "2.8",
+          "2.9",
+          "3.0",
+          "3.1",
+          "3.2",
+          "3.3",
+          "3.4",
+          "3.5",
+          "3.6",
+          "v3.3",
+          "v3.2",
+          "v3.1",
+          "v3.0",
+          "v2.10",
+          "v2.9",
+          "v2.8",
+          "v2.7",
+          "v2.6",
+          "v2.5",
+          "v2.4",
+          "v2.3",
+          "v2.2",
+          "v2.1",
+          "v2.0",
+          "v1.1",
+          "v1.0",
+          "v0.9",
+          "v0.8",
+          "v0.7",
+          "v0.6",
+          "v0.5",
+          "v0.4",
+          "v0.3",
+          "v0.2"
+         ]
+        }
+       ],
+       "aliases": [
+        "CVE-2024-3651",
+        "GHSA-jjg7-2v4v-x38h"
+       ],
+       "id": "PYSEC-2024-60",
+       "modified": "2026-06-10T17:01:21.102419358Z",
+       "published": "2024-07-07T18:15:00Z",
+       "schema_version": "1.7.5",
+       "severity": [
+        {
+         "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+         "type": "CVSS_V3"
+        }
+       ]
+      },
+      {
+       "affected": [
+        {
+         "database_specific": {
+          "source": "https://github.com/pypa/advisory-database/blob/main/vulns/idna/PYSEC-2026-215.yaml"
+         },
+         "ecosystem_specific": {},
+         "package": {
+          "ecosystem": "PyPI",
+          "name": "idna",
+          "purl": "pkg:pypi/idna"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "0"
+            },
+            {
+             "fixed": "3.15"
+            }
+           ],
+           "type": "ECOSYSTEM"
+          }
+         ],
+         "versions": [
+          "0.1",
+          "0.2",
+          "0.3",
+          "0.4",
+          "0.5",
+          "0.6",
+          "0.7",
+          "0.8",
+          "0.9",
+          "1.0",
+          "1.1",
+          "2.0",
+          "2.1",
+          "2.10",
+          "2.2",
+          "2.3",
+          "2.4",
+          "2.5",
+          "2.6",
+          "2.7",
+          "2.8",
+          "2.9",
+          "3.0",
+          "3.1",
+          "3.10",
+          "3.11",
+          "3.12",
+          "3.13",
+          "3.14",
+          "3.2",
+          "3.3",
+          "3.4",
+          "3.5",
+          "3.6",
+          "3.7",
+          "3.8",
+          "3.9"
+         ]
+        }
+       ],
+       "aliases": [
+        "CVE-2026-45409",
+        "GHSA-65pc-fj4g-8rjx"
+       ],
+       "id": "PYSEC-2026-215",
+       "modified": "2026-06-16T16:15:04.639265054Z",
+       "published": "2026-06-05T23:16:43.343Z",
+       "schema_version": "1.7.5",
+       "severity": [
+        {
+         "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L",
+         "type": "CVSS_V3"
+        }
+       ]
+      },
+      {
+       "affected": [
+        {
+         "database_specific": {
+          "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2026/05/GHSA-65pc-fj4g-8rjx/GHSA-65pc-fj4g-8rjx.json"
+         },
+         "package": {
+          "ecosystem": "PyPI",
+          "name": "idna",
+          "purl": "pkg:pypi/idna"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "0"
+            },
+            {
+             "fixed": "3.15"
+            }
+           ],
+           "type": "ECOSYSTEM"
+          }
+         ],
+         "versions": [
+          "0.1",
+          "0.2",
+          "0.3",
+          "0.4",
+          "0.5",
+          "0.6",
+          "0.7",
+          "0.8",
+          "0.9",
+          "1.0",
+          "1.1",
+          "2.0",
+          "2.1",
+          "2.10",
+          "2.2",
+          "2.3",
+          "2.4",
+          "2.5",
+          "2.6",
+          "2.7",
+          "2.8",
+          "2.9",
+          "3.0",
+          "3.1",
+          "3.10",
+          "3.11",
+          "3.12",
+          "3.13",
+          "3.14",
+          "3.2",
+          "3.3",
+          "3.4",
+          "3.5",
+          "3.6",
+          "3.7",
+          "3.8",
+          "3.9"
+         ]
+        }
+       ],
+       "aliases": [
+        "CVE-2026-45409",
+        "PYSEC-2026-215"
+       ],
+       "database_specific": {
+        "cwe_ids": [
+         "CWE-1333"
+        ],
+        "github_reviewed": true,
+        "github_reviewed_at": "2026-05-19T14:34:32Z",
+        "nvd_published_at": "2026-06-05T23:16:43Z",
+        "severity": "MODERATE"
+       },
+       "id": "GHSA-65pc-fj4g-8rjx",
+       "modified": "2026-09-10T03:50:45.700124422Z",
+       "published": "2026-05-19T14:34:32Z",
+       "schema_version": "1.9.0",
+       "severity": [
+        {
+         "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L",
+         "type": "CVSS_V3"
+        },
+        {
+         "score": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:N/VI:N/VA:L/SC:N/SI:N/SA:N",
+         "type": "CVSS_V4"
+        }
+       ]
+      },
+      {
+       "affected": [
+        {
+         "database_specific": {
+          "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2024/04/GHSA-jjg7-2v4v-x38h/GHSA-jjg7-2v4v-x38h.json"
+         },
+         "package": {
+          "ecosystem": "PyPI",
+          "name": "idna",
+          "purl": "pkg:pypi/idna"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "0"
+            },
+            {
+             "fixed": "3.7"
+            }
+           ],
+           "type": "ECOSYSTEM"
+          }
+         ],
+         "versions": [
+          "0.1",
+          "0.2",
+          "0.3",
+          "0.4",
+          "0.5",
+          "0.6",
+          "0.7",
+          "0.8",
+          "0.9",
+          "1.0",
+          "1.1",
+          "2.0",
+          "2.1",
+          "2.10",
+          "2.2",
+          "2.3",
+          "2.4",
+          "2.5",
+          "2.6",
+          "2.7",
+          "2.8",
+          "2.9",
+          "3.0",
+          "3.1",
+          "3.2",
+          "3.3",
+          "3.4",
+          "3.5",
+          "3.6"
+         ]
+        }
+       ],
+       "aliases": [
+        "CVE-2024-3651",
+        "PYSEC-2024-60"
+       ],
+       "database_specific": {
+        "cwe_ids": [
+         "CWE-1333",
+         "CWE-400"
+        ],
+        "github_reviewed": true,
+        "github_reviewed_at": "2024-04-11T21:32:40Z",
+        "nvd_published_at": "2024-07-07T18:15:09Z",
+        "severity": "MODERATE"
+       },
+       "id": "GHSA-jjg7-2v4v-x38h",
+       "modified": "2026-09-10T03:50:12.774088619Z",
+       "published": "2024-04-11T21:32:40Z",
+       "schema_version": "1.9.0",
+       "severity": [
+        {
+         "score": "CVSS:3.1/AV:L/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+         "type": "CVSS_V3"
+        },
+        {
+         "score": "CVSS:4.0/AV:L/AC:L/AT:N/PR:N/UI:N/VC:N/VI:N/VA:H/SC:N/SI:N/SA:N",
+         "type": "CVSS_V4"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "package": {
+      "name": "urllib3",
+      "version": "1.23.0",
+      "ecosystem": "PyPI",
+      "purl": "pkg:pypi/urllib3@1.23.0"
+     },
+     "groups": [
+      {
+       "ids": [
+        "PYSEC-2019-132",
+        "GHSA-r64q-w8jr-g9qp"
+       ],
+       "aliases": [
+        "CVE-2019-11236",
+        "GHSA-r64q-w8jr-g9qp",
+        "PYSEC-2019-132"
+       ],
+       "max_severity": "6.1"
+      },
+      {
+       "ids": [
+        "PYSEC-2019-133",
+        "GHSA-mh33-7rrq-662w"
+       ],
+       "aliases": [
+        "CVE-2019-11324",
+        "GHSA-mh33-7rrq-662w",
+        "PYSEC-2019-133"
+       ],
+       "max_severity": "8.7"
+      },
+      {
+       "ids": [
+        "PYSEC-2020-148",
+        "GHSA-wqvq-5m8c-6g24"
+       ],
+       "aliases": [
+        "CVE-2020-26137",
+        "GHSA-wqvq-5m8c-6g24",
+        "PYSEC-2020-148"
+       ],
+       "max_severity": "6.9"
+      },
+      {
+       "ids": [
+        "PYSEC-2023-192",
+        "GHSA-v845-jxx5-vc9f"
+       ],
+       "aliases": [
+        "CVE-2023-43804",
+        "GHSA-v845-jxx5-vc9f",
+        "PYSEC-2023-192"
+       ],
+       "max_severity": "8.1"
+      },
+      {
+       "ids": [
+        "PYSEC-2023-207",
+        "GHSA-gwvm-45gx-3cf8"
+       ],
+       "aliases": [
+        "CVE-2018-25091",
+        "GHSA-gwvm-45gx-3cf8",
+        "PYSEC-2023-207"
+       ],
+       "max_severity": "6.1"
+      },
+      {
+       "ids": [
+        "PYSEC-2023-212",
+        "GHSA-g4mx-q9vg-27p4"
+       ],
+       "aliases": [
+        "CVE-2023-45803",
+        "GHSA-g4mx-q9vg-27p4",
+        "PYSEC-2023-212"
+       ],
+       "max_severity": "5.7"
+      },
+      {
+       "ids": [
+        "PYSEC-2026-141",
+        "GHSA-qccp-gfcp-xxvc"
+       ],
+       "aliases": [
+        "CVE-2026-44431",
+        "GHSA-qccp-gfcp-xxvc",
+        "PYSEC-2026-141"
+       ],
+       "max_severity": "8.2"
+      },
+      {
+       "ids": [
+        "PYSEC-2026-1994",
+        "GHSA-2xpw-w6gg-jr37"
+       ],
+       "aliases": [
+        "CVE-2025-66471",
+        "GHSA-2xpw-w6gg-jr37",
+        "PYSEC-2026-1994"
+       ],
+       "max_severity": "8.9"
+      },
+      {
+       "ids": [
+        "PYSEC-2026-1995",
+        "GHSA-34jh-p97f-mpxf"
+       ],
+       "aliases": [
+        "CVE-2024-37891",
+        "GHSA-34jh-p97f-mpxf",
+        "PYSEC-2026-1995"
+       ],
+       "max_severity": "4.4"
+      },
+      {
+       "ids": [
+        "PYSEC-2026-1996",
+        "GHSA-38jv-5279-wg99"
+       ],
+       "aliases": [
+        "CVE-2026-21441",
+        "GHSA-38jv-5279-wg99",
+        "PYSEC-2026-1996"
+       ],
+       "max_severity": "8.9"
+      },
+      {
+       "ids": [
+        "PYSEC-2026-1999",
+        "GHSA-pq67-6m6q-mj2v"
+       ],
+       "aliases": [
+        "CVE-2025-50181",
+        "GHSA-pq67-6m6q-mj2v",
+        "PYSEC-2026-1999"
+       ],
+       "max_severity": "5.3"
+      },
+      {
+       "ids": [
+        "PYSEC-2026-4177",
+        "GHSA-vxq7-64xx-v4gw"
+       ],
+       "aliases": [
+        "CVE-2026-97689",
+        "GHSA-vxq7-64xx-v4gw",
+        "PYSEC-2026-4177"
+       ],
+       "max_severity": "8.9"
+      }
+     ],
+     "vulnerabilities": [
+      {
+       "affected": [
+        {
+         "database_specific": {
+          "source": "https://github.com/pypa/advisory-database/blob/main/vulns/urllib3/PYSEC-2019-132.yaml"
+         },
+         "package": {
+          "ecosystem": "PyPI",
+          "name": "urllib3",
+          "purl": "pkg:pypi/urllib3"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "0"
+            },
+            {
+             "fixed": "1.24.3"
+            }
+           ],
+           "type": "ECOSYSTEM"
+          }
+         ],
+         "versions": [
+          "0.2",
+          "0.3",
+          "0.3.1",
+          "0.4.0",
+          "0.4.1",
+          "1.0",
+          "1.0.1",
+          "1.0.2",
+          "1.1",
+          "1.2",
+          "1.2.1",
+          "1.2.2",
+          "1.3",
+          "1.4",
+          "1.5",
+          "1.6",
+          "1.7",
+          "1.7.1",
+          "1.8",
+          "1.8.2",
+          "1.8.3",
+          "1.9",
+          "1.9.1",
+          "1.10",
+          "1.10.1",
+          "1.10.2",
+          "1.10.3",
+          "1.10.4",
+          "1.11",
+          "1.12",
+          "1.13",
+          "1.13.1",
+          "1.14",
+          "1.15",
+          "1.15.1",
+          "1.16",
+          "1.17",
+          "1.18",
+          "1.18.1",
+          "1.19",
+          "1.19.1",
+          "1.20",
+          "1.21",
+          "1.21.1",
+          "1.22",
+          "1.23",
+          "1.24",
+          "1.24.1",
+          "1.24.2"
+         ]
+        }
+       ],
+       "aliases": [
+        "CVE-2019-11236",
+        "GHSA-r64q-w8jr-g9qp"
+       ],
+       "id": "PYSEC-2019-132",
+       "modified": "2023-11-08T04:01:00.047784Z",
+       "published": "2019-04-15T15:29:00Z",
+       "schema_version": "1.7.3"
+      },
+      {
+       "affected": [
+        {
+         "database_specific": {
+          "source": "https://github.com/pypa/advisory-database/blob/main/vulns/urllib3/PYSEC-2019-133.yaml"
+         },
+         "package": {
+          "ecosystem": "PyPI",
+          "name": "urllib3",
+          "purl": "pkg:pypi/urllib3"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "0"
+            },
+            {
+             "fixed": "1.24.2"
+            }
+           ],
+           "type": "ECOSYSTEM"
+          }
+         ],
+         "versions": [
+          "0.2",
+          "0.3",
+          "0.3.1",
+          "0.4.0",
+          "0.4.1",
+          "1.0",
+          "1.0.1",
+          "1.0.2",
+          "1.1",
+          "1.2",
+          "1.2.1",
+          "1.2.2",
+          "1.3",
+          "1.4",
+          "1.5",
+          "1.6",
+          "1.7",
+          "1.7.1",
+          "1.8",
+          "1.8.2",
+          "1.8.3",
+          "1.9",
+          "1.9.1",
+          "1.10",
+          "1.10.1",
+          "1.10.2",
+          "1.10.3",
+          "1.10.4",
+          "1.11",
+          "1.12",
+          "1.13",
+          "1.13.1",
+          "1.14",
+          "1.15",
+          "1.15.1",
+          "1.16",
+          "1.17",
+          "1.18",
+          "1.18.1",
+          "1.19",
+          "1.19.1",
+          "1.20",
+          "1.21",
+          "1.21.1",
+          "1.22",
+          "1.23",
+          "1.24",
+          "1.24.1"
+         ]
+        }
+       ],
+       "aliases": [
+        "CVE-2019-11324",
+        "GHSA-mh33-7rrq-662w"
+       ],
+       "id": "PYSEC-2019-133",
+       "modified": "2023-11-08T04:01:00.967964Z",
+       "published": "2019-04-18T21:29:00Z",
+       "schema_version": "1.7.3"
+      },
+      {
+       "affected": [
+        {
+         "database_specific": {
+          "source": "https://github.com/pypa/advisory-database/blob/main/vulns/urllib3/PYSEC-2020-148.yaml"
+         },
+         "package": {
+          "ecosystem": "PyPI",
+          "name": "urllib3",
+          "purl": "pkg:pypi/urllib3"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "0"
+            },
+            {
+             "fixed": "1dd69c5c5982fae7c87a620d487c2ebf7a6b436b"
+            }
+           ],
+           "repo": "https://github.com/urllib3/urllib3",
+           "type": "GIT"
+          },
+          {
+           "events": [
+            {
+             "introduced": "0"
+            },
+            {
+             "fixed": "1.25.9"
+            }
+           ],
+           "type": "ECOSYSTEM"
+          }
+         ],
+         "versions": [
+          "0.2",
+          "0.3",
+          "0.3.1",
+          "0.4.0",
+          "0.4.1",
+          "1.0",
+          "1.0.1",
+          "1.0.2",
+          "1.1",
+          "1.2",
+          "1.2.1",
+          "1.2.2",
+          "1.3",
+          "1.4",
+          "1.5",
+          "1.6",
+          "1.7",
+          "1.7.1",
+          "1.8",
+          "1.8.2",
+          "1.8.3",
+          "1.9",
+          "1.9.1",
+          "1.10",
+          "1.10.1",
+          "1.10.2",
+          "1.10.3",
+          "1.10.4",
+          "1.11",
+          "1.12",
+          "1.13",
+          "1.13.1",
+          "1.14",
+          "1.15",
+          "1.15.1",
+          "1.16",
+          "1.17",
+          "1.18",
+          "1.18.1",
+          "1.19",
+          "1.19.1",
+          "1.20",
+          "1.21",
+          "1.21.1",
+          "1.22",
+          "1.23",
+          "1.24",
+          "1.24.1",
+          "1.24.2",
+          "1.24.3",
+          "1.25",
+          "1.25.1",
+          "1.25.2",
+          "1.25.3",
+          "1.25.4",
+          "1.25.5",
+          "1.25.6",
+          "1.25.7",
+          "1.25.8"
+         ]
+        }
+       ],
+       "aliases": [
+        "CVE-2020-26137",
+        "GHSA-wqvq-5m8c-6g24"
+       ],
+       "id": "PYSEC-2020-148",
+       "modified": "2023-11-08T04:03:14.251187Z",
+       "published": "2020-09-30T18:15:00Z",
+       "schema_version": "1.7.3"
+      },
+      {
+       "affected": [
+        {
+         "database_specific": {
+          "source": "https://github.com/pypa/advisory-database/blob/main/vulns/urllib3/PYSEC-2023-192.yaml"
+         },
+         "package": {
+          "ecosystem": "PyPI",
+          "name": "urllib3",
+          "purl": "pkg:pypi/urllib3"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "0"
+            },
+            {
+             "fixed": "644124ecd0b6e417c527191f866daa05a5a2056d"
+            },
+            {
+             "fixed": "01220354d389cd05474713f8c982d05c9b17aafb"
+            }
+           ],
+           "repo": "https://github.com/urllib3/urllib3",
+           "type": "GIT"
+          },
+          {
+           "events": [
+            {
+             "introduced": "2.0.0"
+            },
+            {
+             "fixed": "2.0.6"
+            },
+            {
+             "introduced": "0"
+            },
+            {
+             "fixed": "1.26.17"
+            }
+           ],
+           "type": "ECOSYSTEM"
+          }
+         ],
+         "versions": [
+          "0.2",
+          "0.3",
+          "0.3.1",
+          "0.4.0",
+          "0.4.1",
+          "1.0",
+          "1.0.1",
+          "1.0.2",
+          "1.1",
+          "1.10",
+          "1.10.1",
+          "1.10.2",
+          "1.10.3",
+          "1.10.4",
+          "1.11",
+          "1.12",
+          "1.13",
+          "1.13.1",
+          "1.14",
+          "1.15",
+          "1.15.1",
+          "1.16",
+          "1.17",
+          "1.18",
+          "1.18.1",
+          "1.19",
+          "1.19.1",
+          "1.2",
+          "1.2.1",
+          "1.2.2",
+          "1.20",
+          "1.21",
+          "1.21.1",
+          "1.22",
+          "1.23",
+          "1.24",
+          "1.24.1",
+          "1.24.2",
+          "1.24.3",
+          "1.25",
+          "1.25.1",
+          "1.25.10",
+          "1.25.11",
+          "1.25.2",
+          "1.25.3",
+          "1.25.4",
+          "1.25.5",
+          "1.25.6",
+          "1.25.7",
+          "1.25.8",
+          "1.25.9",
+          "1.26.0",
+          "1.26.1",
+          "1.26.10",
+          "1.26.11",
+          "1.26.12",
+          "1.26.13",
+          "1.26.14",
+          "1.26.15",
+          "1.26.16",
+          "1.26.2",
+          "1.26.3",
+          "1.26.4",
+          "1.26.5",
+          "1.26.6",
+          "1.26.7",
+          "1.26.8",
+          "1.26.9",
+          "1.3",
+          "1.4",
+          "1.5",
+          "1.6",
+          "1.7",
+          "1.7.1",
+          "1.8",
+          "1.8.2",
+          "1.8.3",
+          "1.9",
+          "1.9.1",
+          "2.0.0",
+          "2.0.1",
+          "2.0.2",
+          "2.0.3",
+          "2.0.4",
+          "2.0.5"
+         ]
+        }
+       ],
+       "aliases": [
+        "CVE-2023-43804",
+        "GHSA-v845-jxx5-vc9f"
+       ],
+       "id": "PYSEC-2023-192",
+       "modified": "2023-11-08T04:13:33.452167Z",
+       "published": "2023-10-04T17:15:00Z",
+       "schema_version": "1.7.3",
+       "severity": [
+        {
+         "score": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N",
+         "type": "CVSS_V3"
+        }
+       ]
+      },
+      {
+       "affected": [
+        {
+         "database_specific": {
+          "source": "https://github.com/pypa/advisory-database/blob/main/vulns/urllib3/PYSEC-2023-207.yaml"
+         },
+         "package": {
+          "ecosystem": "PyPI",
+          "name": "urllib3",
+          "purl": "pkg:pypi/urllib3"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "0"
+            },
+            {
+             "fixed": "adb358f8e06865406d1f05e581a16cbea2136fbc"
+            }
+           ],
+           "repo": "https://github.com/urllib3/urllib3",
+           "type": "GIT"
+          },
+          {
+           "events": [
+            {
+             "introduced": "0"
+            },
+            {
+             "fixed": "1.24.2"
+            }
+           ],
+           "type": "ECOSYSTEM"
+          }
+         ],
+         "versions": [
+          "0.2",
+          "0.3",
+          "0.3.1",
+          "0.4.0",
+          "0.4.1",
+          "1.0",
+          "1.0.1",
+          "1.0.2",
+          "1.1",
+          "1.10",
+          "1.10.1",
+          "1.10.2",
+          "1.10.3",
+          "1.10.4",
+          "1.11",
+          "1.12",
+          "1.13",
+          "1.13.1",
+          "1.14",
+          "1.15",
+          "1.15.1",
+          "1.16",
+          "1.17",
+          "1.18",
+          "1.18.1",
+          "1.19",
+          "1.19.1",
+          "1.2",
+          "1.2.1",
+          "1.2.2",
+          "1.20",
+          "1.21",
+          "1.21.1",
+          "1.22",
+          "1.23",
+          "1.24",
+          "1.24.1",
+          "1.3",
+          "1.4",
+          "1.5",
+          "1.6",
+          "1.7",
+          "1.7.1",
+          "1.8",
+          "1.8.2",
+          "1.8.3",
+          "1.9",
+          "1.9.1",
+          "0.4"
+         ]
+        }
+       ],
+       "aliases": [
+        "CVE-2018-25091",
+        "GHSA-gwvm-45gx-3cf8"
+       ],
+       "id": "PYSEC-2023-207",
+       "modified": "2026-06-10T17:02:48.915096311Z",
+       "published": "2023-10-15T19:15:00Z",
+       "schema_version": "1.7.5",
+       "severity": [
+        {
+         "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N",
+         "type": "CVSS_V3"
+        }
+       ]
+      },
+      {
+       "affected": [
+        {
+         "database_specific": {
+          "source": "https://github.com/pypa/advisory-database/blob/main/vulns/urllib3/PYSEC-2023-212.yaml"
+         },
+         "package": {
+          "ecosystem": "PyPI",
+          "name": "urllib3",
+          "purl": "pkg:pypi/urllib3"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "0"
+            },
+            {
+             "fixed": "4e98d57809dacab1cbe625fddeec1a290c478ea9"
+            }
+           ],
+           "repo": "https://github.com/urllib3/urllib3",
+           "type": "GIT"
+          },
+          {
+           "events": [
+            {
+             "introduced": "2.0.0"
+            },
+            {
+             "fixed": "2.0.7"
+            },
+            {
+             "introduced": "0"
+            },
+            {
+             "fixed": "1.26.18"
+            }
+           ],
+           "type": "ECOSYSTEM"
+          }
+         ],
+         "versions": [
+          "0.2",
+          "0.3",
+          "0.3.1",
+          "0.4.0",
+          "0.4.1",
+          "1.0",
+          "1.0.1",
+          "1.0.2",
+          "1.1",
+          "1.10",
+          "1.10.1",
+          "1.10.2",
+          "1.10.3",
+          "1.10.4",
+          "1.11",
+          "1.12",
+          "1.13",
+          "1.13.1",
+          "1.14",
+          "1.15",
+          "1.15.1",
+          "1.16",
+          "1.17",
+          "1.18",
+          "1.18.1",
+          "1.19",
+          "1.19.1",
+          "1.2",
+          "1.2.1",
+          "1.2.2",
+          "1.20",
+          "1.21",
+          "1.21.1",
+          "1.22",
+          "1.23",
+          "1.24",
+          "1.24.1",
+          "1.24.2",
+          "1.24.3",
+          "1.25",
+          "1.25.1",
+          "1.25.10",
+          "1.25.11",
+          "1.25.2",
+          "1.25.3",
+          "1.25.4",
+          "1.25.5",
+          "1.25.6",
+          "1.25.7",
+          "1.25.8",
+          "1.25.9",
+          "1.26.0",
+          "1.26.1",
+          "1.26.10",
+          "1.26.11",
+          "1.26.12",
+          "1.26.13",
+          "1.26.14",
+          "1.26.15",
+          "1.26.16",
+          "1.26.17",
+          "1.26.2",
+          "1.26.3",
+          "1.26.4",
+          "1.26.5",
+          "1.26.6",
+          "1.26.7",
+          "1.26.8",
+          "1.26.9",
+          "1.3",
+          "1.4",
+          "1.5",
+          "1.6",
+          "1.7",
+          "1.7.1",
+          "1.8",
+          "1.8.2",
+          "1.8.3",
+          "1.9",
+          "1.9.1",
+          "2.0.0",
+          "2.0.1",
+          "2.0.2",
+          "2.0.3",
+          "2.0.4",
+          "2.0.5",
+          "2.0.6"
+         ]
+        }
+       ],
+       "aliases": [
+        "CVE-2023-45803",
+        "GHSA-g4mx-q9vg-27p4"
+       ],
+       "id": "PYSEC-2023-212",
+       "modified": "2023-11-08T04:13:39.165450Z",
+       "published": "2023-10-17T20:15:00Z",
+       "schema_version": "1.7.3",
+       "severity": [
+        {
+         "score": "CVSS:3.1/AV:A/AC:H/PR:H/UI:N/S:U/C:H/I:N/A:N",
+         "type": "CVSS_V3"
+        }
+       ]
+      },
+      {
+       "affected": [
+        {
+         "database_specific": {
+          "source": "https://github.com/pypa/advisory-database/blob/main/vulns/urllib3/PYSEC-2026-141.yaml"
+         },
+         "package": {
+          "ecosystem": "PyPI",
+          "name": "urllib3",
+          "purl": "pkg:pypi/urllib3"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "1.23"
+            },
+            {
+             "fixed": "2.7.0"
+            }
+           ],
+           "type": "ECOSYSTEM"
+          }
+         ],
+         "versions": [
+          "1.23",
+          "1.24",
+          "1.24.1",
+          "1.24.2",
+          "1.24.3",
+          "1.25",
+          "1.25.1",
+          "1.25.10",
+          "1.25.11",
+          "1.25.2",
+          "1.25.3",
+          "1.25.4",
+          "1.25.5",
+          "1.25.6",
+          "1.25.7",
+          "1.25.8",
+          "1.25.9",
+          "1.26.0",
+          "1.26.1",
+          "1.26.10",
+          "1.26.11",
+          "1.26.12",
+          "1.26.13",
+          "1.26.14",
+          "1.26.15",
+          "1.26.16",
+          "1.26.17",
+          "1.26.18",
+          "1.26.19",
+          "1.26.2",
+          "1.26.20",
+          "1.26.3",
+          "1.26.4",
+          "1.26.5",
+          "1.26.6",
+          "1.26.7",
+          "1.26.8",
+          "1.26.9",
+          "2.0.0",
+          "2.0.0a1",
+          "2.0.0a2",
+          "2.0.0a3",
+          "2.0.0a4",
+          "2.0.1",
+          "2.0.2",
+          "2.0.3",
+          "2.0.4",
+          "2.0.5",
+          "2.0.6",
+          "2.0.7",
+          "2.1.0",
+          "2.2.0",
+          "2.2.1",
+          "2.2.2",
+          "2.2.3",
+          "2.3.0",
+          "2.4.0",
+          "2.5.0",
+          "2.6.0",
+          "2.6.1",
+          "2.6.2",
+          "2.6.3"
+         ]
+        }
+       ],
+       "aliases": [
+        "CVE-2026-44431",
+        "GHSA-qccp-gfcp-xxvc"
+       ],
+       "id": "PYSEC-2026-141",
+       "modified": "2026-05-20T09:19:20.983812Z",
+       "published": "2026-05-13T16:16:57.150Z",
+       "schema_version": "1.7.5",
+       "severity": [
+        {
+         "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N",
+         "type": "CVSS_V3"
+        }
+       ]
+      },
+      {
+       "affected": [
+        {
+         "database_specific": {
+          "source": "https://github.com/pypa/advisory-database/blob/main/vulns/urllib3/PYSEC-2026-1994.yaml"
+         },
+         "package": {
+          "ecosystem": "PyPI",
+          "name": "urllib3",
+          "purl": "pkg:pypi/urllib3"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "1.0"
+            },
+            {
+             "fixed": "2.6.0"
+            }
+           ],
+           "type": "ECOSYSTEM"
+          }
+         ],
+         "versions": [
+          "1.0",
+          "1.0.1",
+          "1.0.2",
+          "1.1",
+          "1.10",
+          "1.10.1",
+          "1.10.2",
+          "1.10.3",
+          "1.10.4",
+          "1.11",
+          "1.12",
+          "1.13",
+          "1.13.1",
+          "1.14",
+          "1.15",
+          "1.15.1",
+          "1.16",
+          "1.17",
+          "1.18",
+          "1.18.1",
+          "1.19",
+          "1.19.1",
+          "1.2",
+          "1.2.1",
+          "1.2.2",
+          "1.20",
+          "1.21",
+          "1.21.1",
+          "1.22",
+          "1.23",
+          "1.24",
+          "1.24.1",
+          "1.24.2",
+          "1.24.3",
+          "1.25",
+          "1.25.1",
+          "1.25.10",
+          "1.25.11",
+          "1.25.2",
+          "1.25.3",
+          "1.25.4",
+          "1.25.5",
+          "1.25.6",
+          "1.25.7",
+          "1.25.8",
+          "1.25.9",
+          "1.26.0",
+          "1.26.1",
+          "1.26.10",
+          "1.26.11",
+          "1.26.12",
+          "1.26.13",
+          "1.26.14",
+          "1.26.15",
+          "1.26.16",
+          "1.26.17",
+          "1.26.18",
+          "1.26.19",
+          "1.26.2",
+          "1.26.20",
+          "1.26.3",
+          "1.26.4",
+          "1.26.5",
+          "1.26.6",
+          "1.26.7",
+          "1.26.8",
+          "1.26.9",
+          "1.3",
+          "1.4",
+          "1.5",
+          "1.6",
+          "1.7",
+          "1.7.1",
+          "1.8",
+          "1.8.2",
+          "1.8.3",
+          "1.9",
+          "1.9.1",
+          "2.0.0",
+          "2.0.0a1",
+          "2.0.0a2",
+          "2.0.0a3",
+          "2.0.0a4",
+          "2.0.1",
+          "2.0.2",
+          "2.0.3",
+          "2.0.4",
+          "2.0.5",
+          "2.0.6",
+          "2.0.7",
+          "2.1.0",
+          "2.2.0",
+          "2.2.1",
+          "2.2.2",
+          "2.2.3",
+          "2.3.0",
+          "2.4.0",
+          "2.5.0"
+         ]
+        }
+       ],
+       "aliases": [
+        "CVE-2025-66471",
+        "GHSA-2xpw-w6gg-jr37"
+       ],
+       "id": "PYSEC-2026-1994",
+       "modified": "2026-07-07T17:48:15.379954669Z",
+       "published": "2026-07-07T16:03:12.332335Z",
+       "schema_version": "1.7.5",
+       "severity": [
+        {
+         "score": "CVSS:4.0/AV:N/AC:L/AT:P/PR:N/UI:N/VC:N/VI:N/VA:H/SC:N/SI:N/SA:H",
+         "type": "CVSS_V4"
+        }
+       ]
+      },
+      {
+       "affected": [
+        {
+         "database_specific": {
+          "source": "https://github.com/pypa/advisory-database/blob/main/vulns/urllib3/PYSEC-2026-1995.yaml"
+         },
+         "package": {
+          "ecosystem": "PyPI",
+          "name": "urllib3",
+          "purl": "pkg:pypi/urllib3"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "0"
+            },
+            {
+             "fixed": "1.26.19"
+            },
+            {
+             "introduced": "2.0.0"
+            },
+            {
+             "fixed": "2.2.2"
+            }
+           ],
+           "type": "ECOSYSTEM"
+          }
+         ],
+         "versions": [
+          "0.2",
+          "0.3",
+          "0.3.1",
+          "0.4.0",
+          "0.4.1",
+          "1.0",
+          "1.0.1",
+          "1.0.2",
+          "1.1",
+          "1.10",
+          "1.10.1",
+          "1.10.2",
+          "1.10.3",
+          "1.10.4",
+          "1.11",
+          "1.12",
+          "1.13",
+          "1.13.1",
+          "1.14",
+          "1.15",
+          "1.15.1",
+          "1.16",
+          "1.17",
+          "1.18",
+          "1.18.1",
+          "1.19",
+          "1.19.1",
+          "1.2",
+          "1.2.1",
+          "1.2.2",
+          "1.20",
+          "1.21",
+          "1.21.1",
+          "1.22",
+          "1.23",
+          "1.24",
+          "1.24.1",
+          "1.24.2",
+          "1.24.3",
+          "1.25",
+          "1.25.1",
+          "1.25.10",
+          "1.25.11",
+          "1.25.2",
+          "1.25.3",
+          "1.25.4",
+          "1.25.5",
+          "1.25.6",
+          "1.25.7",
+          "1.25.8",
+          "1.25.9",
+          "1.26.0",
+          "1.26.1",
+          "1.26.10",
+          "1.26.11",
+          "1.26.12",
+          "1.26.13",
+          "1.26.14",
+          "1.26.15",
+          "1.26.16",
+          "1.26.17",
+          "1.26.18",
+          "1.26.2",
+          "1.26.3",
+          "1.26.4",
+          "1.26.5",
+          "1.26.6",
+          "1.26.7",
+          "1.26.8",
+          "1.26.9",
+          "1.3",
+          "1.4",
+          "1.5",
+          "1.6",
+          "1.7",
+          "1.7.1",
+          "1.8",
+          "1.8.2",
+          "1.8.3",
+          "1.9",
+          "1.9.1",
+          "2.0.0",
+          "2.0.1",
+          "2.0.2",
+          "2.0.3",
+          "2.0.4",
+          "2.0.5",
+          "2.0.6",
+          "2.0.7",
+          "2.1.0",
+          "2.2.0",
+          "2.2.1"
+         ]
+        }
+       ],
+       "aliases": [
+        "CVE-2024-37891",
+        "GHSA-34jh-p97f-mpxf"
+       ],
+       "id": "PYSEC-2026-1995",
+       "modified": "2026-07-07T17:48:15.400192088Z",
+       "published": "2026-07-07T14:34:34.848392Z",
+       "schema_version": "1.7.5",
+       "severity": [
+        {
+         "score": "CVSS:3.1/AV:N/AC:H/PR:H/UI:N/S:U/C:H/I:N/A:N",
+         "type": "CVSS_V3"
+        }
+       ]
+      },
+      {
+       "affected": [
+        {
+         "database_specific": {
+          "source": "https://github.com/pypa/advisory-database/blob/main/vulns/urllib3/PYSEC-2026-1996.yaml"
+         },
+         "package": {
+          "ecosystem": "PyPI",
+          "name": "urllib3",
+          "purl": "pkg:pypi/urllib3"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "1.22"
+            },
+            {
+             "fixed": "2.6.3"
+            }
+           ],
+           "type": "ECOSYSTEM"
+          }
+         ],
+         "versions": [
+          "1.22",
+          "1.23",
+          "1.24",
+          "1.24.1",
+          "1.24.2",
+          "1.24.3",
+          "1.25",
+          "1.25.1",
+          "1.25.10",
+          "1.25.11",
+          "1.25.2",
+          "1.25.3",
+          "1.25.4",
+          "1.25.5",
+          "1.25.6",
+          "1.25.7",
+          "1.25.8",
+          "1.25.9",
+          "1.26.0",
+          "1.26.1",
+          "1.26.10",
+          "1.26.11",
+          "1.26.12",
+          "1.26.13",
+          "1.26.14",
+          "1.26.15",
+          "1.26.16",
+          "1.26.17",
+          "1.26.18",
+          "1.26.19",
+          "1.26.2",
+          "1.26.20",
+          "1.26.3",
+          "1.26.4",
+          "1.26.5",
+          "1.26.6",
+          "1.26.7",
+          "1.26.8",
+          "1.26.9",
+          "2.0.0",
+          "2.0.0a1",
+          "2.0.0a2",
+          "2.0.0a3",
+          "2.0.0a4",
+          "2.0.1",
+          "2.0.2",
+          "2.0.3",
+          "2.0.4",
+          "2.0.5",
+          "2.0.6",
+          "2.0.7",
+          "2.1.0",
+          "2.2.0",
+          "2.2.1",
+          "2.2.2",
+          "2.2.3",
+          "2.3.0",
+          "2.4.0",
+          "2.5.0",
+          "2.6.0",
+          "2.6.1",
+          "2.6.2"
+         ]
+        }
+       ],
+       "aliases": [
+        "CVE-2026-21441",
+        "GHSA-38jv-5279-wg99"
+       ],
+       "id": "PYSEC-2026-1996",
+       "modified": "2026-07-07T17:48:15.382053236Z",
+       "published": "2026-07-07T16:03:16.841533Z",
+       "schema_version": "1.7.5",
+       "severity": [
+        {
+         "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+         "type": "CVSS_V3"
+        },
+        {
+         "score": "CVSS:4.0/AV:N/AC:L/AT:P/PR:N/UI:N/VC:N/VI:N/VA:H/SC:N/SI:N/SA:H",
+         "type": "CVSS_V4"
+        }
+       ]
+      },
+      {
+       "affected": [
+        {
+         "database_specific": {
+          "source": "https://github.com/pypa/advisory-database/blob/main/vulns/urllib3/PYSEC-2026-1999.yaml"
+         },
+         "package": {
+          "ecosystem": "PyPI",
+          "name": "urllib3",
+          "purl": "pkg:pypi/urllib3"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "0"
+            },
+            {
+             "fixed": "2.5.0"
+            }
+           ],
+           "type": "ECOSYSTEM"
+          }
+         ],
+         "versions": [
+          "0.2",
+          "0.3",
+          "0.3.1",
+          "0.4.0",
+          "0.4.1",
+          "1.0",
+          "1.0.1",
+          "1.0.2",
+          "1.1",
+          "1.10",
+          "1.10.1",
+          "1.10.2",
+          "1.10.3",
+          "1.10.4",
+          "1.11",
+          "1.12",
+          "1.13",
+          "1.13.1",
+          "1.14",
+          "1.15",
+          "1.15.1",
+          "1.16",
+          "1.17",
+          "1.18",
+          "1.18.1",
+          "1.19",
+          "1.19.1",
+          "1.2",
+          "1.2.1",
+          "1.2.2",
+          "1.20",
+          "1.21",
+          "1.21.1",
+          "1.22",
+          "1.23",
+          "1.24",
+          "1.24.1",
+          "1.24.2",
+          "1.24.3",
+          "1.25",
+          "1.25.1",
+          "1.25.10",
+          "1.25.11",
+          "1.25.2",
+          "1.25.3",
+          "1.25.4",
+          "1.25.5",
+          "1.25.6",
+          "1.25.7",
+          "1.25.8",
+          "1.25.9",
+          "1.26.0",
+          "1.26.1",
+          "1.26.10",
+          "1.26.11",
+          "1.26.12",
+          "1.26.13",
+          "1.26.14",
+          "1.26.15",
+          "1.26.16",
+          "1.26.17",
+          "1.26.18",
+          "1.26.19",
+          "1.26.2",
+          "1.26.20",
+          "1.26.3",
+          "1.26.4",
+          "1.26.5",
+          "1.26.6",
+          "1.26.7",
+          "1.26.8",
+          "1.26.9",
+          "1.3",
+          "1.4",
+          "1.5",
+          "1.6",
+          "1.7",
+          "1.7.1",
+          "1.8",
+          "1.8.2",
+          "1.8.3",
+          "1.9",
+          "1.9.1",
+          "2.0.0",
+          "2.0.0a1",
+          "2.0.0a2",
+          "2.0.0a3",
+          "2.0.0a4",
+          "2.0.1",
+          "2.0.2",
+          "2.0.3",
+          "2.0.4",
+          "2.0.5",
+          "2.0.6",
+          "2.0.7",
+          "2.1.0",
+          "2.2.0",
+          "2.2.1",
+          "2.2.2",
+          "2.2.3",
+          "2.3.0",
+          "2.4.0"
+         ]
+        }
+       ],
+       "aliases": [
+        "CVE-2025-50181",
+        "GHSA-pq67-6m6q-mj2v"
+       ],
+       "id": "PYSEC-2026-1999",
+       "modified": "2026-07-07T17:47:54.161376347Z",
+       "published": "2026-07-07T16:02:55.519678Z",
+       "schema_version": "1.7.5",
+       "severity": [
+        {
+         "score": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:H/I:N/A:N",
+         "type": "CVSS_V3"
+        }
+       ]
+      },
+      {
+       "affected": [
+        {
+         "database_specific": {
+          "source": "https://github.com/pypa/advisory-database/blob/main/vulns/urllib3/PYSEC-2026-4177.yaml"
+         },
+         "package": {
+          "ecosystem": "PyPI",
+          "name": "urllib3",
+          "purl": "pkg:pypi/urllib3"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "1.10.3"
+            },
+            {
+             "fixed": "2.8.0"
+            }
+           ],
+           "type": "ECOSYSTEM"
+          }
+         ],
+         "versions": [
+          "1.10.3",
+          "1.10.4",
+          "1.11",
+          "1.12",
+          "1.13",
+          "1.13.1",
+          "1.14",
+          "1.15",
+          "1.15.1",
+          "1.16",
+          "1.17",
+          "1.18",
+          "1.18.1",
+          "1.19",
+          "1.19.1",
+          "1.20",
+          "1.21",
+          "1.21.1",
+          "1.22",
+          "1.23",
+          "1.24",
+          "1.24.1",
+          "1.24.2",
+          "1.24.3",
+          "1.25",
+          "1.25.1",
+          "1.25.10",
+          "1.25.11",
+          "1.25.2",
+          "1.25.3",
+          "1.25.4",
+          "1.25.5",
+          "1.25.6",
+          "1.25.7",
+          "1.25.8",
+          "1.25.9",
+          "1.26.0",
+          "1.26.1",
+          "1.26.10",
+          "1.26.11",
+          "1.26.12",
+          "1.26.13",
+          "1.26.14",
+          "1.26.15",
+          "1.26.16",
+          "1.26.17",
+          "1.26.18",
+          "1.26.19",
+          "1.26.2",
+          "1.26.20",
+          "1.26.3",
+          "1.26.4",
+          "1.26.5",
+          "1.26.6",
+          "1.26.7",
+          "1.26.8",
+          "1.26.9",
+          "2.0.0",
+          "2.0.0a1",
+          "2.0.0a2",
+          "2.0.0a3",
+          "2.0.0a4",
+          "2.0.1",
+          "2.0.2",
+          "2.0.3",
+          "2.0.4",
+          "2.0.5",
+          "2.0.6",
+          "2.0.7",
+          "2.1.0",
+          "2.2.0",
+          "2.2.1",
+          "2.2.2",
+          "2.2.3",
+          "2.3.0",
+          "2.4.0",
+          "2.5.0",
+          "2.6.0",
+          "2.6.1",
+          "2.6.2",
+          "2.6.3",
+          "2.7.0"
+         ]
+        }
+       ],
+       "aliases": [
+        "CVE-2026-97689",
+        "GHSA-vxq7-64xx-v4gw"
+       ],
+       "id": "PYSEC-2026-4177",
+       "modified": "2026-10-01T17:45:18.336090182Z",
+       "published": "2026-10-01T16:38:41.098900Z",
+       "schema_version": "1.9.0",
+       "severity": [
+        {
+         "score": "CVSS:4.0/AV:N/AC:L/AT:P/PR:N/UI:N/VC:N/VI:N/VA:H/SC:N/SI:N/SA:H",
+         "type": "CVSS_V4"
+        }
+       ]
+      },
+      {
+       "affected": [
+        {
+         "database_specific": {
+          "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2025/12/GHSA-2xpw-w6gg-jr37/GHSA-2xpw-w6gg-jr37.json"
+         },
+         "package": {
+          "ecosystem": "PyPI",
+          "name": "urllib3",
+          "purl": "pkg:pypi/urllib3"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "1.0"
+            },
+            {
+             "fixed": "2.6.0"
+            }
+           ],
+           "type": "ECOSYSTEM"
+          }
+         ],
+         "versions": [
+          "1.0",
+          "1.0.1",
+          "1.0.2",
+          "1.1",
+          "1.10",
+          "1.10.1",
+          "1.10.2",
+          "1.10.3",
+          "1.10.4",
+          "1.11",
+          "1.12",
+          "1.13",
+          "1.13.1",
+          "1.14",
+          "1.15",
+          "1.15.1",
+          "1.16",
+          "1.17",
+          "1.18",
+          "1.18.1",
+          "1.19",
+          "1.19.1",
+          "1.2",
+          "1.2.1",
+          "1.2.2",
+          "1.20",
+          "1.21",
+          "1.21.1",
+          "1.22",
+          "1.23",
+          "1.24",
+          "1.24.1",
+          "1.24.2",
+          "1.24.3",
+          "1.25",
+          "1.25.1",
+          "1.25.10",
+          "1.25.11",
+          "1.25.2",
+          "1.25.3",
+          "1.25.4",
+          "1.25.5",
+          "1.25.6",
+          "1.25.7",
+          "1.25.8",
+          "1.25.9",
+          "1.26.0",
+          "1.26.1",
+          "1.26.10",
+          "1.26.11",
+          "1.26.12",
+          "1.26.13",
+          "1.26.14",
+          "1.26.15",
+          "1.26.16",
+          "1.26.17",
+          "1.26.18",
+          "1.26.19",
+          "1.26.2",
+          "1.26.20",
+          "1.26.3",
+          "1.26.4",
+          "1.26.5",
+          "1.26.6",
+          "1.26.7",
+          "1.26.8",
+          "1.26.9",
+          "1.3",
+          "1.4",
+          "1.5",
+          "1.6",
+          "1.7",
+          "1.7.1",
+          "1.8",
+          "1.8.2",
+          "1.8.3",
+          "1.9",
+          "1.9.1",
+          "2.0.0",
+          "2.0.0a1",
+          "2.0.0a2",
+          "2.0.0a3",
+          "2.0.0a4",
+          "2.0.1",
+          "2.0.2",
+          "2.0.3",
+          "2.0.4",
+          "2.0.5",
+          "2.0.6",
+          "2.0.7",
+          "2.1.0",
+          "2.2.0",
+          "2.2.1",
+          "2.2.2",
+          "2.2.3",
+          "2.3.0",
+          "2.4.0",
+          "2.5.0"
+         ]
+        }
+       ],
+       "aliases": [
+        "CVE-2025-66471",
+        "PYSEC-2026-1994"
+       ],
+       "database_specific": {
+        "cwe_ids": [
+         "CWE-409"
+        ],
+        "github_reviewed": true,
+        "github_reviewed_at": "2025-12-05T18:15:54Z",
+        "nvd_published_at": "2025-12-05T17:16:04Z",
+        "severity": "HIGH"
+       },
+       "id": "GHSA-2xpw-w6gg-jr37",
+       "modified": "2026-09-25T17:15:05.968189421Z",
+       "published": "2025-12-05T18:15:54Z",
+       "schema_version": "1.9.0",
+       "severity": [
+        {
+         "score": "CVSS:4.0/AV:N/AC:L/AT:P/PR:N/UI:N/VC:N/VI:N/VA:H/SC:N/SI:N/SA:H",
+         "type": "CVSS_V4"
+        }
+       ]
+      },
+      {
+       "affected": [
+        {
+         "database_specific": {
+          "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2024/06/GHSA-34jh-p97f-mpxf/GHSA-34jh-p97f-mpxf.json"
+         },
+         "package": {
+          "ecosystem": "PyPI",
+          "name": "urllib3",
+          "purl": "pkg:pypi/urllib3"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "0"
+            },
+            {
+             "fixed": "1.26.19"
+            }
+           ],
+           "type": "ECOSYSTEM"
+          }
+         ],
+         "versions": [
+          "0.2",
+          "0.3",
+          "0.3.1",
+          "0.4.0",
+          "0.4.1",
+          "1.0",
+          "1.0.1",
+          "1.0.2",
+          "1.1",
+          "1.10",
+          "1.10.1",
+          "1.10.2",
+          "1.10.3",
+          "1.10.4",
+          "1.11",
+          "1.12",
+          "1.13",
+          "1.13.1",
+          "1.14",
+          "1.15",
+          "1.15.1",
+          "1.16",
+          "1.17",
+          "1.18",
+          "1.18.1",
+          "1.19",
+          "1.19.1",
+          "1.2",
+          "1.2.1",
+          "1.2.2",
+          "1.20",
+          "1.21",
+          "1.21.1",
+          "1.22",
+          "1.23",
+          "1.24",
+          "1.24.1",
+          "1.24.2",
+          "1.24.3",
+          "1.25",
+          "1.25.1",
+          "1.25.10",
+          "1.25.11",
+          "1.25.2",
+          "1.25.3",
+          "1.25.4",
+          "1.25.5",
+          "1.25.6",
+          "1.25.7",
+          "1.25.8",
+          "1.25.9",
+          "1.26.0",
+          "1.26.1",
+          "1.26.10",
+          "1.26.11",
+          "1.26.12",
+          "1.26.13",
+          "1.26.14",
+          "1.26.15",
+          "1.26.16",
+          "1.26.17",
+          "1.26.18",
+          "1.26.2",
+          "1.26.3",
+          "1.26.4",
+          "1.26.5",
+          "1.26.6",
+          "1.26.7",
+          "1.26.8",
+          "1.26.9",
+          "1.3",
+          "1.4",
+          "1.5",
+          "1.6",
+          "1.7",
+          "1.7.1",
+          "1.8",
+          "1.8.2",
+          "1.8.3",
+          "1.9",
+          "1.9.1"
+         ]
+        },
+        {
+         "database_specific": {
+          "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2024/06/GHSA-34jh-p97f-mpxf/GHSA-34jh-p97f-mpxf.json"
+         },
+         "package": {
+          "ecosystem": "PyPI",
+          "name": "urllib3",
+          "purl": "pkg:pypi/urllib3"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "2.0.0"
+            },
+            {
+             "fixed": "2.2.2"
+            }
+           ],
+           "type": "ECOSYSTEM"
+          }
+         ],
+         "versions": [
+          "2.0.0",
+          "2.0.1",
+          "2.0.2",
+          "2.0.3",
+          "2.0.4",
+          "2.0.5",
+          "2.0.6",
+          "2.0.7",
+          "2.1.0",
+          "2.2.0",
+          "2.2.1"
+         ]
+        }
+       ],
+       "aliases": [
+        "CVE-2024-37891",
+        "PYSEC-2026-1995"
+       ],
+       "database_specific": {
+        "cwe_ids": [
+         "CWE-669"
+        ],
+        "github_reviewed": true,
+        "github_reviewed_at": "2024-06-17T21:37:20Z",
+        "nvd_published_at": "2024-06-17T20:15:13Z",
+        "severity": "MODERATE"
+       },
+       "id": "GHSA-34jh-p97f-mpxf",
+       "modified": "2026-09-10T03:50:14.811193644Z",
+       "published": "2024-06-17T21:37:20Z",
+       "schema_version": "1.9.0",
+       "severity": [
+        {
+         "score": "CVSS:3.1/AV:N/AC:H/PR:H/UI:N/S:U/C:H/I:N/A:N",
+         "type": "CVSS_V3"
+        }
+       ]
+      },
+      {
+       "affected": [
+        {
+         "database_specific": {
+          "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2026/01/GHSA-38jv-5279-wg99/GHSA-38jv-5279-wg99.json"
+         },
+         "package": {
+          "ecosystem": "PyPI",
+          "name": "urllib3",
+          "purl": "pkg:pypi/urllib3"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "1.22"
+            },
+            {
+             "fixed": "2.6.3"
+            }
+           ],
+           "type": "ECOSYSTEM"
+          }
+         ],
+         "versions": [
+          "1.22",
+          "1.23",
+          "1.24",
+          "1.24.1",
+          "1.24.2",
+          "1.24.3",
+          "1.25",
+          "1.25.1",
+          "1.25.10",
+          "1.25.11",
+          "1.25.2",
+          "1.25.3",
+          "1.25.4",
+          "1.25.5",
+          "1.25.6",
+          "1.25.7",
+          "1.25.8",
+          "1.25.9",
+          "1.26.0",
+          "1.26.1",
+          "1.26.10",
+          "1.26.11",
+          "1.26.12",
+          "1.26.13",
+          "1.26.14",
+          "1.26.15",
+          "1.26.16",
+          "1.26.17",
+          "1.26.18",
+          "1.26.19",
+          "1.26.2",
+          "1.26.20",
+          "1.26.3",
+          "1.26.4",
+          "1.26.5",
+          "1.26.6",
+          "1.26.7",
+          "1.26.8",
+          "1.26.9",
+          "2.0.0",
+          "2.0.0a1",
+          "2.0.0a2",
+          "2.0.0a3",
+          "2.0.0a4",
+          "2.0.1",
+          "2.0.2",
+          "2.0.3",
+          "2.0.4",
+          "2.0.5",
+          "2.0.6",
+          "2.0.7",
+          "2.1.0",
+          "2.2.0",
+          "2.2.1",
+          "2.2.2",
+          "2.2.3",
+          "2.3.0",
+          "2.4.0",
+          "2.5.0",
+          "2.6.0",
+          "2.6.1",
+          "2.6.2"
+         ]
+        }
+       ],
+       "aliases": [
+        "CVE-2026-21441",
+        "PYSEC-2026-1996"
+       ],
+       "database_specific": {
+        "cwe_ids": [
+         "CWE-409"
+        ],
+        "github_reviewed": true,
+        "github_reviewed_at": "2026-01-07T19:18:14Z",
+        "nvd_published_at": "2026-01-07T22:15:44Z",
+        "severity": "HIGH"
+       },
+       "id": "GHSA-38jv-5279-wg99",
+       "modified": "2026-09-10T03:50:32.562010895Z",
+       "published": "2026-01-07T19:18:14Z",
+       "schema_version": "1.9.0",
+       "severity": [
+        {
+         "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+         "type": "CVSS_V3"
+        },
+        {
+         "score": "CVSS:4.0/AV:N/AC:L/AT:P/PR:N/UI:N/VC:N/VI:N/VA:H/SC:N/SI:N/SA:H",
+         "type": "CVSS_V4"
+        }
+       ]
+      },
+      {
+       "affected": [
+        {
+         "database_specific": {
+          "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2023/10/GHSA-g4mx-q9vg-27p4/GHSA-g4mx-q9vg-27p4.json"
+         },
+         "package": {
+          "ecosystem": "PyPI",
+          "name": "urllib3",
+          "purl": "pkg:pypi/urllib3"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "2.0.0"
+            },
+            {
+             "fixed": "2.0.7"
+            }
+           ],
+           "type": "ECOSYSTEM"
+          }
+         ],
+         "versions": [
+          "2.0.0",
+          "2.0.1",
+          "2.0.2",
+          "2.0.3",
+          "2.0.4",
+          "2.0.5",
+          "2.0.6"
+         ]
+        },
+        {
+         "database_specific": {
+          "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2023/10/GHSA-g4mx-q9vg-27p4/GHSA-g4mx-q9vg-27p4.json"
+         },
+         "package": {
+          "ecosystem": "PyPI",
+          "name": "urllib3",
+          "purl": "pkg:pypi/urllib3"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "0"
+            },
+            {
+             "fixed": "1.26.18"
+            }
+           ],
+           "type": "ECOSYSTEM"
+          }
+         ],
+         "versions": [
+          "0.2",
+          "0.3",
+          "0.3.1",
+          "0.4.0",
+          "0.4.1",
+          "1.0",
+          "1.0.1",
+          "1.0.2",
+          "1.1",
+          "1.10",
+          "1.10.1",
+          "1.10.2",
+          "1.10.3",
+          "1.10.4",
+          "1.11",
+          "1.12",
+          "1.13",
+          "1.13.1",
+          "1.14",
+          "1.15",
+          "1.15.1",
+          "1.16",
+          "1.17",
+          "1.18",
+          "1.18.1",
+          "1.19",
+          "1.19.1",
+          "1.2",
+          "1.2.1",
+          "1.2.2",
+          "1.20",
+          "1.21",
+          "1.21.1",
+          "1.22",
+          "1.23",
+          "1.24",
+          "1.24.1",
+          "1.24.2",
+          "1.24.3",
+          "1.25",
+          "1.25.1",
+          "1.25.10",
+          "1.25.11",
+          "1.25.2",
+          "1.25.3",
+          "1.25.4",
+          "1.25.5",
+          "1.25.6",
+          "1.25.7",
+          "1.25.8",
+          "1.25.9",
+          "1.26.0",
+          "1.26.1",
+          "1.26.10",
+          "1.26.11",
+          "1.26.12",
+          "1.26.13",
+          "1.26.14",
+          "1.26.15",
+          "1.26.16",
+          "1.26.17",
+          "1.26.2",
+          "1.26.3",
+          "1.26.4",
+          "1.26.5",
+          "1.26.6",
+          "1.26.7",
+          "1.26.8",
+          "1.26.9",
+          "1.3",
+          "1.4",
+          "1.5",
+          "1.6",
+          "1.7",
+          "1.7.1",
+          "1.8",
+          "1.8.2",
+          "1.8.3",
+          "1.9",
+          "1.9.1"
+         ]
+        }
+       ],
+       "aliases": [
+        "CVE-2023-45803",
+        "PYSEC-2023-212"
+       ],
+       "database_specific": {
+        "cwe_ids": [
+         "CWE-200"
+        ],
+        "github_reviewed": true,
+        "github_reviewed_at": "2023-10-17T20:15:25Z",
+        "nvd_published_at": "2023-10-17T20:15:10Z",
+        "severity": "MODERATE"
+       },
+       "id": "GHSA-g4mx-q9vg-27p4",
+       "modified": "2026-09-10T03:50:03.706889410Z",
+       "published": "2023-10-17T20:15:25Z",
+       "schema_version": "1.9.0",
+       "severity": [
+        {
+         "score": "CVSS:3.1/AV:A/AC:H/PR:H/UI:N/S:U/C:H/I:N/A:N",
+         "type": "CVSS_V3"
+        },
+        {
+         "score": "CVSS:4.0/AV:A/AC:L/AT:P/PR:H/UI:N/VC:H/VI:N/VA:N/SC:N/SI:N/SA:N",
+         "type": "CVSS_V4"
+        }
+       ]
+      },
+      {
+       "affected": [
+        {
+         "database_specific": {
+          "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2023/10/GHSA-gwvm-45gx-3cf8/GHSA-gwvm-45gx-3cf8.json"
+         },
+         "package": {
+          "ecosystem": "PyPI",
+          "name": "urllib3",
+          "purl": "pkg:pypi/urllib3"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "0"
+            },
+            {
+             "fixed": "1.24.2"
+            }
+           ],
+           "type": "ECOSYSTEM"
+          }
+         ],
+         "versions": [
+          "0.2",
+          "0.3",
+          "0.3.1",
+          "0.4.0",
+          "0.4.1",
+          "1.0",
+          "1.0.1",
+          "1.0.2",
+          "1.1",
+          "1.10",
+          "1.10.1",
+          "1.10.2",
+          "1.10.3",
+          "1.10.4",
+          "1.11",
+          "1.12",
+          "1.13",
+          "1.13.1",
+          "1.14",
+          "1.15",
+          "1.15.1",
+          "1.16",
+          "1.17",
+          "1.18",
+          "1.18.1",
+          "1.19",
+          "1.19.1",
+          "1.2",
+          "1.2.1",
+          "1.2.2",
+          "1.20",
+          "1.21",
+          "1.21.1",
+          "1.22",
+          "1.23",
+          "1.24",
+          "1.24.1",
+          "1.3",
+          "1.4",
+          "1.5",
+          "1.6",
+          "1.7",
+          "1.7.1",
+          "1.8",
+          "1.8.2",
+          "1.8.3",
+          "1.9",
+          "1.9.1"
+         ]
+        }
+       ],
+       "aliases": [
+        "CVE-2018-25091",
+        "PYSEC-2023-207"
+       ],
+       "database_specific": {
+        "cwe_ids": [
+         "CWE-200",
+         "CWE-601"
+        ],
+        "github_reviewed": true,
+        "github_reviewed_at": "2023-10-17T14:21:39Z",
+        "nvd_published_at": "2023-10-15T19:15:09Z",
+        "severity": "MODERATE"
+       },
+       "id": "GHSA-gwvm-45gx-3cf8",
+       "modified": "2024-11-18T23:24:00.169548Z",
+       "published": "2023-10-15T21:30:26Z",
+       "schema_version": "1.9.0",
+       "severity": [
+        {
+         "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N",
+         "type": "CVSS_V3"
+        },
+        {
+         "score": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:P/VC:N/VI:N/VA:N/SC:L/SI:L/SA:N",
+         "type": "CVSS_V4"
+        }
+       ]
+      },
+      {
+       "affected": [
+        {
+         "database_specific": {
+          "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2019/04/GHSA-mh33-7rrq-662w/GHSA-mh33-7rrq-662w.json"
+         },
+         "package": {
+          "ecosystem": "PyPI",
+          "name": "urllib3",
+          "purl": "pkg:pypi/urllib3"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "0"
+            },
+            {
+             "fixed": "1.24.2"
+            }
+           ],
+           "type": "ECOSYSTEM"
+          }
+         ],
+         "versions": [
+          "0.2",
+          "0.3",
+          "0.3.1",
+          "0.4.0",
+          "0.4.1",
+          "1.0",
+          "1.0.1",
+          "1.0.2",
+          "1.1",
+          "1.10",
+          "1.10.1",
+          "1.10.2",
+          "1.10.3",
+          "1.10.4",
+          "1.11",
+          "1.12",
+          "1.13",
+          "1.13.1",
+          "1.14",
+          "1.15",
+          "1.15.1",
+          "1.16",
+          "1.17",
+          "1.18",
+          "1.18.1",
+          "1.19",
+          "1.19.1",
+          "1.2",
+          "1.2.1",
+          "1.2.2",
+          "1.20",
+          "1.21",
+          "1.21.1",
+          "1.22",
+          "1.23",
+          "1.24",
+          "1.24.1",
+          "1.3",
+          "1.4",
+          "1.5",
+          "1.6",
+          "1.7",
+          "1.7.1",
+          "1.8",
+          "1.8.2",
+          "1.8.3",
+          "1.9",
+          "1.9.1"
+         ]
+        }
+       ],
+       "aliases": [
+        "CVE-2019-11324",
+        "PYSEC-2019-133"
+       ],
+       "database_specific": {
+        "cwe_ids": [
+         "CWE-295"
+        ],
+        "github_reviewed": true,
+        "github_reviewed_at": "2019-04-19T16:54:21Z",
+        "nvd_published_at": "2019-04-18T21:29:00Z",
+        "severity": "HIGH"
+       },
+       "id": "GHSA-mh33-7rrq-662w",
+       "modified": "2024-11-18T22:25:21.266722Z",
+       "published": "2019-04-19T16:55:10Z",
+       "schema_version": "1.9.0",
+       "severity": [
+        {
+         "score": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N",
+         "type": "CVSS_V3"
+        },
+        {
+         "score": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:N/VI:H/VA:N/SC:N/SI:N/SA:N",
+         "type": "CVSS_V4"
+        }
+       ]
+      },
+      {
+       "affected": [
+        {
+         "database_specific": {
+          "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2025/06/GHSA-pq67-6m6q-mj2v/GHSA-pq67-6m6q-mj2v.json"
+         },
+         "package": {
+          "ecosystem": "PyPI",
+          "name": "urllib3",
+          "purl": "pkg:pypi/urllib3"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "0"
+            },
+            {
+             "fixed": "2.5.0"
+            }
+           ],
+           "type": "ECOSYSTEM"
+          }
+         ],
+         "versions": [
+          "0.2",
+          "0.3",
+          "0.3.1",
+          "0.4.0",
+          "0.4.1",
+          "1.0",
+          "1.0.1",
+          "1.0.2",
+          "1.1",
+          "1.10",
+          "1.10.1",
+          "1.10.2",
+          "1.10.3",
+          "1.10.4",
+          "1.11",
+          "1.12",
+          "1.13",
+          "1.13.1",
+          "1.14",
+          "1.15",
+          "1.15.1",
+          "1.16",
+          "1.17",
+          "1.18",
+          "1.18.1",
+          "1.19",
+          "1.19.1",
+          "1.2",
+          "1.2.1",
+          "1.2.2",
+          "1.20",
+          "1.21",
+          "1.21.1",
+          "1.22",
+          "1.23",
+          "1.24",
+          "1.24.1",
+          "1.24.2",
+          "1.24.3",
+          "1.25",
+          "1.25.1",
+          "1.25.10",
+          "1.25.11",
+          "1.25.2",
+          "1.25.3",
+          "1.25.4",
+          "1.25.5",
+          "1.25.6",
+          "1.25.7",
+          "1.25.8",
+          "1.25.9",
+          "1.26.0",
+          "1.26.1",
+          "1.26.10",
+          "1.26.11",
+          "1.26.12",
+          "1.26.13",
+          "1.26.14",
+          "1.26.15",
+          "1.26.16",
+          "1.26.17",
+          "1.26.18",
+          "1.26.19",
+          "1.26.2",
+          "1.26.20",
+          "1.26.3",
+          "1.26.4",
+          "1.26.5",
+          "1.26.6",
+          "1.26.7",
+          "1.26.8",
+          "1.26.9",
+          "1.3",
+          "1.4",
+          "1.5",
+          "1.6",
+          "1.7",
+          "1.7.1",
+          "1.8",
+          "1.8.2",
+          "1.8.3",
+          "1.9",
+          "1.9.1",
+          "2.0.0",
+          "2.0.0a1",
+          "2.0.0a2",
+          "2.0.0a3",
+          "2.0.0a4",
+          "2.0.1",
+          "2.0.2",
+          "2.0.3",
+          "2.0.4",
+          "2.0.5",
+          "2.0.6",
+          "2.0.7",
+          "2.1.0",
+          "2.2.0",
+          "2.2.1",
+          "2.2.2",
+          "2.2.3",
+          "2.3.0",
+          "2.4.0"
+         ]
+        }
+       ],
+       "aliases": [
+        "CVE-2025-50181",
+        "PYSEC-2026-1999"
+       ],
+       "database_specific": {
+        "cwe_ids": [
+         "CWE-601"
+        ],
+        "github_reviewed": true,
+        "github_reviewed_at": "2025-06-18T17:50:00Z",
+        "nvd_published_at": "2025-06-19T01:15:24Z",
+        "severity": "MODERATE"
+       },
+       "id": "GHSA-pq67-6m6q-mj2v",
+       "modified": "2026-09-10T03:50:25.299291456Z",
+       "published": "2025-06-18T17:50:00Z",
+       "schema_version": "1.9.0",
+       "severity": [
+        {
+         "score": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:H/I:N/A:N",
+         "type": "CVSS_V3"
+        }
+       ]
+      },
+      {
+       "affected": [
+        {
+         "database_specific": {
+          "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2026/05/GHSA-qccp-gfcp-xxvc/GHSA-qccp-gfcp-xxvc.json"
+         },
+         "package": {
+          "ecosystem": "PyPI",
+          "name": "urllib3",
+          "purl": "pkg:pypi/urllib3"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "1.23"
+            },
+            {
+             "fixed": "2.7.0"
+            }
+           ],
+           "type": "ECOSYSTEM"
+          }
+         ],
+         "versions": [
+          "1.23",
+          "1.24",
+          "1.24.1",
+          "1.24.2",
+          "1.24.3",
+          "1.25",
+          "1.25.1",
+          "1.25.10",
+          "1.25.11",
+          "1.25.2",
+          "1.25.3",
+          "1.25.4",
+          "1.25.5",
+          "1.25.6",
+          "1.25.7",
+          "1.25.8",
+          "1.25.9",
+          "1.26.0",
+          "1.26.1",
+          "1.26.10",
+          "1.26.11",
+          "1.26.12",
+          "1.26.13",
+          "1.26.14",
+          "1.26.15",
+          "1.26.16",
+          "1.26.17",
+          "1.26.18",
+          "1.26.19",
+          "1.26.2",
+          "1.26.20",
+          "1.26.3",
+          "1.26.4",
+          "1.26.5",
+          "1.26.6",
+          "1.26.7",
+          "1.26.8",
+          "1.26.9",
+          "2.0.0",
+          "2.0.0a1",
+          "2.0.0a2",
+          "2.0.0a3",
+          "2.0.0a4",
+          "2.0.1",
+          "2.0.2",
+          "2.0.3",
+          "2.0.4",
+          "2.0.5",
+          "2.0.6",
+          "2.0.7",
+          "2.1.0",
+          "2.2.0",
+          "2.2.1",
+          "2.2.2",
+          "2.2.3",
+          "2.3.0",
+          "2.4.0",
+          "2.5.0",
+          "2.6.0",
+          "2.6.1",
+          "2.6.2",
+          "2.6.3"
+         ]
+        }
+       ],
+       "aliases": [
+        "CVE-2026-44431",
+        "PYSEC-2026-141"
+       ],
+       "database_specific": {
+        "cwe_ids": [
+         "CWE-200"
+        ],
+        "github_reviewed": true,
+        "github_reviewed_at": "2026-05-11T14:51:20Z",
+        "nvd_published_at": "2026-05-13T16:16:57Z",
+        "severity": "HIGH"
+       },
+       "id": "GHSA-qccp-gfcp-xxvc",
+       "modified": "2026-09-10T03:50:47.272765640Z",
+       "published": "2026-05-11T14:51:20Z",
+       "schema_version": "1.9.0",
+       "severity": [
+        {
+         "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N",
+         "type": "CVSS_V3"
+        },
+        {
+         "score": "CVSS:4.0/AV:N/AC:H/AT:P/PR:N/UI:N/VC:H/VI:N/VA:N/SC:N/SI:N/SA:N",
+         "type": "CVSS_V4"
+        }
+       ]
+      },
+      {
+       "affected": [
+        {
+         "database_specific": {
+          "last_known_affected_version_range": "<= 1.24.2",
+          "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2022/05/GHSA-r64q-w8jr-g9qp/GHSA-r64q-w8jr-g9qp.json"
+         },
+         "package": {
+          "ecosystem": "PyPI",
+          "name": "urllib3",
+          "purl": "pkg:pypi/urllib3"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "0"
+            },
+            {
+             "fixed": "1.24.3"
+            }
+           ],
+           "type": "ECOSYSTEM"
+          }
+         ],
+         "versions": [
+          "0.2",
+          "0.3",
+          "0.3.1",
+          "0.4.0",
+          "0.4.1",
+          "1.0",
+          "1.0.1",
+          "1.0.2",
+          "1.1",
+          "1.10",
+          "1.10.1",
+          "1.10.2",
+          "1.10.3",
+          "1.10.4",
+          "1.11",
+          "1.12",
+          "1.13",
+          "1.13.1",
+          "1.14",
+          "1.15",
+          "1.15.1",
+          "1.16",
+          "1.17",
+          "1.18",
+          "1.18.1",
+          "1.19",
+          "1.19.1",
+          "1.2",
+          "1.2.1",
+          "1.2.2",
+          "1.20",
+          "1.21",
+          "1.21.1",
+          "1.22",
+          "1.23",
+          "1.24",
+          "1.24.1",
+          "1.24.2",
+          "1.3",
+          "1.4",
+          "1.5",
+          "1.6",
+          "1.7",
+          "1.7.1",
+          "1.8",
+          "1.8.2",
+          "1.8.3",
+          "1.9",
+          "1.9.1"
+         ]
+        }
+       ],
+       "aliases": [
+        "CVE-2019-11236",
+        "PYSEC-2019-132"
+       ],
+       "database_specific": {
+        "cwe_ids": [
+         "CWE-93"
+        ],
+        "github_reviewed": true,
+        "github_reviewed_at": "2022-06-28T15:02:18Z",
+        "nvd_published_at": "2019-04-15T15:29:00Z",
+        "severity": "MODERATE"
+       },
+       "id": "GHSA-r64q-w8jr-g9qp",
+       "modified": "2024-11-18T23:01:35.378516Z",
+       "published": "2022-05-13T01:09:23Z",
+       "schema_version": "1.9.0",
+       "severity": [
+        {
+         "score": "CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N",
+         "type": "CVSS_V3"
+        },
+        {
+         "score": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:P/VC:N/VI:N/VA:N/SC:L/SI:L/SA:N",
+         "type": "CVSS_V4"
+        }
+       ]
+      },
+      {
+       "affected": [
+        {
+         "database_specific": {
+          "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2023/10/GHSA-v845-jxx5-vc9f/GHSA-v845-jxx5-vc9f.json"
+         },
+         "package": {
+          "ecosystem": "PyPI",
+          "name": "urllib3",
+          "purl": "pkg:pypi/urllib3"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "2.0.0"
+            },
+            {
+             "fixed": "2.0.6"
+            }
+           ],
+           "type": "ECOSYSTEM"
+          }
+         ],
+         "versions": [
+          "2.0.0",
+          "2.0.1",
+          "2.0.2",
+          "2.0.3",
+          "2.0.4",
+          "2.0.5"
+         ]
+        },
+        {
+         "database_specific": {
+          "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2023/10/GHSA-v845-jxx5-vc9f/GHSA-v845-jxx5-vc9f.json"
+         },
+         "package": {
+          "ecosystem": "PyPI",
+          "name": "urllib3",
+          "purl": "pkg:pypi/urllib3"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "0"
+            },
+            {
+             "fixed": "1.26.17"
+            }
+           ],
+           "type": "ECOSYSTEM"
+          }
+         ],
+         "versions": [
+          "0.2",
+          "0.3",
+          "0.3.1",
+          "0.4.0",
+          "0.4.1",
+          "1.0",
+          "1.0.1",
+          "1.0.2",
+          "1.1",
+          "1.10",
+          "1.10.1",
+          "1.10.2",
+          "1.10.3",
+          "1.10.4",
+          "1.11",
+          "1.12",
+          "1.13",
+          "1.13.1",
+          "1.14",
+          "1.15",
+          "1.15.1",
+          "1.16",
+          "1.17",
+          "1.18",
+          "1.18.1",
+          "1.19",
+          "1.19.1",
+          "1.2",
+          "1.2.1",
+          "1.2.2",
+          "1.20",
+          "1.21",
+          "1.21.1",
+          "1.22",
+          "1.23",
+          "1.24",
+          "1.24.1",
+          "1.24.2",
+          "1.24.3",
+          "1.25",
+          "1.25.1",
+          "1.25.10",
+          "1.25.11",
+          "1.25.2",
+          "1.25.3",
+          "1.25.4",
+          "1.25.5",
+          "1.25.6",
+          "1.25.7",
+          "1.25.8",
+          "1.25.9",
+          "1.26.0",
+          "1.26.1",
+          "1.26.10",
+          "1.26.11",
+          "1.26.12",
+          "1.26.13",
+          "1.26.14",
+          "1.26.15",
+          "1.26.16",
+          "1.26.2",
+          "1.26.3",
+          "1.26.4",
+          "1.26.5",
+          "1.26.6",
+          "1.26.7",
+          "1.26.8",
+          "1.26.9",
+          "1.3",
+          "1.4",
+          "1.5",
+          "1.6",
+          "1.7",
+          "1.7.1",
+          "1.8",
+          "1.8.2",
+          "1.8.3",
+          "1.9",
+          "1.9.1"
+         ]
+        }
+       ],
+       "aliases": [
+        "CVE-2023-43804",
+        "PYSEC-2023-192"
+       ],
+       "database_specific": {
+        "cwe_ids": [
+         "CWE-200"
+        ],
+        "github_reviewed": true,
+        "github_reviewed_at": "2023-10-02T23:27:05Z",
+        "nvd_published_at": "2023-10-04T17:15:10Z",
+        "severity": "HIGH"
+       },
+       "id": "GHSA-v845-jxx5-vc9f",
+       "modified": "2026-09-10T03:49:24.753610811Z",
+       "published": "2023-10-02T23:27:05Z",
+       "schema_version": "1.9.0",
+       "severity": [
+        {
+         "score": "CVSS:3.1/AV:N/AC:H/PR:H/UI:N/S:U/C:H/I:H/A:N",
+         "type": "CVSS_V3"
+        },
+        {
+         "score": "CVSS:4.0/AV:N/AC:L/AT:P/PR:H/UI:N/VC:H/VI:H/VA:N/SC:N/SI:N/SA:N",
+         "type": "CVSS_V4"
+        }
+       ]
+      },
+      {
+       "affected": [
+        {
+         "database_specific": {
+          "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2026/09/GHSA-vxq7-64xx-v4gw/GHSA-vxq7-64xx-v4gw.json"
+         },
+         "package": {
+          "ecosystem": "PyPI",
+          "name": "urllib3",
+          "purl": "pkg:pypi/urllib3"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "1.10.3"
+            },
+            {
+             "fixed": "2.8.0"
+            }
+           ],
+           "type": "ECOSYSTEM"
+          }
+         ],
+         "versions": [
+          "1.10.3",
+          "1.10.4",
+          "1.11",
+          "1.12",
+          "1.13",
+          "1.13.1",
+          "1.14",
+          "1.15",
+          "1.15.1",
+          "1.16",
+          "1.17",
+          "1.18",
+          "1.18.1",
+          "1.19",
+          "1.19.1",
+          "1.20",
+          "1.21",
+          "1.21.1",
+          "1.22",
+          "1.23",
+          "1.24",
+          "1.24.1",
+          "1.24.2",
+          "1.24.3",
+          "1.25",
+          "1.25.1",
+          "1.25.10",
+          "1.25.11",
+          "1.25.2",
+          "1.25.3",
+          "1.25.4",
+          "1.25.5",
+          "1.25.6",
+          "1.25.7",
+          "1.25.8",
+          "1.25.9",
+          "1.26.0",
+          "1.26.1",
+          "1.26.10",
+          "1.26.11",
+          "1.26.12",
+          "1.26.13",
+          "1.26.14",
+          "1.26.15",
+          "1.26.16",
+          "1.26.17",
+          "1.26.18",
+          "1.26.19",
+          "1.26.2",
+          "1.26.20",
+          "1.26.3",
+          "1.26.4",
+          "1.26.5",
+          "1.26.6",
+          "1.26.7",
+          "1.26.8",
+          "1.26.9",
+          "2.0.0",
+          "2.0.0a1",
+          "2.0.0a2",
+          "2.0.0a3",
+          "2.0.0a4",
+          "2.0.1",
+          "2.0.2",
+          "2.0.3",
+          "2.0.4",
+          "2.0.5",
+          "2.0.6",
+          "2.0.7",
+          "2.1.0",
+          "2.2.0",
+          "2.2.1",
+          "2.2.2",
+          "2.2.3",
+          "2.3.0",
+          "2.4.0",
+          "2.5.0",
+          "2.6.0",
+          "2.6.1",
+          "2.6.2",
+          "2.6.3",
+          "2.7.0"
+         ]
+        }
+       ],
+       "aliases": [
+        "CVE-2026-97689",
+        "PYSEC-2026-4177"
+       ],
+       "database_specific": {
+        "cwe_ids": [
+         "CWE-770"
+        ],
+        "github_reviewed": true,
+        "github_reviewed_at": "2026-09-30T14:46:18Z",
+        "nvd_published_at": "2026-09-29T16:17:18Z",
+        "severity": "HIGH"
+       },
+       "id": "GHSA-vxq7-64xx-v4gw",
+       "modified": "2026-10-01T17:55:57.514829071Z",
+       "published": "2026-09-30T14:46:18Z",
+       "schema_version": "1.9.0",
+       "severity": [
+        {
+         "score": "CVSS:4.0/AV:N/AC:L/AT:P/PR:N/UI:N/VC:N/VI:N/VA:H/SC:N/SI:N/SA:H",
+         "type": "CVSS_V4"
+        }
+       ]
+      },
+      {
+       "affected": [
+        {
+         "database_specific": {
+          "source": "https://github.com/github/advisory-database/blob/main/advisories/github-reviewed/2021/06/GHSA-wqvq-5m8c-6g24/GHSA-wqvq-5m8c-6g24.json"
+         },
+         "package": {
+          "ecosystem": "PyPI",
+          "name": "urllib3",
+          "purl": "pkg:pypi/urllib3"
+         },
+         "ranges": [
+          {
+           "events": [
+            {
+             "introduced": "0"
+            },
+            {
+             "fixed": "1.25.9"
+            }
+           ],
+           "type": "ECOSYSTEM"
+          }
+         ],
+         "versions": [
+          "0.2",
+          "0.3",
+          "0.3.1",
+          "0.4.0",
+          "0.4.1",
+          "1.0",
+          "1.0.1",
+          "1.0.2",
+          "1.1",
+          "1.10",
+          "1.10.1",
+          "1.10.2",
+          "1.10.3",
+          "1.10.4",
+          "1.11",
+          "1.12",
+          "1.13",
+          "1.13.1",
+          "1.14",
+          "1.15",
+          "1.15.1",
+          "1.16",
+          "1.17",
+          "1.18",
+          "1.18.1",
+          "1.19",
+          "1.19.1",
+          "1.2",
+          "1.2.1",
+          "1.2.2",
+          "1.20",
+          "1.21",
+          "1.21.1",
+          "1.22",
+          "1.23",
+          "1.24",
+          "1.24.1",
+          "1.24.2",
+          "1.24.3",
+          "1.25",
+          "1.25.1",
+          "1.25.2",
+          "1.25.3",
+          "1.25.4",
+          "1.25.5",
+          "1.25.6",
+          "1.25.7",
+          "1.25.8",
+          "1.3",
+          "1.4",
+          "1.5",
+          "1.6",
+          "1.7",
+          "1.7.1",
+          "1.8",
+          "1.8.2",
+          "1.8.3",
+          "1.9",
+          "1.9.1"
+         ]
+        }
+       ],
+       "aliases": [
+        "CVE-2020-26137",
+        "PYSEC-2020-148"
+       ],
+       "database_specific": {
+        "cwe_ids": [
+         "CWE-74"
+        ],
+        "github_reviewed": true,
+        "github_reviewed_at": "2021-06-17T22:13:47Z",
+        "nvd_published_at": "2020-09-30T18:15:00Z",
+        "severity": "MODERATE"
+       },
+       "id": "GHSA-wqvq-5m8c-6g24",
+       "modified": "2024-11-18T22:47:07.792720Z",
+       "published": "2021-06-18T18:46:43Z",
+       "schema_version": "1.9.0",
+       "severity": [
+        {
+         "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N",
+         "type": "CVSS_V3"
+        },
+        {
+         "score": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:L/VI:L/VA:N/SC:N/SI:N/SA:N",
+         "type": "CVSS_V4"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

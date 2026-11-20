@@ -1,0 +1,33 @@
+[
+ {"check_type": "terraform",
+  "results": {
+   "passed_checks": [
+    {"check_id": "CKV_AWS_19", "bc_check_id": "BC_AWS_S3_14", "check_name": "Ensure all data stored in the S3 bucket is securely encrypted at rest",
+     "check_result": {"result": "PASSED", "evaluated_keys": []}, "file_path": "/terraform/s3.tf", "file_abs_path": "/src/terraform/s3.tf",
+     "repo_file_path": "/terraform/s3.tf", "file_line_range": [1, 12], "resource": "aws_s3_bucket.invoices", "severity": null, "guideline": "https://docs.example/ckv_aws_19"},
+    {"check_id": "CKV_AWS_27", "check_name": "Ensure all data stored in the SQS queue is encrypted",
+     "check_result": {"result": "PASSED"}, "file_path": "/terraform/sqs.tf", "file_abs_path": "/src/terraform/sqs.tf",
+     "file_line_range": [1, 6], "resource": "module.queues.aws_sqs_queue.orders[0]", "severity": null}
+   ],
+   "failed_checks": [
+    {"check_id": "CKV_AWS_20", "check_name": "S3 Bucket has an ACL defined which allows public READ access.",
+     "check_result": {"result": "FAILED"}, "file_path": "/terraform/s3.tf", "file_abs_path": "/src/terraform/s3.tf",
+     "file_line_range": [1, 12], "resource": "aws_s3_bucket.invoices", "severity": null},
+    {"check_id": "CKV_AWS_355", "check_name": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+     "check_result": {"result": "FAILED"}, "file_path": "/terraform/iam.tf", "file_abs_path": "/src/terraform/iam.tf",
+     "file_line_range": [10, 30], "resource": "aws_iam_policy.deploy", "severity": "MEDIUM"},
+    {"check_id": "CKV_AWS_18", "check_name": "Ensure the S3 bucket has access logging enabled",
+     "check_result": {"result": "FAILED"}, "file_path": "/terraform/s3.tf", "file_abs_path": "/src/terraform/s3.tf",
+     "file_line_range": [1, 12], "resource": "aws_s3_bucket.invoices", "severity": null}
+   ],
+   "skipped_checks": [], "parsing_errors": []},
+  "summary": {"passed": 2, "failed": 3, "skipped": 0, "parsing_errors": 0, "resource_count": 4, "checkov_version": "3.4.3"}},
+ {"check_type": "kubernetes",
+  "results": {"passed_checks": [],
+   "failed_checks": [
+    {"check_id": "CKV_K8S_16", "check_name": "Container should not be privileged", "check_result": {"result": "FAILED"},
+     "file_path": "/k8s/orders-api.yaml", "file_abs_path": "/src/k8s/orders-api.yaml", "file_line_range": [1, 40],
+     "resource": "Deployment.default.orders-api", "severity": null}
+   ], "skipped_checks": [], "parsing_errors": []},
+  "summary": {"passed": 0, "failed": 1, "skipped": 0, "parsing_errors": 0, "resource_count": 1, "checkov_version": "3.4.3"}}
+]

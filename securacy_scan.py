@@ -1,0 +1,529 @@
+"""The supply-chain scan: open-source scanners run in this job, their output
+turned into one small `securacy-scan:v1` document for Securacy.
+
+What leaves the runner: package URLs, versions, licenses and manifest paths;
+advisory ids; rule ids with file, line and commit for secrets, workflow and
+IaC findings. Never code, and never a secret's value: Gitleaks runs with
+--redact, and TruffleHog's raw fields are dropped while its output is read.
+
+Normalisers here are pure functions over each tool's JSON, so they are tested
+on real outputs (tests/data/scan). Standard library only, Python 3.8+.
+"""
+
+import json
+import re
+from pathlib import PurePosixPath
+from typing import Any, Dict, Iterable, List, Optional, Tuple
+
+SCHEMA = "securacy-scan:v1"
+PURL_TYPES = ("npm", "pypi", "maven", "golang", "cargo", "gem", "nuget", "composer", "pub", "swift", "hex",
+              "deb", "apk", "rpm", "github")
+SEVERITY_RANK = {"critical": 4, "high": 3, "medium": 2, "low": 1, "unknown": 0}
+LIMITS = {"components": 10000, "vulnerabilities": 2000, "secrets": 500, "workflows": 500, "iac": 1000,
+          "iac_resources": 1000}
+MAX_SCAN_BYTES = 4 * 1024 * 1024
+# Checkov's open-source output often has no severity. These are the checks we
+# rate ourselves because their meaning is unambiguous (public data, admin
+# rights, open admin ports, privileged containers).
+CHECKOV_SEVERITY = {"CKV_AWS_20": "high", "CKV_AWS_57": "high", "CKV_AWS_17": "high", "CKV_AWS_1": "high",
+                    "CKV_AWS_62": "high", "CKV_AWS_63": "high", "CKV_AWS_24": "high", "CKV_AWS_25": "high",
+                    "CKV_K8S_16": "high"}
+
+_PATH = re.compile(r"^(?!/)(?!.*//)(?!.*(?:^|/)\.{1,2}(?:/|$))[A-Za-z0-9_.@+/-]{1,300}$")
+_PURL = re.compile(r"^pkg:(?:" + "|".join(PURL_TYPES) + r")/[A-Za-z0-9%@._+/:~?=&,-]{1,290}$")
+_NAME = re.compile(r"^[A-Za-z0-9@._+/:~-]{1,214}$")
+_VERSION = re.compile(r"^[A-Za-z0-9._+:~^-]{1,100}$")
+_LICENSE = re.compile(r"^[A-Za-z0-9.+:() -]{1,64}$")
+_ADVISORY = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:-]{1,63}$")
+_CWE = re.compile(r"^CWE-\d{1,5}$")
+_RULE = re.compile(r"^[A-Za-z0-9_.:-]{1,80}$")
+_RESOURCE = re.compile(r"^[A-Za-z0-9_.\[\]:/-]{1,200}$")
+_SHA = re.compile(r"^[0-9a-f]{7,64}$")
+
+
+# ---------------------------------------------------------------------------
+# Small helpers
+# ---------------------------------------------------------------------------
+
+def _ok(pattern: "re.Pattern[str]", value: Any) -> bool:
+    return isinstance(value, str) and bool(pattern.fullmatch(value))
+
+
+def clean_path(raw: Any, workspace: Optional[PurePosixPath] = None) -> Optional[str]:
+    """A repository-relative path with "/" separators, or None."""
+    if not isinstance(raw, str) or not raw:
+        return None
+    path = raw.replace("\\", "/")
+    if workspace is not None:
+        prefix = str(workspace).replace("\\", "/").rstrip("/") + "/"
+        if path.startswith(prefix):
+            path = path[len(prefix):]
+        elif path.startswith("/") or re.match(r"^[A-Za-z]:/", path):
+            return None  # outside the checkout
+    while path.startswith("./"):
+        path = path[2:]
+    path = path.lstrip("/")
+    return path if _PATH.fullmatch(path) else None
+
+
+def strip_purl(purl: str) -> str:
+    return purl.split("#", 1)[0].split("?", 1)[0]
+
+
+def _purl_parts(purl: str) -> Tuple[str, str, str]:
+    """(type, name, version) of a package URL."""
+    body = strip_purl(purl)[4:]
+    ptype, _, rest = body.partition("/")
+    name, _, version = rest.rpartition("@")
+    return ptype, name, version
+
+
+def _norm_name(ecosystem: str, name: str) -> str:
+    if ecosystem == "pypi":
+        return re.sub(r"[-_.]+", "-", name).lower()
+    return name.lower() if ecosystem in ("npm", "github") else name
+
+
+def _same_version(ecosystem: str, a: str, b: str) -> bool:
+    if a == b:
+        return True
+    if ecosystem == "pypi" and re.fullmatch(r"\d+(\.\d+)*", a or "") and re.fullmatch(r"\d+(\.\d+)*", b or ""):
+        ta, tb = [int(x) for x in a.split(".")], [int(x) for x in b.split(".")]
+        while ta and ta[-1] == 0:
+            ta.pop()
+        while tb and tb[-1] == 0:
+            tb.pop()
+        return ta == tb
+    return False
+
+
+def _band(score: Optional[float]) -> str:
+    if score is None:
+        return "unknown"
+    if score >= 9:
+        return "critical"
+    if score >= 7:
+        return "high"
+    if score >= 4:
+        return "medium"
+    return "low" if score > 0 else "unknown"
+
+
+def _canonical(ids: Iterable[str]) -> Tuple[str, List[str]]:
+    """The id to show (a GHSA when there is one, else a CVE, else the first) and the rest as aliases."""
+    unique: List[str] = []
+    for i in ids:
+        if _ok(_ADVISORY, i) and i not in unique:
+            unique.append(i)
+    if not unique:
+        return "", []
+    main = next((i for i in unique if i.startswith("GHSA-")), None) or \
+        next((i for i in unique if i.startswith("CVE-")), None) or unique[0]
+    return main, [i for i in unique if i != main]
+
+
+def _lines(start: Any, end: Any = None) -> str:
+    a = start if isinstance(start, int) and start > 0 else 1
+    b = end if isinstance(end, int) and end > a else None
+    return f"{a}-{b}" if b else str(a)
+
+
+# ---------------------------------------------------------------------------
+# SBOM
+# ---------------------------------------------------------------------------
+
+def _licenses(raw: Any) -> List[str]:
+    out: List[str] = []
+    for item in raw if isinstance(raw, list) else []:
+        if not isinstance(item, dict):
+            continue
+        lic = item.get("license") if isinstance(item.get("license"), dict) else {}
+        value = item.get("expression") or lic.get("id") or lic.get("name")
+        if _ok(_LICENSE, value) and value not in out:
+            out.append(value)
+    return out[:5]
+
+
+def components_from_cyclonedx(doc: Any) -> List[Dict[str, Any]]:
+    """Syft's CycloneDX: one item per package URL, locations merged, `direct`
+    from the dependency graph (depended on by a top-level package)."""
+    if not isinstance(doc, dict):
+        return []
+    by_ref: Dict[str, str] = {}
+    out: Dict[str, Dict[str, Any]] = {}
+    for c in doc.get("components") or []:
+        if not isinstance(c, dict):
+            continue
+        purl, name, version = c.get("purl"), c.get("name"), c.get("version")
+        if not (_ok(_PURL, purl) and isinstance(name, str) and _ok(_VERSION, version)):
+            continue
+        name = f"{c['group']}:{name}" if isinstance(c.get("group"), str) and c["group"] else name
+        if not _NAME.fullmatch(name):
+            continue
+        by_ref[str(c.get("bom-ref") or purl)] = purl
+        locations = [clean_path(p.get("value")) for p in c.get("properties") or []
+                     if isinstance(p, dict) and str(p.get("name", "")).startswith("syft:location:")
+                     and str(p.get("name", "")).endswith(":path")]
+        item = out.setdefault(purl, {"purl": purl, "name": name, "version": version,
+                                     "ecosystem": _purl_parts(purl)[0], "direct": None,
+                                     "licenses": _licenses(c.get("licenses")), "locations": []})
+        for loc in locations:
+            if loc and loc not in item["locations"] and len(item["locations"]) < 5:
+                item["locations"].append(loc)
+    deps = [d for d in doc.get("dependencies") or [] if isinstance(d, dict)]
+    depended = {by_ref.get(r) for d in deps for r in d.get("dependsOn") or []}
+    roots = [d for d in deps if by_ref.get(d.get("ref")) not in depended and d.get("dependsOn")]
+    direct = {by_ref.get(r) for d in roots for r in d.get("dependsOn") or []}
+    for purl, item in out.items():
+        if purl in direct:
+            item["direct"] = True
+        elif purl in depended:
+            item["direct"] = False
+    return list(out.values())
+
+
+def osv_components(doc: Any, workspace: PurePosixPath) -> List[Dict[str, Any]]:
+    """The packages OSV-Scanner found (it resolves some transitive ones Syft doesn't list)."""
+    out: Dict[str, Dict[str, Any]] = {}
+    for result in (doc.get("results") if isinstance(doc, dict) else None) or []:
+        if not isinstance(result, dict):
+            continue
+        location = clean_path((result.get("source") or {}).get("path"), workspace)
+        for pkg in result.get("packages") or []:
+            info = (pkg or {}).get("package") or {}
+            purl = info.get("purl")
+            if not isinstance(purl, str) or not _ok(_PURL, strip_purl(purl)):
+                continue
+            purl = strip_purl(purl)
+            ptype, name, version = _purl_parts(purl)
+            if not (_NAME.fullmatch(name or "") and _ok(_VERSION, version)):
+                continue
+            item = out.setdefault(purl, {"purl": purl, "name": name, "version": version, "ecosystem": ptype,
+                                         "direct": None, "licenses": [], "locations": []})
+            if location and location not in item["locations"]:
+                item["locations"].append(location)
+    return list(out.values())
+
+
+def _find(components: List[Dict[str, Any]], purl: str) -> Optional[Dict[str, Any]]:
+    bare = strip_purl(purl)
+    ptype, name, version = _purl_parts(bare)
+    for c in components:
+        if strip_purl(c["purl"]) == bare:
+            return c
+    for c in components:
+        cp = _purl_parts(c["purl"])
+        if cp[0] == ptype and _norm_name(ptype, cp[1]) == _norm_name(ptype, name) and \
+                _same_version(ptype, cp[2], version):
+            return c
+    return None
+
+
+def merge_components(syft: List[Dict[str, Any]], extra: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    """Syft's list, plus packages only another tool found. The same package
+    and version (PEP 503 names, 5.3 == 5.3.0) keeps Syft's package URL."""
+    out = [dict(c, locations=list(c["locations"])) for c in syft]
+    for c in extra:
+        match = _find(out, c["purl"])
+        if match is None:
+            out.append(dict(c, locations=list(c["locations"])))
+        else:
+            for loc in c["locations"]:
+                if loc not in match["locations"] and len(match["locations"]) < 5:
+                    match["locations"].append(loc)
+    return out
+
+
+# ---------------------------------------------------------------------------
+# Vulnerabilities
+# ---------------------------------------------------------------------------
+
+def vulns_from_grype(doc: Any) -> List[Dict[str, Any]]:
+    out: List[Dict[str, Any]] = []
+    for m in (doc.get("matches") if isinstance(doc, dict) else None) or []:
+        if not isinstance(m, dict):
+            continue
+        v, a = m.get("vulnerability") or {}, m.get("artifact") or {}
+        main, aliases = _canonical([v.get("id")] + [r.get("id") for r in m.get("relatedVulnerabilities") or []
+                                                    if isinstance(r, dict)])
+        purl = a.get("purl")
+        if not main or not _ok(_PURL, purl):
+            continue
+        scores = [((c.get("metrics") or {}).get("baseScore")) for c in v.get("cvss") or [] if isinstance(c, dict)]
+        scores = [float(s) for s in scores if isinstance(s, (int, float)) and 0 <= s <= 10]
+        severity = str(v.get("severity") or "unknown").lower()
+        severity = {"negligible": "low", "moderate": "medium"}.get(severity, severity)
+        fixed = [f for f in (v.get("fix") or {}).get("versions") or [] if _ok(_VERSION, f)]
+        out.append({"id": main, "aliases": aliases[:20], "purl": purl,
+                    "severity": severity if severity in SEVERITY_RANK else "unknown",
+                    "cvss": max(scores) if scores else None, "fixed_in": fixed[:10], "cwes": [],
+                    "malicious": any(i.startswith("MAL-") for i in [main] + aliases), "tools": ["grype"]})
+    return out
+
+
+def _osv_fixed(vulns: List[Dict[str, Any]], ecosystem: str, name: str) -> List[str]:
+    fixed: List[str] = []
+    for v in vulns:
+        for affected in v.get("affected") or []:
+            pkg = (affected or {}).get("package") or {}
+            if _norm_name(ecosystem, str(pkg.get("name") or "")) != _norm_name(ecosystem, name):
+                continue
+            for r in affected.get("ranges") or []:
+                for event in (r or {}).get("events") or []:
+                    value = (event or {}).get("fixed")
+                    if _ok(_VERSION, value) and value not in fixed:
+                        fixed.append(value)
+    return fixed[:10]
+
+
+def vulns_from_osv(doc: Any) -> List[Dict[str, Any]]:
+    """One item per OSV-Scanner group (its ids are the same issue under several databases)."""
+    out: List[Dict[str, Any]] = []
+    for result in (doc.get("results") if isinstance(doc, dict) else None) or []:
+        if not isinstance(result, dict):
+            continue
+        for pkg in result.get("packages") or []:
+            info = (pkg or {}).get("package") or {}
+            purl = strip_purl(str(info.get("purl") or ""))
+            if not _ok(_PURL, purl):
+                continue
+            ecosystem, name, _ = _purl_parts(purl)
+            vulns = {v.get("id"): v for v in pkg.get("vulnerabilities") or [] if isinstance(v, dict)}
+            groups = pkg.get("groups") or [{"ids": [i], "aliases": (vulns[i].get("aliases") or [])} for i in vulns]
+            for group in groups:
+                members = [vulns[i] for i in group.get("ids") or [] if i in vulns]
+                ids = list(group.get("ids") or []) + list(group.get("aliases") or [])
+                for v in members:
+                    ids += list(v.get("aliases") or [])
+                main, aliases = _canonical(ids)
+                if not main:
+                    continue
+                try:
+                    score: Optional[float] = float(group.get("max_severity") or "")
+                except ValueError:
+                    score = None
+                severity = _band(score)
+                if severity == "unknown":
+                    db = {str((v.get("database_specific") or {}).get("severity") or "").lower() for v in members}
+                    severity = next((s for s in ("critical", "high", "medium", "low") if s in db or
+                                     (s == "medium" and "moderate" in db)), "unknown")
+                cwes: List[str] = []
+                for v in members:
+                    for c in (v.get("database_specific") or {}).get("cwe_ids") or []:
+                        if _ok(_CWE, c) and c not in cwes:
+                            cwes.append(c)
+                out.append({"id": main, "aliases": aliases[:20], "purl": purl, "severity": severity,
+                            "cvss": score if score is not None and 0 <= score <= 10 else None,
+                            "fixed_in": _osv_fixed(members, ecosystem, name), "cwes": cwes[:10],
+                            "malicious": any(i.startswith("MAL-") for i in [main] + aliases),
+                            "tools": ["osv-scanner"]})
+    return out
+
+
+def merge_vulns(components: List[Dict[str, Any]], *lists: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    """One item per package and issue: two tools' items for the same package
+    that share any id merge (aliases, fixes, CWEs and tools unioned, the
+    higher severity kept). Each package URL is the SBOM's for that package."""
+    merged: List[Dict[str, Any]] = []
+    for items in lists:
+        for raw in items:
+            item = dict(raw)
+            match = _find(components, item["purl"])
+            if match:
+                item["purl"] = match["purl"]
+            ids = {item["id"], *item["aliases"]}
+            same = next((m for m in merged if strip_purl(m["purl"]) == strip_purl(item["purl"])
+                         and ids & {m["id"], *m["aliases"]}), None)
+            if same is None:
+                merged.append(item)
+                continue
+            main, aliases = _canonical([same["id"], item["id"], *same["aliases"], *item["aliases"]])
+            same["id"], same["aliases"] = main, aliases[:20]
+            if SEVERITY_RANK[item["severity"]] > SEVERITY_RANK[same["severity"]]:
+                same["severity"] = item["severity"]
+            scores = [s for s in (same["cvss"], item["cvss"]) if s is not None]
+            same["cvss"] = max(scores) if scores else None
+            for key, limit in (("fixed_in", 10), ("cwes", 10), ("tools", 5)):
+                for value in item[key]:
+                    if value not in same[key] and len(same[key]) < limit:
+                        same[key].append(value)
+            same["malicious"] = same["malicious"] or item["malicious"]
+    for item in merged:
+        item["tools"] = sorted(item["tools"])
+    return merged
+
+
+def ensure_components(components: List[Dict[str, Any]], vulns: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    """Every vulnerable package is in the SBOM, so Securacy can tell whether a change added it."""
+    out = list(components)
+    known = {strip_purl(c["purl"]) for c in out}
+    for v in vulns:
+        bare = strip_purl(v["purl"])
+        if bare in known:
+            continue
+        ptype, name, version = _purl_parts(bare)
+        if _NAME.fullmatch(name or "") and _ok(_VERSION, version):
+            out.append({"purl": v["purl"], "name": name, "version": version, "ecosystem": ptype, "direct": None,
+                        "licenses": [], "locations": []})
+            known.add(bare)
+    return out
+
+
+# ---------------------------------------------------------------------------
+# Secrets
+# ---------------------------------------------------------------------------
+
+def secrets_from_gitleaks(items: Any, *, in_tree: bool) -> List[Dict[str, Any]]:
+    """Gitleaks run with --redact. Only rule, place and commit are read."""
+    out: List[Dict[str, Any]] = []
+    for item in items if isinstance(items, list) else []:
+        if not isinstance(item, dict):
+            continue
+        rule, path, commit = item.get("RuleID"), clean_path(item.get("File")), item.get("Commit") or None
+        if not (_ok(_RULE, rule) and path) or (commit is not None and not _ok(_SHA, commit)):
+            continue
+        out.append({"rule": rule, "detector": "gitleaks", "path": path,
+                    "lines": _lines(item.get("StartLine"), item.get("EndLine")), "commit": commit,
+                    "verified": None, "in_tree": in_tree})
+    return out
+
+
+def secrets_from_trufflehog(lines: Iterable[str], *, verified_known: bool) -> List[Dict[str, Any]]:
+    """TruffleHog JSON lines. Its records carry the raw secret and the
+    author's email; only the detector, the verified flag and the place are
+    read, so nothing else ever leaves this function."""
+    out: List[Dict[str, Any]] = []
+    for line in lines:
+        try:
+            record = json.loads(line)
+        except ValueError:
+            continue
+        if not isinstance(record, dict):
+            continue
+        detector = re.sub(r"[^a-z0-9]+", "-", str(record.get("DetectorName") or "").lower()).strip("-")[:60]
+        data = ((record.get("SourceMetadata") or {}).get("Data") or {})
+        source = data.get("Git") or data.get("Filesystem") or {}
+        path = clean_path(source.get("file"))
+        commit = source.get("commit") or None
+        if not detector or not path or (commit is not None and not _ok(_SHA, commit)):
+            continue
+        out.append({"rule": f"trufflehog-{detector}", "detector": "trufflehog", "path": path,
+                    "lines": _lines(source.get("line")), "commit": commit,
+                    "verified": bool(record.get("Verified")) if verified_known else None,
+                    "in_tree": "Filesystem" in data})
+    return out
+
+
+def merge_secrets(gitleaks: List[Dict[str, Any]], trufflehog: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    """A TruffleHog result at a place Gitleaks already reported only adds whether it was verified."""
+    out = [dict(s) for s in gitleaks]
+    for th in trufflehog:
+        same = next((s for s in out if (s["path"], s["lines"], s["commit"]) == (th["path"], th["lines"], th["commit"])),
+                    None)
+        if same is None:
+            out.append(dict(th))
+        elif th["verified"] is not None:
+            same["verified"] = th["verified"] or bool(same["verified"])
+    return out
+
+
+# ---------------------------------------------------------------------------
+# Workflows and IaC
+# ---------------------------------------------------------------------------
+
+def _zizmor_level(value: Any) -> str:
+    text = str(value or "").lower()
+    return {"informational": "low", "info": "low"}.get(text, text if text in SEVERITY_RANK else "unknown")
+
+
+def workflows_from_zizmor(doc: Any) -> List[Dict[str, Any]]:
+    found: Dict[Tuple[str, str], Dict[str, Any]] = {}
+    for f in doc if isinstance(doc, list) else []:
+        if not isinstance(f, dict) or f.get("ignored"):
+            continue
+        rule = f.get("ident")
+        primary = next((loc for loc in f.get("locations") or [] if isinstance(loc, dict)
+                        and (loc.get("symbolic") or {}).get("kind") == "Primary"), None)
+        if not _ok(_RULE, rule) or primary is None:
+            continue
+        key = (primary.get("symbolic") or {}).get("key") or {}
+        local = key.get("Local") if isinstance(key, dict) else None
+        path = clean_path((local or {}).get("given_path") or (local or {}).get("verbatim_path"))
+        span = ((primary.get("concrete") or {}).get("location") or {})
+        start = (span.get("start_point") or {}).get("row")
+        end = (span.get("end_point") or {}).get("row")
+        if not path or not isinstance(start, int):
+            continue
+        det = f.get("determinations") or {}
+        severity, confidence = _zizmor_level(det.get("severity")), _zizmor_level(det.get("confidence"))
+        confidence = confidence if confidence in ("high", "medium", "low") else "unknown"
+        item = {"rule": rule, "severity": severity, "confidence": confidence, "path": path,
+                "lines": _lines(start + 1, end + 1 if isinstance(end, int) else None)}
+        current = found.get((rule, path))
+        if current is None:
+            found[(rule, path)] = item
+        else:
+            if SEVERITY_RANK[severity] > SEVERITY_RANK[current["severity"]]:
+                current["severity"] = severity
+            if SEVERITY_RANK.get(confidence, 0) > SEVERITY_RANK.get(current["confidence"], 0):
+                current["confidence"] = confidence
+    return sorted(found.values(), key=lambda i: (i["path"], int(i["lines"].split("-")[0]), i["rule"]))
+
+
+def _checkov_path(check: Dict[str, Any]) -> Optional[str]:
+    absolute = str(check.get("file_abs_path") or "")
+    if absolute.startswith("/src/"):
+        return clean_path(absolute[len("/src/"):])
+    return clean_path(check.get("file_path"))
+
+
+def iac_from_checkov(doc: Any) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:
+    reports = doc if isinstance(doc, list) else [doc] if isinstance(doc, dict) else []
+    findings: List[Dict[str, Any]] = []
+    resources: Dict[Tuple[str, str, str], Dict[str, Any]] = {}
+    for report in reports:
+        if not isinstance(report, dict):
+            continue
+        results = report.get("results") or {}
+        terraform = report.get("check_type") == "terraform"
+        for state in ("failed_checks", "passed_checks"):
+            for check in results.get(state) or []:
+                if not isinstance(check, dict):
+                    continue
+                path, resource, rule = _checkov_path(check), check.get("resource"), check.get("check_id")
+                span = check.get("file_line_range") or [1, 1]
+                lines = _lines(span[0] if span else 1, span[1] if len(span) > 1 else None)
+                if not path or not _ok(_RESOURCE, resource):
+                    continue
+                if state == "failed_checks" and _ok(_RULE, rule):
+                    severity = str(check.get("severity") or CHECKOV_SEVERITY.get(rule) or "unknown").lower()
+                    findings.append({"rule": rule, "severity": severity if severity in SEVERITY_RANK else "unknown",
+                                     "resource": resource, "path": path, "lines": lines})
+                parts = resource.split(".")
+                if terraform and len(parts) >= 2 and parts[0] != "data":
+                    rtype, name = parts[-2], re.sub(r"\[.*\]$", "", parts[-1])
+                    if _ok(_RULE, rtype) and _ok(_RESOURCE, name):
+                        resources.setdefault((rtype, name, path), {"type": rtype, "name": name, "path": path,
+                                                                   "lines": lines})
+    return findings, list(resources.values())
+
+
+# ---------------------------------------------------------------------------
+# Size
+# ---------------------------------------------------------------------------
+
+def cap_scan(scan: Dict[str, Any], max_bytes: int = MAX_SCAN_BYTES) -> Dict[str, Any]:
+    """Keep the document under max_bytes: lists are cut to their limits, then
+    components are dropped from the end until it fits. `truncated` says so."""
+    out = dict(scan)
+    truncated = bool(out.get("truncated"))
+    for key, limit in LIMITS.items():
+        items = out.get(key)
+        if isinstance(items, list) and len(items) > limit:
+            out[key], truncated = items[:limit], True
+    components = list(out.get("components") or [])
+    out["components"], out["truncated"] = components, truncated
+    while len(json.dumps(out)) > max_bytes and components:
+        components = components[: max(0, len(components) - max(1, len(components) // 10))]
+        out["components"], out["truncated"] = components, True
+    return out
