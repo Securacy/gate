@@ -11,9 +11,15 @@ on real outputs (tests/data/scan). Standard library only, Python 3.8+.
 """
 
 import json
+import os
 import re
-from pathlib import PurePosixPath
+import shutil
+import subprocess  # nosec B404  (fixed argument lists, never a shell)
+import time
+from pathlib import Path, PurePosixPath
 from typing import Any, Dict, Iterable, List, Optional, Tuple
+
+import securacy_tools
 
 SCHEMA = "securacy-scan:v1"
 PURL_TYPES = ("npm", "pypi", "maven", "golang", "cargo", "gem", "nuget", "composer", "pub", "swift", "hex",
@@ -527,3 +533,255 @@ def cap_scan(scan: Dict[str, Any], max_bytes: int = MAX_SCAN_BYTES) -> Dict[str,
         components = components[: max(0, len(components) - max(1, len(components) // 10))]
         out["components"], out["truncated"] = components, True
     return out
+
+
+# ---------------------------------------------------------------------------
+# Running the scanners
+# ---------------------------------------------------------------------------
+
+PER_TOOL_SECONDS = 240
+HISTORY_SECONDS = 300
+ZERO_SHA = "0" * 40
+TOOL_NAMES = ("syft", "grype", "osv-scanner", "gitleaks", "trufflehog", "zizmor", "checkov")
+_SKIP_DIRS = {".git", "node_modules", "vendor", ".terraform", ".venv", "venv", "dist", "build"}
+_MAX_WALK = 20000
+
+
+class ScanOptions:
+    def __init__(self, enabled: bool = True, verify_secrets: bool = False, osv_offline: bool = False,
+                 timeout_s: int = 600) -> None:
+        self.enabled, self.verify_secrets, self.osv_offline, self.timeout_s = \
+            enabled, verify_secrets, osv_offline, timeout_s
+
+
+class ScanResult:
+    def __init__(self, doc: Optional[Dict[str, Any]], notices: List[str], sbom_path: Optional[Path]) -> None:
+        self.doc, self.notices, self.sbom_path = doc, notices, sbom_path
+
+
+def _has_iac(workspace: Path) -> bool:
+    """Terraform, a Dockerfile, a Kubernetes manifest or a CloudFormation template."""
+    seen = 0
+    for root, dirs, files in os.walk(str(workspace)):
+        dirs[:] = [d for d in dirs if d not in _SKIP_DIRS and not (d == ".github" and root == str(workspace))]
+        for name in files:
+            seen += 1
+            if seen > _MAX_WALK:
+                return False
+            if name.endswith((".tf", ".tf.json")) or name == "Dockerfile" or name.startswith("Dockerfile."):
+                return True
+            if name.endswith((".yaml", ".yml")):
+                try:
+                    with open(os.path.join(root, name), "r", encoding="utf-8", errors="replace") as handle:
+                        head = handle.read(4096)
+                except OSError:
+                    continue
+                if ("apiVersion:" in head and "kind:" in head) or "AWSTemplateFormatVersion" in head:
+                    return True
+    return False
+
+
+def secret_scope(event_name: str, event: Dict[str, Any], has_scan: bool) -> Tuple[str, Optional[str], Optional[str]]:
+    """(scope, base, head) for the secret scan: this PR's commits, the pushed
+    commits, the working tree, or (a repository's first scan) all of history."""
+    if event_name == "pull_request":
+        pr = event.get("pull_request") or {}
+        base, head = (pr.get("base") or {}).get("sha"), (pr.get("head") or {}).get("sha")
+        if _ok(_SHA, base) and _ok(_SHA, head):
+            return "change", base, head
+    elif event_name == "push":
+        before, after = event.get("before"), event.get("after")
+        if _ok(_SHA, before) and _ok(_SHA, after) and before != ZERO_SHA:
+            return "push", before, after
+        return "tree", None, None
+    return ("tree" if has_scan else "history"), None, None
+
+
+def gitleaks_argv(binary: Path, scope: str, base: Optional[str], head: Optional[str], report: Path) -> List[str]:
+    common = ["--redact", "--no-banner", "--report-format", "json", "--report-path", str(report), "--exit-code", "0"]
+    if scope == "tree":
+        return [str(binary), "dir"] + common + ["."]
+    if scope == "history":
+        return [str(binary), "git"] + common + ["."]
+    return [str(binary), "git"] + common + [f"--log-opts={base}..{head}", "."]
+
+
+def trufflehog_argv(binary: Path, scope: str, base: Optional[str]) -> List[str]:
+    if scope == "tree":
+        return [str(binary), "filesystem", ".", "--json", "--no-update"]
+    argv = [str(binary), "git", "file://.", "--json", "--no-update"]
+    return argv + (["--since-commit", base] if scope in ("change", "push") and base else [])
+
+
+def osv_argv(binary: Path, offline: bool) -> List[str]:
+    argv = [str(binary), "scan", "source", "-r", "--format", "json", "--allow-no-lockfiles"]
+    if offline:  # no package name leaves the runner: local databases and no transitive resolution
+        argv += ["--offline-vulnerabilities", "--download-offline-databases", "--no-resolve"]
+    return argv + ["."]
+
+
+def checkov_argv(docker: str, image: str, workspace: Path) -> List[str]:
+    return [docker, "run", "--rm", "--network", "none", "-v", f"{workspace}:/src:ro", image,
+            "-d", "/src", "-o", "json", "--soft-fail", "--skip-download",
+            "--framework", "terraform,kubernetes,dockerfile,cloudformation"]
+
+
+class _Runner:
+    """One scan's bookkeeping: tool status, the shared deadline, notices."""
+
+    def __init__(self, workspace: Path, lock: Dict[str, Any], tools_dir: Path, runner: Any, fetch: Any,
+                 env: Dict[str, str], timeout_s: int) -> None:
+        self.workspace, self.lock, self.tools_dir = workspace, lock, tools_dir
+        self.runner, self.fetch, self.env = runner, fetch, env
+        self.deadline = time.monotonic() + max(60, timeout_s)
+        self.notices: List[str] = []
+        self.status = {name: {"version": str((lock.get(name) or {}).get("version") or ""), "status": "skipped",
+                              "seconds": 0} for name in TOOL_NAMES}
+
+    def binary(self, name: str) -> Optional[Path]:
+        result = self.fetch(name, self.lock, self.tools_dir)
+        self.status[name]["status"] = result.status
+        if result.status != "ok":
+            self.notices.append(f"{name} was not run: its download was {result.status}.")
+        return result.path if result.status == "ok" else None
+
+    def call(self, name: str, argv: List[str], ok_codes: Tuple[int, ...] = (0,), limit: int = PER_TOOL_SECONDS,
+             extra_env: Optional[Dict[str, str]] = None) -> Optional[bytes]:
+        remaining = self.deadline - time.monotonic()
+        if remaining < 5:
+            self.status[name]["status"] = "timeout"
+            self.notices.append(f"{name} was not run: the scan ran out of time.")
+            return None
+        started = time.monotonic()
+        try:
+            proc = self.runner(argv, cwd=str(self.workspace), env=dict(self.env, **(extra_env or {})),
+                               stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                               timeout=min(limit, remaining))  # nosec B603
+        except subprocess.TimeoutExpired:
+            self.status[name]["status"] = "timeout"
+            self.notices.append(f"{name} timed out.")
+            return None
+        except OSError as error:
+            self.status[name]["status"] = "failed"
+            self.notices.append(f"{name} could not start ({type(error).__name__}).")
+            return None
+        self.status[name]["seconds"] = int(time.monotonic() - started)
+        if proc.returncode not in ok_codes:
+            self.status[name]["status"] = "failed"
+            self.notices.append(f"{name} failed (exit {proc.returncode}).")
+            return None
+        self.status[name]["status"] = "ok"
+        return proc.stdout or b""
+
+    def parse(self, name: str, raw: Optional[bytes]) -> Any:
+        if raw is None:
+            return None
+        try:
+            return json.loads(raw.decode("utf-8", "replace") or "null")
+        except ValueError:
+            self.status[name]["status"] = "failed"
+            self.notices.append(f"{name} output could not be read.")
+            return None
+
+    def commit_exists(self, sha: str) -> bool:
+        proc = self.runner(["git", "cat-file", "-e", sha + "^{commit}"], cwd=str(self.workspace), env=self.env,
+                           stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=30)  # nosec B603 B607
+        return proc.returncode == 0
+
+
+def _dependencies(run: _Runner, workspace: Path, sbom: Path, offline: bool) -> Tuple[list, list]:
+    components: List[Dict[str, Any]] = []
+    grype_vulns: List[Dict[str, Any]] = []
+    syft = run.binary("syft")
+    if syft and run.call("syft", [str(syft), "scan", "dir:.", "-o", f"cyclonedx-json={sbom}", "-q"]) is not None:
+        try:
+            components = components_from_cyclonedx(json.loads(sbom.read_text(encoding="utf-8")))
+        except (OSError, ValueError):
+            run.status["syft"]["status"] = "failed"
+            run.notices.append("The SBOM Syft wrote could not be read.")
+    if run.status["syft"]["status"] == "ok":
+        grype = run.binary("grype")
+        if grype:
+            env = {"GRYPE_DB_CACHE_DIR": str(run.tools_dir / "grype-db"), "GRYPE_CHECK_FOR_APP_UPDATE": "false"}
+            grype_vulns = vulns_from_grype(run.parse("grype", run.call(
+                "grype", [str(grype), f"sbom:{sbom}", "-o", "json", "-q"], extra_env=env)))
+    osv_doc = None
+    osv = run.binary("osv-scanner")
+    if osv:
+        osv_doc = run.parse("osv-scanner", run.call("osv-scanner", osv_argv(osv, offline), ok_codes=(0, 1, 128)))
+    extra = osv_components(osv_doc, PurePosixPath(str(workspace).replace("\\", "/"))) if osv_doc else []
+    components = merge_components(components, extra)
+    vulns = merge_vulns(components, grype_vulns, vulns_from_osv(osv_doc) if osv_doc else [])
+    return ensure_components(components, vulns), vulns
+
+
+def _secrets(run: _Runner, out_dir: Path, scope: str, base: Optional[str], head: Optional[str],
+             verify: bool) -> list:
+    secrets: List[Dict[str, Any]] = []
+    gitleaks = run.binary("gitleaks")
+    if gitleaks:
+        report = out_dir / "gitleaks.json"
+        limit = HISTORY_SECONDS if scope == "history" else PER_TOOL_SECONDS
+        if run.call("gitleaks", gitleaks_argv(gitleaks, scope, base, head, report), limit=limit) is not None:
+            try:
+                secrets = secrets_from_gitleaks(json.loads(report.read_text(encoding="utf-8") or "[]"),
+                                                in_tree=scope == "tree")
+            except (OSError, ValueError):
+                run.status["gitleaks"]["status"] = "failed"
+        if report.exists():
+            report.unlink()
+    if verify:
+        truffle = run.binary("trufflehog")
+        raw = run.call("trufflehog", trufflehog_argv(truffle, scope, base)) if truffle else None
+        if raw is not None:
+            found = secrets_from_trufflehog(raw.decode("utf-8", "replace").splitlines(), verified_known=True)
+            secrets = merge_secrets(secrets, found)
+    return secrets
+
+
+def run_scan(workspace: Path, event_name: str, event: Dict[str, Any], options: ScanOptions, *, has_scan: bool,
+             out_dir: Path, artifacts_dir: Path, tools_dir: Path, runner: Any = subprocess.run,
+             fetch: Any = securacy_tools.fetch_tool, docker: Optional[str] = "auto",
+             environ: Optional[Dict[str, str]] = None, lock: Optional[Dict[str, Any]] = None) -> ScanResult:
+    """Run every scanner that applies, each on its own: one failing never
+    stops the others. Writes out_dir/scan.json and artifacts_dir/sbom.cdx.json."""
+    if not options.enabled:
+        return ScanResult(None, [], None)
+    lock = lock if lock is not None else securacy_tools.load_lock()
+    docker = shutil.which("docker") if docker == "auto" else docker
+    for d in (out_dir, artifacts_dir, tools_dir):
+        d.mkdir(parents=True, exist_ok=True)
+    run = _Runner(workspace, lock, tools_dir, runner, fetch, securacy_tools.clean_env(environ), options.timeout_s)
+
+    sbom = artifacts_dir / "sbom.cdx.json"
+    components, vulns = _dependencies(run, workspace, sbom, options.osv_offline)
+
+    scope, base, head = secret_scope(event_name, event, has_scan)
+    if base and head and not (run.commit_exists(base) and run.commit_exists(head)):
+        run.notices.append("The change's commits are not all in this checkout (a force push or a shallow clone), "
+                           "so the secret scan did a full sweep of the working tree instead.")
+        scope, base, head = "tree", None, None
+    secrets = _secrets(run, out_dir, scope, base, head, options.verify_secrets)
+
+    workflows: List[Dict[str, Any]] = []
+    if (workspace / ".github" / "workflows").is_dir():
+        zizmor = run.binary("zizmor")
+        if zizmor:
+            workflows = workflows_from_zizmor(run.parse("zizmor", run.call(
+                "zizmor", [str(zizmor), "--format", "json", "--offline", ".github/workflows"],
+                ok_codes=(0, 10, 11, 12, 13, 14))))
+    iac: List[Dict[str, Any]] = []
+    resources: List[Dict[str, Any]] = []
+    if _has_iac(workspace):
+        if not docker:
+            run.notices.append("Checkov was not run: Docker is not available on this runner.")
+        else:
+            image = str((lock.get("checkov") or {}).get("image") or "")
+            iac, resources = iac_from_checkov(run.parse("checkov", run.call(
+                "checkov", checkov_argv(docker, image, workspace), ok_codes=(0, 1))))
+
+    doc = cap_scan({"schema": SCHEMA, "tools": run.status, "secrets_scope": scope, "components": components,
+                    "vulnerabilities": vulns, "secrets": secrets, "workflows": workflows, "iac": iac,
+                    "iac_resources": resources, "truncated": False})
+    (out_dir / "scan.json").write_text(json.dumps(doc), encoding="utf-8")
+    return ScanResult(doc, run.notices, sbom if sbom.is_file() else None)

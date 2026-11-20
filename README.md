@@ -127,6 +127,32 @@ for the workflow.
 Don't add a `paths:` filter. If you make the check required, GitHub leaves PRs that a path filter
 skipped waiting forever. A change that touches no files sends an empty report without running the agent.
 
+## Supply-chain scan
+
+Before the agent runs, the action also scans the checkout with pinned open-source tools:
+
+| Tool | What it looks for | When |
+|---|---|---|
+| [Syft](https://github.com/anchore/syft) | The SBOM: every package, version and license | always |
+| [Grype](https://github.com/anchore/grype) and [OSV-Scanner](https://github.com/google/osv-scanner) | Known vulnerabilities and malicious packages; results are merged | always |
+| [Gitleaks](https://github.com/gitleaks/gitleaks) | Secrets: in a pull request's own commits (even ones a later commit deleted), in pushed commits, or in the whole history on a repository's first scan | always |
+| [TruffleHog](https://github.com/trufflesecurity/trufflehog) | Whether a found secret is live | only with `secret-verification: true` |
+| [zizmor](https://github.com/zizmorcore/zizmor) | Risky GitHub workflows: `pull_request_target`, template injection, unpinned actions, broad tokens | when `.github/workflows/` exists |
+| [Checkov](https://github.com/bridgecrewio/checkov) | Terraform, Kubernetes, Dockerfile and CloudFormation misconfigurations | when such files exist and Docker is available; runs with `--network none` and a read-only mount |
+
+- **Pinned.** Every binary's version and SHA-256 are in [`scanners.lock.json`](scanners.lock.json), taken from
+  each release's own checksums file; Checkov's image is pinned by digest. A download that doesn't match is not run.
+- **No keys.** The scan is its own step, before the agent, and gets none of this action's keys or tokens.
+  Each scanner process gets only `PATH`, `HOME`, `TMPDIR`, `LANG`, `LC_ALL` and `RUNNER_TEMP`.
+- **Never a secret's value.** Gitleaks runs with `--redact`; TruffleHog's raw fields are dropped while its
+  output is read. Securacy receives the rule, file, line and commit.
+- **Never blocks on its own failure.** A scanner that fails, times out or isn't available on the runner
+  (scanners run on Linux x64 and arm64) is reported as *not scanned*.
+- **What can block** (with the gate set to block): a secret, a malicious package, a vulnerability on CISA's
+  known-exploited list, or a critical vulnerability with a fixed version, when this change adds it. Other
+  findings warn. What `main` already had never changes a pull request's result.
+- `scan: off` turns it off.
+
 ## Inputs
 
 | Input | Default | |
@@ -145,6 +171,10 @@ skipped waiting forever. A change that touches no files sends an empty report wi
 | `github-token` | `${{ github.token }}` | Used to comment, list changed files, check override permissions and open the guardrails PR. |
 | `timeout-minutes` | `15` | How long to wait for Securacy's answer (1–60). |
 | `retention-days` | `30` | How long the result files are kept as an artifact. |
+| `scan` | `auto` | `auto` runs the supply-chain scan; `off` skips it. |
+| `secret-verification` | `false` | `true` also runs TruffleHog to check which found secrets are live. That sends each found secret to its provider. |
+| `osv-offline` | `false` | `true`: OSV-Scanner downloads its databases instead of sending package names and versions to OSV and deps.dev. |
+| `scan-timeout-minutes` | `10` | How long all scanners together may take (1–60). |
 
 ## Outputs
 
@@ -156,6 +186,7 @@ skipped waiting forever. A change that touches no files sends an empty report wi
 | `run-agent`, `prompt-file`, `report-file`, `guardrails-file` | From `prepare`, for your own agent's step |
 | `sarif-file` | SARIF for code scanning (empty for public repositories) |
 | `run-url` | The threat model in Securacy |
+| `sbom-file` | The CycloneDX SBOM Syft wrote (also in the uploaded report files) |
 
 ## Gate modes and results
 
@@ -196,9 +227,12 @@ change through.
 ## What leaves your repository
 
 To Securacy: the agent's report (rule and control IDs, statuses, file paths and line numbers), the
-list of files the change touched, and the commit's metadata. **Never your source code**: the agent
-reads it on your runner with your model key. On **public** repositories the PR comment shows counts
-only, and no SARIF, report or guardrails pull request is produced, since anyone can read those.
+list of files the change touched, the commit's metadata, and the supply-chain scan (package names,
+versions, licenses and manifest paths; advisory ids; rule ids with file, line and commit). **Never your
+source code or a secret's value**: the agent and the scanners read the code on your runner. OSV-Scanner
+sends package names and versions to OSV and deps.dev unless `osv-offline: true`; Grype and Checkov
+download their databases or images. On **public** repositories the PR comment shows counts
+only (vulnerable packages are named, since the dependency list is public anyway), and no SARIF, report or guardrails pull request is produced, since anyone can read those.
 
 ## Security
 
@@ -209,7 +243,8 @@ only, and no SARIF, report or guardrails pull request is produced, since anyone 
 - Every file read stays inside the checked-out repository. Paths that escape it are refused,
   including through symlinks.
 - Only the guardrails job can write to the repository, and only through a pull request.
-- Standard-library Python only, with nothing installed at run time.
+- Standard-library Python only. The scanners are downloaded at run time from their GitHub releases and
+  checked against the pinned SHA-256s before they run.
 
 ## Development
 

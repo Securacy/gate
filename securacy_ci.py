@@ -504,7 +504,9 @@ def prepare() -> int:
     base = base_commit(event_name, event)
     mode = choose_mode(_input("mode", "auto"), event_name, bool((current or {}).get("has_state")), base)
     context: Dict[str, Any] = {"mode": mode, "base": base, "changed_files": None,
-                               "baseline_version": (current or {}).get("baseline_version")}
+                               "baseline_version": (current or {}).get("baseline_version"),
+                               # A server that doesn't say has no first-scan history sweep to ask for.
+                               "has_scan": (current or {}).get("has_scan", True) is not False}
 
     if mode == "diff":
         changed = changed_files(workspace, event_name, event, base, _github())
@@ -781,7 +783,8 @@ def merged_pr_from_message(message: Any) -> Optional[int]:
 
 def build_payload(event_name: str, event: Dict[str, Any], env: Dict[str, str], *, mode: str,
                   changed: Optional[List[str]], agent_report: Optional[Dict[str, Any]],
-                  override: Optional[Dict[str, str]], merged_pr: Optional[int] = None) -> Dict[str, Any]:
+                  override: Optional[Dict[str, str]], merged_pr: Optional[int] = None,
+                  scan: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
     pull = event.get("pull_request") or {}
     head_commit = event.get("head_commit") or {}
     events = ("pull_request", "push", "workflow_dispatch", "schedule")
@@ -802,6 +805,8 @@ def build_payload(event_name: str, event: Dict[str, Any], env: Dict[str, str], *
         payload["merged_pr"] = merged_pr
     if head_commit.get("timestamp"):
         payload["commit_time"] = head_commit["timestamp"]
+    if scan is not None:
+        payload["scan"] = scan
     return payload
 
 
@@ -891,7 +896,7 @@ def check() -> int:
         merged_pr = (github.merged_pr(env["GITHUB_SHA"]) if github else None) or \
             merged_pr_from_message((event.get("head_commit") or {}).get("message"))
     payload = build_payload(event_name, event, dict(env), mode=mode, changed=changed, agent_report=report,
-                            override=override, merged_pr=merged_pr)
+                            override=override, merged_pr=merged_pr, scan=scan_report())
     result = submit(url, key, payload)
     if result.get("status") in ("queued", "running"):
         result = wait_for(url, key, result, _minutes(_input("timeout-minutes", "15")) * 60)
@@ -1001,11 +1006,65 @@ def sync() -> int:
     return 0
 
 
+# ---------------------------------------------------------------------------
+# scan: the supply-chain scanners, before the agent, with none of the keys
+# ---------------------------------------------------------------------------
+
+SCAN_NAME = "scan.json"
+
+
+def scan_report() -> Optional[Dict[str, Any]]:
+    """What the scan step left for submit, if it ran and the file is sane."""
+    import securacy_scan
+
+    path = agent_dir() / SCAN_NAME
+    try:
+        if not path.is_file() or path.stat().st_size > securacy_scan.MAX_SCAN_BYTES:
+            return None
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError):
+        return None
+    return data if isinstance(data, dict) and data.get("schema") == securacy_scan.SCHEMA else None
+
+
+def scan() -> int:
+    """Run the scanners. Never fails the job: a scanner problem only means
+    that part wasn't scanned, and the check says so."""
+    import securacy_scan
+
+    try:
+        options = securacy_scan.ScanOptions(
+            enabled=_input("scan", "auto").strip().lower() != "off",
+            verify_secrets=_input("secret-verification", "false").strip().lower() == "true",
+            osv_offline=_input("osv-offline", "false").strip().lower() == "true",
+            timeout_s=_minutes(_input("scan-timeout-minutes", "10")) * 60)
+        if not options.enabled:
+            print("Securacy: the supply-chain scan is off (scan: off).", flush=True)
+            return 0
+        workspace = Path(os.environ.get("GITHUB_WORKSPACE") or ".")
+        runner_temp = Path(os.environ.get("RUNNER_TEMP") or workspace)
+        event_name, event = _event()
+        result = securacy_scan.run_scan(
+            workspace, event_name, event, options, has_scan=_context().get("has_scan", True) is not False,
+            out_dir=agent_dir(), artifacts_dir=runner_temp / "securacy", tools_dir=runner_temp / "securacy-tools")
+        for notice in result.notices:
+            log("notice", notice)
+        if result.sbom_path:
+            set_output("sbom-file", str(result.sbom_path))
+        doc = result.doc or {}
+        counts = ", ".join(f"{len(doc.get(k) or [])} {k}" for k in ("components", "vulnerabilities", "secrets",
+                                                                     "workflows", "iac"))
+        print(f"Securacy: supply-chain scan done ({counts}).", flush=True)
+    except Exception as exc:  # noqa: BLE001  (a scan problem must never fail someone's job)
+        log("warning", f"The supply-chain scan didn't complete ({type(exc).__name__}). Not scanned.")
+    return 0
+
+
 def main(argv: Optional[List[str]] = None) -> int:
     """Setup mistakes fail the step; anything unexpected only warns, so a
     hiccup on GitHub's or Securacy's side never blocks someone's PR."""
     command = (argv if argv is not None else sys.argv[1:] or ["check"])[0]
-    handlers = {"prepare": prepare, "check": check, "sync": sync}
+    handlers = {"prepare": prepare, "scan": scan, "check": check, "sync": sync}
     if command not in handlers:
         log("error", f"Unknown command {command!r}.")
         return 1

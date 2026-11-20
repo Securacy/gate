@@ -48,6 +48,18 @@ inputs:
   retention-days:
     description: How long to keep the uploaded report files.
     default: "30"
+  scan:
+    description: "auto (the default): scan dependencies (SBOM and known vulnerabilities), secrets, GitHub workflows and IaC with pinned open-source scanners before the agent runs. off: skip it."
+    default: auto
+  secret-verification:
+    description: "true: also run TruffleHog, which checks found secrets against their providers to say which are live. That sends each found secret to its provider. Off by default."
+    default: "false"
+  osv-offline:
+    description: "true: OSV-Scanner downloads its databases instead of sending package names and versions to OSV and deps.dev."
+    default: "false"
+  scan-timeout-minutes:
+    description: How long all scanners together may take (1-60).
+    default: "10"
 
 outputs:
   outcome:
@@ -77,6 +89,9 @@ outputs:
   run-url:
     description: The threat model in Securacy.
     value: ${{ steps.check.outputs.run-url }}
+  sbom-file:
+    description: (scan) The CycloneDX SBOM Syft wrote, also uploaded with the report files.
+    value: ${{ steps.scan.outputs.sbom-file }}
 
 runs:
   using: composite
@@ -96,6 +111,19 @@ runs:
         INPUT_MODE: ${{ inputs.mode }}
         INPUT_REPORT_FILE: ${{ inputs.report-file }}
         INPUT_GITHUB_TOKEN: ${{ inputs.github-token }}
+
+    # The supply-chain scanners: pinned and checksum-checked downloads, run
+    # before the agent with none of this action's keys or tokens (and a
+    # scrubbed environment for every scanner process).
+    - id: scan
+      if: (inputs.command == 'check' || inputs.command == 'prepare') && inputs.scan != 'off'
+      shell: bash
+      run: '"$(command -v python3 || command -v python)" "$GITHUB_ACTION_PATH/securacy_ci.py" scan'
+      env:
+        INPUT_SCAN: ${{ inputs.scan }}
+        INPUT_SECRET_VERIFICATION: ${{ inputs.secret-verification }}
+        INPUT_OSV_OFFLINE: ${{ inputs.osv-offline }}
+        INPUT_SCAN_TIMEOUT_MINUTES: ${{ inputs.scan-timeout-minutes }}
 
     # Keys pasted into a secret often carry a stray space, line break or quote.
     - id: keys
