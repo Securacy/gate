@@ -206,11 +206,33 @@ The gate mode is your organisation admin's setting in Securacy:
 | No usable report from the coding agent | **red** · Not checked | grey · Not checked | green |
 | Securacy unreachable, or anything else on our side | grey · Not checked | grey | green |
 | Bad Securacy key or invalid request | red · Could not run | red | red |
+| Unsigned report where Securacy requires signed reports | red · Could not run | red | red |
 
 Threats that were already open are listed and counted ("Passed, 4 still open") but never fail a
 change: they are backlog, not the PR's fault. Nothing on our side ever stops a deploy. A missing
 agent report fails in Block mode because otherwise a broken or timed-out agent step would let any
 change through.
+
+## Signed reports
+
+An organisation admin can turn on **Require signed reports** for a repository in Securacy. Securacy
+then accepts a report only with the workflow's GitHub OIDC token for that repository, commit and ref,
+so a leaked `SECURACY_CI_KEY` alone can't send one. Add this to the workflow's permissions:
+
+```yaml
+permissions:
+  id-token: write
+```
+
+The action asks GitHub for a token with the audience `securacy`, masks it in the log, and sends it
+only to Securacy, as the `X-Securacy-OIDC` header. Without the permission the report goes unsigned
+with a warning, which is fine while the setting is off. Two things to know before turning it on:
+
+- `id-token: write` lets every step in the job ask GitHub for a token, including the coding agent's
+  step. The built-in agents can't make network calls (Claude Code only reads files and runs three
+  `git` commands; Codex runs in a read-only sandbox), but your own agent's step could. If a cloud role
+  trusts this repository's pull-request tokens, check that is what you want.
+- Pull requests from forks get no token, so their check fails while the setting is on.
 
 ## When a change is blocked
 

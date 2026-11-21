@@ -3,6 +3,7 @@ server that proves redirects are refused."""
 
 import http.server
 import json
+import urllib.error
 import os
 import sys
 import threading
@@ -980,3 +981,87 @@ def test_github_names_the_merged_pull_request_of_a_commit(monkeypatch):
     monkeypatch.setattr(ci, "http", fake)
     assert ci.GitHub("t", "acme/payments", "https://api.github.com").merged_pr("b" * 40) == 4
     assert calls == ["https://api.github.com/repos/acme/payments/commits/" + "b" * 40 + "/pulls"]
+
+
+# ---------------------------------------------------------------------------
+# Signed reports: the workflow's GitHub OIDC token (needs id-token: write)
+# ---------------------------------------------------------------------------
+
+OIDC_ENV = {"ACTIONS_ID_TOKEN_REQUEST_URL": "https://pipelines.actions.example/idtoken/abc?api-version=2.0",
+            "ACTIONS_ID_TOKEN_REQUEST_TOKEN": "request-token-secret"}
+OIDC_VALUE = "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJyZXBvIn0.signature-value"
+
+
+def test_no_oidc_token_without_id_token_permission(monkeypatch):
+    called = []
+    monkeypatch.setattr(ci, "http", lambda *a, **k: called.append(a))
+    assert ci.oidc_token({}) is None
+    assert ci.oidc_token({"ACTIONS_ID_TOKEN_REQUEST_URL": OIDC_ENV["ACTIONS_ID_TOKEN_REQUEST_URL"]}) is None
+    assert called == []
+
+
+def test_oidc_token_asks_for_the_securacy_audience_and_masks_it_at_once(monkeypatch, capsys):
+    fake, calls = _fake_http([(200, {"value": OIDC_VALUE, "count": 1})])
+    monkeypatch.setattr(ci, "http", fake)
+    assert ci.oidc_token(dict(OIDC_ENV)) == OIDC_VALUE
+    method, url, headers, _ = calls[0]
+    assert method == "GET" and url == OIDC_ENV["ACTIONS_ID_TOKEN_REQUEST_URL"] + "&audience=securacy"
+    assert headers == {"Authorization": "bearer request-token-secret"}
+    printed = capsys.readouterr().out
+    assert printed.splitlines() == [f"::add-mask::{OIDC_VALUE}"]  # nothing else carries it
+    assert "request-token-secret" not in printed
+
+
+@pytest.mark.parametrize("answer", [(500, None), (200, {"value": ""}), (200, {"nope": 1}), (200, {"value": "x" * 9000}),
+                                    "raise"])
+def test_no_oidc_token_is_a_warning_and_an_unsigned_report(monkeypatch, capsys, answer):
+    def fake(method, url, headers, payload=None, timeout=60):
+        if answer == "raise":
+            raise urllib.error.URLError("unreachable")
+        return ci.HttpResult(*answer)
+
+    monkeypatch.setattr(ci, "http", fake)
+    assert ci.oidc_token(dict(OIDC_ENV)) is None
+    printed = capsys.readouterr().out
+    assert "::warning::" in printed and "unsigned" in printed and "request-token-secret" not in printed
+
+
+def test_an_oidc_request_url_that_isnt_https_is_never_called(monkeypatch):
+    called = []
+    monkeypatch.setattr(ci, "http", lambda *a, **k: called.append(a))
+    assert ci.oidc_token({**OIDC_ENV, "ACTIONS_ID_TOKEN_REQUEST_URL": "http://pipelines.actions.example/t"}) is None
+    assert called == []
+
+
+def test_submit_sends_the_oidc_token_only_as_a_header(monkeypatch):
+    fake, calls = _fake_http([(200, {"status": "complete", "outcome": "pass"})])
+    monkeypatch.setattr(ci, "http", fake)
+    ci.submit("https://api.securacy.ai", "sk-ci-secret", {"repository": "acme/payments"}, oidc=OIDC_VALUE)
+    _, _, headers, payload = calls[0]
+    assert headers == {"X-API-Key": "sk-ci-secret", "X-Securacy-OIDC": OIDC_VALUE}
+    assert OIDC_VALUE not in json.dumps(payload)
+
+
+def test_check_signs_the_report_when_the_job_can(workflow, monkeypatch, capsys):
+    for name, value in OIDC_ENV.items():
+        monkeypatch.setenv(name, value)
+    seen = []
+
+    def fake(method, url, headers, payload=None, timeout=60):
+        seen.append((url, dict(headers)))
+        if url.startswith(OIDC_ENV["ACTIONS_ID_TOKEN_REQUEST_URL"]):
+            return ci.HttpResult(200, {"value": OIDC_VALUE})
+        if url.endswith("/cicd/guardrails"):
+            return ci.HttpResult(200, GUARDRAILS)
+        return ci.HttpResult(200, {"status": "complete", "outcome": "pass", "summary_markdown": "verdict pass",
+                                   "comment_markdown": "<!-- securacy-ci -->", "sarif": {"version": "2.1.0"}})
+
+    monkeypatch.setattr(ci, "http", fake)
+    monkeypatch.setattr(ci, "_git_changed_files", lambda workspace, base: [])
+    ci.main(["prepare"])
+    assert ci.main(["check"]) == 0
+    analyze = [h for u, h in seen if u.endswith("/cicd/analyze")]
+    assert analyze and analyze[-1]["X-Securacy-OIDC"] == OIDC_VALUE
+    printed = capsys.readouterr().out
+    assert printed.count(OIDC_VALUE) == 1 and f"::add-mask::{OIDC_VALUE}" in printed
+    assert all("X-Securacy-OIDC" not in h for u, h in seen if not u.endswith("/cicd/analyze"))

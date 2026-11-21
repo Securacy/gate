@@ -32,6 +32,10 @@ Security notes:
   * Every file read stays inside the workspace; symlinks out of it are refused.
   * An override only counts when the securacy-override label was added by a
     user with admin or maintain permission who also left a written reason.
+  * Signed reports: with id-token: write, the check asks GitHub for an OIDC
+    token (audience "securacy"), masks it at once, and sends it only as the
+    X-Securacy-OIDC header of POST /cicd/analyze. Without the permission, or
+    when GitHub doesn't answer, the report goes unsigned with a warning.
 """
 
 import json
@@ -336,13 +340,46 @@ def _detail(result: HttpResult) -> str:
     return str(detail or body.get("error") or f"HTTP {result.status}")
 
 
-def submit(url: str, key: str, payload: Dict[str, Any], attempts: int = 3) -> Dict[str, Any]:
+OIDC_AUDIENCE = "securacy"
+OIDC_HEADER = "X-Securacy-OIDC"
+MAX_OIDC_TOKEN = 8192
+
+
+def oidc_token(env: Optional[Dict[str, str]] = None) -> Optional[str]:
+    """The workflow's GitHub OIDC token for Securacy, when the job has
+    id-token: write (GitHub then sets ACTIONS_ID_TOKEN_REQUEST_URL and _TOKEN).
+    Masked in the log as soon as it arrives. None when the job can't get one."""
+    source = os.environ if env is None else env
+    request_url = source.get("ACTIONS_ID_TOKEN_REQUEST_URL") or ""
+    request_token = source.get("ACTIONS_ID_TOKEN_REQUEST_TOKEN") or ""
+    if not request_url or not request_token:
+        return None
+    if urllib.parse.urlparse(request_url).scheme != "https":
+        log("warning", "GitHub's OIDC token URL isn't https, so this report goes unsigned.")
+        return None
+    url = request_url + ("&" if "?" in request_url else "?") + "audience=" + urllib.parse.quote(OIDC_AUDIENCE)
+    try:
+        result = http("GET", url, {"Authorization": f"bearer {request_token}"}, timeout=30)
+    except (urllib.error.URLError, OSError):
+        result = HttpResult(0, None)
+    value = result.body.get("value") if result.status == 200 and isinstance(result.body, dict) else None
+    if not isinstance(value, str) or not value or len(value) > MAX_OIDC_TOKEN:
+        log("warning", f"GitHub didn't give this job an OIDC token (HTTP {result.status}), so this report goes "
+                       "unsigned. A repository that requires signed reports will fail the check.")
+        return None
+    print(f"::add-mask::{value}", flush=True)
+    return value
+
+
+def submit(url: str, key: str, payload: Dict[str, Any], attempts: int = 3,
+           oidc: Optional[str] = None) -> Dict[str, Any]:
     """POST /cicd/analyze. Retries network errors and 5xx (the server
     de-duplicates by commit and input). Returns the run, or an error dict
-    with `outcome` set like the server would."""
+    with `outcome` set like the server would. `oidc` signs the report."""
+    headers = {"X-API-Key": key, **({OIDC_HEADER: oidc} if oidc else {})}
     for attempt in range(1, attempts + 1):
         try:
-            result = http("POST", f"{url}/cicd/analyze", {"X-API-Key": key}, payload)
+            result = http("POST", f"{url}/cicd/analyze", headers, payload)
         except (urllib.error.URLError, OSError) as exc:
             result = HttpResult(0, {"detail": str(getattr(exc, "reason", exc))})
         if result.status in (200, 202) and isinstance(result.body, dict):
@@ -920,7 +957,7 @@ def check() -> int:
             merged_pr_from_message((event.get("head_commit") or {}).get("message"))
     payload = build_payload(event_name, event, dict(env), mode=mode, changed=changed, agent_report=report,
                             override=override, merged_pr=merged_pr, scan=scan_report())
-    result = submit(url, key, payload)
+    result = submit(url, key, payload, oidc=oidc_token())
     if result.get("status") in ("queued", "running"):
         result = wait_for(url, key, result, _minutes(_input("timeout-minutes", "15")) * 60)
 
