@@ -259,6 +259,42 @@ def test_the_mode(requested, event, has_state, base, mode):
     assert ci.choose_mode(requested, event, has_state, base) == mode
 
 
+def test_auto_sweeps_on_default_branch_push_when_needs_sweep():
+    """The threat model moved to a new version: the next default-branch push checks every control."""
+    assert ci.choose_mode("auto", "push", True, "a" * 40, needs_sweep=True, default_branch_push=True) == "sweep"
+    assert ci.choose_mode("auto", "push", True, "a" * 40, needs_sweep=True, default_branch_push=False) == "diff"
+    assert ci.choose_mode("diff", "push", True, "a" * 40, needs_sweep=True, default_branch_push=True) == "diff"
+
+
+def test_pr_stays_diff_when_needs_sweep():
+    assert ci.choose_mode("auto", "pull_request", True, "a" * 40, needs_sweep=True) == "diff"
+
+
+def test_missing_field_keeps_old_behaviour(monkeypatch):
+    """An old server sends no needs_sweep: a default-branch push stays a change check."""
+    assert ci.choose_mode("auto", "push", True, "a" * 40, default_branch_push=True) == "diff"
+    monkeypatch.setenv("GITHUB_REF", "refs/heads/main")
+    assert ci.needs_sweep({"has_state": True}) is False
+    assert ci.needs_sweep(None) is False
+    assert ci.needs_sweep({"needs_sweep": True}) is True
+    assert ci.needs_sweep({"needs_sweep": "yes"}) is False
+
+
+@pytest.mark.parametrize("event_name,ref,default,expected", [
+    ("push", "refs/heads/main", "main", True),
+    ("push", "refs/heads/feature", "main", False),
+    ("push", "refs/tags/v1", "main", False),
+    ("schedule", "refs/heads/trunk", "trunk", True),
+    ("workflow_dispatch", "refs/heads/main", "main", True),
+    ("pull_request", "refs/heads/main", "main", False),
+    ("push", "refs/heads/main", None, False),       # no default branch in the event: don't guess
+])
+def test_default_branch_push(monkeypatch, event_name, ref, default, expected):
+    monkeypatch.setenv("GITHUB_REF", ref)
+    event = {"repository": {"default_branch": default}} if default else {}
+    assert ci.default_branch_push(event_name, event) is expected
+
+
 def test_the_base_commit():
     assert ci.base_commit("pull_request", {"pull_request": {"base": {"sha": "A" * 40}}}) == "a" * 40
     assert ci.base_commit("push", {"before": "b" * 40}) == "b" * 40
@@ -486,6 +522,29 @@ def test_prepare_sweeps_when_nothing_was_checked_yet(workflow, monkeypatch):
     _server(monkeypatch, guardrails=dict(GUARDRAILS, has_state=False))
     ci.main(["prepare"])
     assert _outputs(workflow)[1]["mode"] == "sweep"
+
+
+def _push_to_main(repo, monkeypatch):
+    event = repo / "event.json"
+    event.write_text(json.dumps({"before": "c" * 40, "after": "b" * 40,
+                                 "repository": {"private": True, "default_branch": "main"}}), encoding="utf-8")
+    monkeypatch.setenv("GITHUB_EVENT_NAME", "push")
+    monkeypatch.setenv("GITHUB_REF", "refs/heads/main")
+
+
+def test_prepare_sweeps_a_main_push_after_the_model_moved(workflow, monkeypatch, capsys):
+    _push_to_main(workflow, monkeypatch)
+    _server(monkeypatch, guardrails=dict(GUARDRAILS, needs_sweep=True))
+    ci.main(["prepare"])
+    assert _outputs(workflow)[1]["mode"] == "sweep"
+    assert "moved to a new version" in capsys.readouterr().out
+
+
+def test_prepare_keeps_a_main_push_a_diff_without_needs_sweep(workflow, monkeypatch):
+    _push_to_main(workflow, monkeypatch)
+    _server(monkeypatch)
+    ci.main(["prepare"])
+    assert _outputs(workflow)[1]["mode"] == "diff"
 
 
 def test_prepare_skips_the_agent_without_a_model_key(workflow, monkeypatch, capsys):

@@ -165,7 +165,7 @@ Before the agent runs, the action also scans the checkout with pinned open-sourc
 | `claude-oauth-token` | | For `claude`, instead of an API key: a Pro or Max subscription's token from `claude setup-token`. |
 | `agent-model` | | The agent's model (empty for its default). |
 | `agent-max-turns` | `100` | How many turns Claude may take. Raise it for a large repository's sweep. |
-| `mode` | `auto` | `auto`: a sweep by hand or before the first check, otherwise a change check. Or force `sweep` / `diff`. |
+| `mode` | `auto` | `auto`: a sweep by hand, before the first check, or on the first default-branch push after your threat model moves to a new version; otherwise a change check. Or force `sweep` / `diff`. |
 | `report-file` | | A reply your own step wrote somewhere in the workspace. Without it, `submit` reads `prepare`'s `report-file`. |
 | `comment` | `true` | Post the result as a PR comment (one comment, kept up to date). |
 | `github-token` | `${{ github.token }}` | Used to comment, list changed files, check override permissions and open the guardrails PR. |

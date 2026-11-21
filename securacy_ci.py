@@ -395,14 +395,32 @@ def fetch_guardrails(url: str, key: str) -> Optional[Dict[str, Any]]:
 # prepare: mode, changed files and the agent's prompt
 # ---------------------------------------------------------------------------
 
-def choose_mode(requested: str, event_name: str, has_state: bool, base: Optional[str]) -> str:
-    """A full sweep when asked or by hand, when nothing has been
-    checked yet, or when there's no earlier commit to compare with."""
+def choose_mode(requested: str, event_name: str, has_state: bool, base: Optional[str],
+                needs_sweep: bool = False, default_branch_push: bool = False) -> str:
+    """A full sweep when asked or by hand, when nothing has been checked
+    yet, when there's no earlier commit to compare with, or on the default
+    branch after the threat model moved to a new version (needs_sweep)."""
     if requested in ("sweep", "diff"):
         return requested if requested == "sweep" or base else "sweep"
     if event_name == "workflow_dispatch" or not has_state or not base:
         return "sweep"
+    if needs_sweep and default_branch_push:
+        return "sweep"
     return "diff"
+
+
+def needs_sweep(current: Optional[Dict[str, Any]]) -> bool:
+    """Whether Securacy asks for a sweep (old servers don't send the field)."""
+    return (current or {}).get("needs_sweep") is True
+
+
+def default_branch_push(event_name: str, event: Dict[str, Any]) -> bool:
+    """A push, dispatch or schedule on the repository's default branch: the
+    runs that write what Securacy knows about the code."""
+    if event_name not in ("push", "workflow_dispatch", "schedule"):
+        return False
+    default = str((event.get("repository") or {}).get("default_branch") or "")
+    return bool(default) and os.environ.get("GITHUB_REF") == f"refs/heads/{default}"
 
 
 def base_commit(event_name: str, event: Dict[str, Any]) -> Optional[str]:
@@ -502,7 +520,12 @@ def prepare() -> int:
     flavor = (current or {}).get("agent_flavor") or "claude"
     agent_file = next((f for f in files if f.get("flavor") == flavor), None)
     base = base_commit(event_name, event)
-    mode = choose_mode(_input("mode", "auto"), event_name, bool((current or {}).get("has_state")), base)
+    model_moved = needs_sweep(current)
+    on_default_branch = default_branch_push(event_name, event)
+    mode = choose_mode(_input("mode", "auto"), event_name, bool((current or {}).get("has_state")), base,
+                       needs_sweep=model_moved, default_branch_push=on_default_branch)
+    if model_moved and on_default_branch and mode == "sweep":
+        log("notice", "The threat model moved to a new version, so this run checks every control.")
     context: Dict[str, Any] = {"mode": mode, "base": base, "changed_files": None,
                                "baseline_version": (current or {}).get("baseline_version"),
                                # A server that doesn't say has no first-scan history sweep to ask for.
