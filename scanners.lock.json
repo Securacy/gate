@@ -1,5 +1,5 @@
 {
-  "_comment": "Pinned scanners. Each SHA-256 is from the release's own checksums file (zizmor publishes none: GitHub's asset digest). Releases were the newest at least two weeks old on 2026-11-20. Change a pin only with its checksum, in the same commit.",
+  "_comment": "Pinned scanners. Each SHA-256 is from the release's own checksums file (zizmor publishes none: GitHub's asset digest). Releases were the newest at least two weeks old on 2026-11-20, except osv-scanner 2.7.1 (13 days old on 2026-11-22; 2.7.0 carries Go modules with fixed HIGH advisories that the backend deploy's Trivy scan rejects). Change a pin only with its checksum, in the same commit.",
   "syft": {
     "version": "1.57.0",
     "assets": {
@@ -15,10 +15,10 @@
     }
   },
   "osv-scanner": {
-    "version": "2.7.0",
+    "version": "2.7.1",
     "assets": {
-      "linux-x64": {"url": "https://github.com/google/osv-scanner/releases/download/v2.7.0/osv-scanner_linux_amd64", "sha256": "160c6253e2922e9e0a6a9771c5c4c40a4b3c6090b34a3cdd5e80c96cc2e4218b", "member": null},
-      "linux-arm64": {"url": "https://github.com/google/osv-scanner/releases/download/v2.7.0/osv-scanner_linux_arm64", "sha256": "4061ef4c021ed3c47f203b818f337e351336cc5cd67c0274fc36bd1dfc728dd7", "member": null}
+      "linux-x64": {"url": "https://github.com/google/osv-scanner/releases/download/v2.7.1/osv-scanner_linux_amd64", "sha256": "fb7dab19a8bd9bbe5c3189f09d4b7ee1820c9553a23bac202648a56efd2f6ee8", "member": null},
+      "linux-arm64": {"url": "https://github.com/google/osv-scanner/releases/download/v2.7.1/osv-scanner_linux_arm64", "sha256": "983d22fbad9724514e3fcc6acc83b5fa64c5ffa6b0d9f510028f22c1b223ff81", "member": null}
     }
   },
   "gitleaks": {
