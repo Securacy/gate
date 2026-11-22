@@ -10,6 +10,7 @@ Normalisers here are pure functions over each tool's JSON, so they are tested
 on real outputs (tests/data/scan). Standard library only, Python 3.8+.
 """
 
+import contextlib
 import json
 import os
 import re
@@ -17,7 +18,7 @@ import shutil
 import subprocess  # nosec B404
 import time
 from pathlib import Path, PurePosixPath
-from typing import Any, Dict, Iterable, List, Optional, Tuple
+from typing import Any, Dict, Iterable, Iterator, List, Optional, Tuple
 
 import securacy_tools
 
@@ -558,6 +559,27 @@ OWN_SETTINGS = {
 }
 
 
+@contextlib.contextmanager
+def set_aside(workspace: Path, names: Iterable[str], parking: Path) -> Iterator[None]:
+    """Move root files a scanner reads whatever it is told (Gitleaks' .gitleaksignore) out of the checkout
+    while it runs, and put them back afterwards, even when it fails."""
+    moved: List[Tuple[Path, Path]] = []
+    try:
+        parking.mkdir(parents=True, exist_ok=True)
+        for name in names:
+            source, parked = workspace / name, parking / name
+            if os.path.lexists(source) and not os.path.lexists(parked):
+                shutil.move(str(source), str(parked))
+                moved.append((parked, source))
+        yield
+    finally:
+        for parked, source in moved:
+            try:
+                shutil.move(str(parked), str(source))
+            except OSError:
+                pass  # the runner is thrown away after the job; a file we can't put back is not worth failing it
+
+
 def own_settings(tools_dir: Path) -> Path:
     """Write the scanners' settings into tools_dir/settings, replacing whatever is there."""
     folder = tools_dir / "settings"
@@ -750,7 +772,9 @@ def _secrets(run: _Runner, out_dir: Path, scope: str, base: Optional[str], head:
     if gitleaks:
         report = out_dir / "gitleaks.json"
         limit = HISTORY_SECONDS if scope == "history" else PER_TOOL_SECONDS
-        if run.call("gitleaks", gitleaks_argv(gitleaks, scope, base, head, report, settings), limit=limit) is not None:
+        with set_aside(run.workspace, (".gitleaksignore",), settings / "aside"):
+            ran = run.call("gitleaks", gitleaks_argv(gitleaks, scope, base, head, report, settings), limit=limit)
+        if ran is not None:
             try:
                 secrets = secrets_from_gitleaks(json.loads(report.read_text(encoding="utf-8") or "[]"),
                                                 in_tree=scope == "tree")

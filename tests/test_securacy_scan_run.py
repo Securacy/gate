@@ -183,6 +183,36 @@ def test_scanners_read_securacys_settings_not_the_repositorys(workspace, tmp_pat
     assert workspace not in own.parents
 
 
+class WatchingRunner(FakeRunner):
+    """Records whether the workspace's root .gitleaksignore is in place at the moment each scanner starts."""
+
+    def __init__(self):
+        super().__init__()
+        self.ignore_present = {}
+
+    def __call__(self, argv, cwd=None, **kwargs):
+        self.ignore_present[Path(argv[0]).name] = (Path(cwd) / ".gitleaksignore").exists()
+        return super().__call__(argv, cwd=cwd, **kwargs)
+
+
+def test_gitleaks_never_sees_the_repositorys_gitleaksignore(workspace, tmp_path):
+    """Gitleaks reads a root .gitleaksignore whatever --gitleaks-ignore-path says (8.30.1), and a fingerprint in
+    it hides a finding even in git mode. The file is moved out of the checkout while Gitleaks runs, then put back."""
+    entry = "src/payments.js:stripe-access-token:3\n"
+    (workspace / ".gitleaksignore").write_text(entry, encoding="utf-8")
+    _, runner = run(workspace, tmp_path, runner=WatchingRunner())
+    assert runner.ignore_present["gitleaks"] is False
+    assert runner.ignore_present["syft"] is True  # only the secret scan needs it out of the way
+    assert (workspace / ".gitleaksignore").read_text(encoding="utf-8") == entry
+
+
+def test_gitleaksignore_comes_back_when_gitleaks_fails(workspace, tmp_path):
+    (workspace / ".gitleaksignore").write_text("x:y:1\n", encoding="utf-8")
+    _, runner = run(workspace, tmp_path, runner=FakeRunner(fail={"gitleaks"}))
+    assert (workspace / ".gitleaksignore").read_text(encoding="utf-8") == "x:y:1\n"
+    assert not list(workspace.glob("*aside*"))
+
+
 def test_no_docker_skips_checkov(workspace, tmp_path):
     result, runner = run(workspace, tmp_path, docker=None)
     assert result.doc["tools"]["checkov"]["status"] == "skipped" and not runner.ran("docker")
