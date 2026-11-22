@@ -146,6 +146,13 @@ Before the agent runs, the action also scans the checkout with pinned open-sourc
   Each scanner process gets only `PATH`, `HOME`, `TMPDIR`, `LANG`, `LC_ALL` and `RUNNER_TEMP`.
 - **Never a secret's value.** Gitleaks runs with `--redact`; TruffleHog's raw fields are dropped while its
   output is read. Securacy receives the rule, file, line and commit.
+- **Securacy's settings, not the repository's.** A change can't hide its own findings with scanner settings in
+  its tree: the scanners read settings the action writes outside the checkout, ignore `gitleaks:allow`,
+  `zizmor: ignore[...]` and `trufflehog:ignore` comments, and OSV-Scanner also scans lockfiles listed in
+  `.gitignore`. So `.gitleaks.toml`, `.syft.yaml`, `.grype.yaml`, `osv-scanner.toml` and `zizmor.yml` have no
+  effect here. Two files can't be switched off: Gitleaks always reads a `.gitleaksignore` at the repository root,
+  and Checkov a `.checkov.yaml` there (and its `checkov:skip` comments). A change that edits either file gets a
+  warning in the PR comment. To accept a finding, dismiss it in Securacy, or use the override label.
 - **Never blocks on its own failure.** A scanner that fails, times out or isn't available on the runner
   (scanners run on Linux x64 and arm64) is reported as *not scanned*.
 - **What can block** (with the gate set to block): a secret, a malicious package, a vulnerability on CISA's

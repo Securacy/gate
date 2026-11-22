@@ -546,6 +546,26 @@ TOOL_NAMES = ("syft", "grype", "osv-scanner", "gitleaks", "trufflehog", "zizmor"
 _SKIP_DIRS = {".git", "node_modules", "vendor", ".terraform", ".venv", "venv", "dist", "build"}
 _MAX_WALK = 20000
 
+# The scanners read these, written outside the checkout, and not the settings files, ignore comments
+# or .gitignore entries a change could add to hide its own findings (each flag checked against the
+# pinned release). Gitleaks still reads a .gitleaksignore at the scan root, and Checkov a
+# .checkov.yaml there and its inline skips: Securacy warns when a change edits those files.
+OWN_SETTINGS = {
+    "gitleaks.toml": "[extend]\nuseDefault = true\n",  # Gitleaks' built-in rules and nothing else
+    "syft.yaml": "check-for-app-update: false\n",
+    "grype.yaml": "check-for-app-update: false\n",
+    "osv-scanner.toml": "",
+}
+
+
+def own_settings(tools_dir: Path) -> Path:
+    """Write the scanners' settings into tools_dir/settings, replacing whatever is there."""
+    folder = tools_dir / "settings"
+    folder.mkdir(parents=True, exist_ok=True)
+    for name, text in OWN_SETTINGS.items():
+        (folder / name).write_text(text, encoding="utf-8")
+    return folder
+
 
 class ScanOptions:
     def __init__(self, enabled: bool = True, verify_secrets: bool = False, osv_offline: bool = False,
@@ -597,8 +617,11 @@ def secret_scope(event_name: str, event: Dict[str, Any], has_scan: bool) -> Tupl
     return ("tree" if has_scan else "history"), None, None
 
 
-def gitleaks_argv(binary: Path, scope: str, base: Optional[str], head: Optional[str], report: Path) -> List[str]:
-    common = ["--redact", "--no-banner", "--report-format", "json", "--report-path", str(report), "--exit-code", "0"]
+def gitleaks_argv(binary: Path, scope: str, base: Optional[str], head: Optional[str], report: Path,
+                  settings: Path) -> List[str]:
+    common = ["--redact", "--no-banner", "--report-format", "json", "--report-path", str(report), "--exit-code", "0",
+              "--config", str(settings / "gitleaks.toml"), "--gitleaks-ignore-path", str(settings),
+              "--ignore-gitleaks-allow"]
     if scope == "tree":
         return [str(binary), "dir"] + common + ["."]
     if scope == "history":
@@ -608,13 +631,15 @@ def gitleaks_argv(binary: Path, scope: str, base: Optional[str], head: Optional[
 
 def trufflehog_argv(binary: Path, scope: str, base: Optional[str]) -> List[str]:
     if scope == "tree":
-        return [str(binary), "filesystem", ".", "--json", "--no-update"]
-    argv = [str(binary), "git", "file://.", "--json", "--no-update"]
+        return [str(binary), "filesystem", ".", "--json", "--no-update", "--no-ignore-tag"]
+    argv = [str(binary), "git", "file://.", "--json", "--no-update", "--no-ignore-tag"]
     return argv + (["--since-commit", base] if scope in ("change", "push") and base else [])
 
 
-def osv_argv(binary: Path, offline: bool) -> List[str]:
-    argv = [str(binary), "scan", "source", "-r", "--format", "json", "--allow-no-lockfiles"]
+def osv_argv(binary: Path, offline: bool, settings: Path) -> List[str]:
+    # --no-ignore: a lockfile the change lists in .gitignore is still committed, and still scanned.
+    argv = [str(binary), "scan", "source", "-r", "--format", "json", "--allow-no-lockfiles",
+            "--config", str(settings / "osv-scanner.toml"), "--no-ignore"]
     if offline:  # no package name leaves the runner: local databases and no transitive resolution
         argv += ["--offline-vulnerabilities", "--download-offline-databases", "--no-resolve"]
     return argv + ["."]
@@ -689,11 +714,12 @@ class _Runner:
         return proc.returncode == 0
 
 
-def _dependencies(run: _Runner, workspace: Path, sbom: Path, offline: bool) -> Tuple[list, list]:
+def _dependencies(run: _Runner, workspace: Path, sbom: Path, offline: bool, settings: Path) -> Tuple[list, list]:
     components: List[Dict[str, Any]] = []
     grype_vulns: List[Dict[str, Any]] = []
     syft = run.binary("syft")
-    if syft and run.call("syft", [str(syft), "scan", "dir:.", "-o", f"cyclonedx-json={sbom}", "-q"]) is not None:
+    if syft and run.call("syft", [str(syft), "-c", str(settings / "syft.yaml"), "scan", "dir:.",
+                                  "-o", f"cyclonedx-json={sbom}", "-q"]) is not None:
         try:
             components = components_from_cyclonedx(json.loads(sbom.read_text(encoding="utf-8")))
         except (OSError, ValueError):
@@ -704,11 +730,13 @@ def _dependencies(run: _Runner, workspace: Path, sbom: Path, offline: bool) -> T
         if grype:
             env = {"GRYPE_DB_CACHE_DIR": str(run.tools_dir / "grype-db"), "GRYPE_CHECK_FOR_APP_UPDATE": "false"}
             grype_vulns = vulns_from_grype(run.parse("grype", run.call(
-                "grype", [str(grype), f"sbom:{sbom}", "-o", "json", "-q"], extra_env=env)))
+                "grype", [str(grype), "-c", str(settings / "grype.yaml"), f"sbom:{sbom}", "-o", "json", "-q"],
+                extra_env=env)))
     osv_doc = None
     osv = run.binary("osv-scanner")
     if osv:
-        osv_doc = run.parse("osv-scanner", run.call("osv-scanner", osv_argv(osv, offline), ok_codes=(0, 1, 128)))
+        osv_doc = run.parse("osv-scanner", run.call("osv-scanner", osv_argv(osv, offline, settings),
+                                                    ok_codes=(0, 1, 128)))
     extra = osv_components(osv_doc, PurePosixPath(str(workspace).replace("\\", "/"))) if osv_doc else []
     components = merge_components(components, extra)
     vulns = merge_vulns(components, grype_vulns, vulns_from_osv(osv_doc) if osv_doc else [])
@@ -716,13 +744,13 @@ def _dependencies(run: _Runner, workspace: Path, sbom: Path, offline: bool) -> T
 
 
 def _secrets(run: _Runner, out_dir: Path, scope: str, base: Optional[str], head: Optional[str],
-             verify: bool) -> list:
+             verify: bool, settings: Path) -> list:
     secrets: List[Dict[str, Any]] = []
     gitleaks = run.binary("gitleaks")
     if gitleaks:
         report = out_dir / "gitleaks.json"
         limit = HISTORY_SECONDS if scope == "history" else PER_TOOL_SECONDS
-        if run.call("gitleaks", gitleaks_argv(gitleaks, scope, base, head, report), limit=limit) is not None:
+        if run.call("gitleaks", gitleaks_argv(gitleaks, scope, base, head, report, settings), limit=limit) is not None:
             try:
                 secrets = secrets_from_gitleaks(json.loads(report.read_text(encoding="utf-8") or "[]"),
                                                 in_tree=scope == "tree")
@@ -752,23 +780,25 @@ def run_scan(workspace: Path, event_name: str, event: Dict[str, Any], options: S
     for d in (out_dir, artifacts_dir, tools_dir):
         d.mkdir(parents=True, exist_ok=True)
     run = _Runner(workspace, lock, tools_dir, runner, fetch, securacy_tools.clean_env(environ), options.timeout_s)
+    settings = own_settings(tools_dir)
 
     sbom = artifacts_dir / "sbom.cdx.json"
-    components, vulns = _dependencies(run, workspace, sbom, options.osv_offline)
+    components, vulns = _dependencies(run, workspace, sbom, options.osv_offline, settings)
 
     scope, base, head = secret_scope(event_name, event, has_scan)
     if base and head and not (run.commit_exists(base) and run.commit_exists(head)):
         run.notices.append("The change's commits are not all in this checkout (a force push or a shallow clone), "
                            "so the secret scan did a full sweep of the working tree instead.")
         scope, base, head = "tree", None, None
-    secrets = _secrets(run, out_dir, scope, base, head, options.verify_secrets)
+    secrets = _secrets(run, out_dir, scope, base, head, options.verify_secrets, settings)
 
     workflows: List[Dict[str, Any]] = []
     if (workspace / ".github" / "workflows").is_dir():
         zizmor = run.binary("zizmor")
         if zizmor:
             workflows = workflows_from_zizmor(run.parse("zizmor", run.call(
-                "zizmor", [str(zizmor), "--format", "json", "--offline", ".github/workflows"],
+                "zizmor", [str(zizmor), "--format", "json", "--offline", "--no-config", "--no-ignores",
+                           ".github/workflows"],
                 ok_codes=(0, 10, 11, 12, 13, 14))))
     iac: List[Dict[str, Any]] = []
     resources: List[Dict[str, Any]] = []

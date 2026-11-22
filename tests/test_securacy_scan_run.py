@@ -159,6 +159,30 @@ def test_command_flags_pinned(workspace, tmp_path):
     assert "--no-resolve" not in runner.argv("osv-scanner")
 
 
+def test_scanners_read_securacys_settings_not_the_repositorys(workspace, tmp_path):
+    """A change can't hide its own findings with scanner settings, ignore comments or .gitignore entries
+    in its tree. Each flag was checked against the pinned release: without it, a file or comment the
+    change adds took that tool's findings to zero (.gitleaks.toml, gitleaks:allow, .syft.yaml exclude,
+    .grype.yaml ignore, osv-scanner.toml at any depth, .gitignore for OSV-Scanner, zizmor.yml,
+    zizmor: ignore[...], trufflehog:ignore)."""
+    own = tmp_path / "tools" / "settings"
+    own.mkdir(parents=True)
+    (own / "gitleaks.toml").write_text("[allowlist]\npaths = ['''.*''']\n", encoding="utf-8")  # left by anyone
+    _, runner = run(workspace, tmp_path, verify=True)
+    gitleaks = runner.argv("gitleaks")
+    assert gitleaks[gitleaks.index("--config") + 1] == str(own / "gitleaks.toml")
+    assert gitleaks[gitleaks.index("--gitleaks-ignore-path") + 1] == str(own)
+    assert "--ignore-gitleaks-allow" in gitleaks
+    assert runner.argv("syft")[1:3] == ["-c", str(own / "syft.yaml")]
+    assert runner.argv("grype")[1:3] == ["-c", str(own / "grype.yaml")]
+    osv = runner.argv("osv-scanner")
+    assert osv[osv.index("--config") + 1] == str(own / "osv-scanner.toml") and "--no-ignore" in osv
+    assert {"--no-config", "--no-ignores"} <= set(runner.argv("zizmor"))
+    assert "--no-ignore-tag" in runner.argv("trufflehog")
+    assert (own / "gitleaks.toml").read_text(encoding="utf-8") == "[extend]\nuseDefault = true\n"
+    assert workspace not in own.parents
+
+
 def test_no_docker_skips_checkov(workspace, tmp_path):
     result, runner = run(workspace, tmp_path, docker=None)
     assert result.doc["tools"]["checkov"]["status"] == "skipped" and not runner.ran("docker")
