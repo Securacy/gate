@@ -206,6 +206,49 @@ def test_gitleaks_never_sees_the_repositorys_gitleaksignore(workspace, tmp_path)
     assert (workspace / ".gitleaksignore").read_text(encoding="utf-8") == entry
 
 
+def test_a_leftover_parked_file_does_not_let_the_repositorys_gitleaksignore_stay(workspace, tmp_path):
+    """Fail closed: a copy parked by an earlier run on a reused runner must not make the move a no-op, or the
+    repository's own .gitleaksignore would stay in place and hide findings."""
+    stale = tmp_path / "tools" / "settings" / "aside"
+    stale.mkdir(parents=True)
+    (stale / ".gitleaksignore").write_text("old\n", encoding="utf-8")
+    (workspace / ".gitleaksignore").write_text("src/payments.js:stripe-access-token:3\n", encoding="utf-8")
+    _, runner = run(workspace, tmp_path, runner=WatchingRunner())
+    assert runner.ignore_present["gitleaks"] is False
+    assert (workspace / ".gitleaksignore").read_text(encoding="utf-8") == "src/payments.js:stripe-access-token:3\n"
+
+
+def test_gitleaks_does_not_run_when_the_gitleaksignore_cannot_be_moved_out(workspace, tmp_path, monkeypatch):
+    (workspace / ".gitleaksignore").write_text("x:y:1\n", encoding="utf-8")
+    real_move = scan.shutil.move
+
+    def refuse(src, dst, *args, **kwargs):
+        if Path(src).name == ".gitleaksignore" and Path(src).parent == workspace:
+            raise PermissionError("read-only")
+        return real_move(src, dst, *args, **kwargs)
+
+    monkeypatch.setattr(scan.shutil, "move", refuse)
+    result, runner = run(workspace, tmp_path)
+    assert not runner.ran("gitleaks") and result.doc["tools"]["gitleaks"]["status"] == "failed"
+    assert result.doc["secrets"] == [] and any(".gitleaksignore" in n for n in result.notices)
+    assert (workspace / ".gitleaksignore").read_text(encoding="utf-8") == "x:y:1\n"
+
+
+def test_a_gitleaksignore_that_cannot_be_put_back_is_reported(workspace, tmp_path, monkeypatch):
+    (workspace / ".gitleaksignore").write_text("x:y:1\n", encoding="utf-8")
+    real_move = scan.shutil.move
+
+    def fail_to_restore(src, dst, *args, **kwargs):
+        if Path(dst) == workspace / ".gitleaksignore":
+            raise OSError("disk full")
+        return real_move(src, dst, *args, **kwargs)
+
+    monkeypatch.setattr(scan.shutil, "move", fail_to_restore)
+    result, _ = run(workspace, tmp_path)
+    assert result.doc["tools"]["gitleaks"]["status"] == "ok"
+    assert any("put back" in n and ".gitleaksignore" in n for n in result.notices)
+
+
 def test_gitleaksignore_comes_back_when_gitleaks_fails(workspace, tmp_path):
     (workspace / ".gitleaksignore").write_text("x:y:1\n", encoding="utf-8")
     _, runner = run(workspace, tmp_path, runner=FakeRunner(fail={"gitleaks"}))

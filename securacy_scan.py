@@ -16,6 +16,7 @@ import os
 import re
 import shutil
 import subprocess  # nosec B404
+import tempfile
 import time
 from pathlib import Path, PurePosixPath
 from typing import Any, Dict, Iterable, Iterator, List, Optional, Tuple
@@ -559,25 +560,46 @@ OWN_SETTINGS = {
 }
 
 
+class SetAsideError(OSError):
+    """A file that must be out of a scanner's way couldn't be moved: that scanner must not run."""
+
+
 @contextlib.contextmanager
-def set_aside(workspace: Path, names: Iterable[str], parking: Path) -> Iterator[None]:
+def set_aside(workspace: Path, names: Iterable[str], parking_root: Path, problems: List[str]) -> Iterator[None]:
     """Move root files a scanner reads whatever it is told (Gitleaks' .gitleaksignore) out of the checkout
-    while it runs, and put them back afterwards, even when it fails."""
+    while it runs, and put them back afterwards, even when it fails. Fails closed: a fresh folder each time
+    (a copy left by an earlier run can't turn the move into a no-op), and a file that is still in place after
+    the move raises SetAsideError, so the scanner never runs with it. A file that can't be put back is added
+    to `problems`."""
     moved: List[Tuple[Path, Path]] = []
+    parking: Optional[Path] = None
     try:
-        parking.mkdir(parents=True, exist_ok=True)
         for name in names:
-            source, parked = workspace / name, parking / name
-            if os.path.lexists(source) and not os.path.lexists(parked):
+            source = workspace / name
+            if not os.path.lexists(source):
+                continue
+            if parking is None:
+                parking_root.mkdir(parents=True, exist_ok=True)
+                parking = Path(tempfile.mkdtemp(prefix="aside-", dir=str(parking_root)))
+            parked = parking / name
+            try:
                 shutil.move(str(source), str(parked))
-                moved.append((parked, source))
+            except OSError as error:
+                raise SetAsideError(f"{name} could not be moved out of the checkout ({type(error).__name__})")
+            moved.append((parked, source))
+            if os.path.lexists(source):
+                raise SetAsideError(f"{name} is still in the checkout after the move")
         yield
     finally:
+        restored = True
         for parked, source in moved:
             try:
                 shutil.move(str(parked), str(source))
             except OSError:
-                pass  # the runner is thrown away after the job; a file we can't put back is not worth failing it
+                restored = False
+                problems.append(f"The repository's {source.name} could not be put back after the scan.")
+        if parking is not None and restored:
+            shutil.rmtree(str(parking), ignore_errors=True)
 
 
 def own_settings(tools_dir: Path) -> Path:
@@ -772,8 +794,15 @@ def _secrets(run: _Runner, out_dir: Path, scope: str, base: Optional[str], head:
     if gitleaks:
         report = out_dir / "gitleaks.json"
         limit = HISTORY_SECONDS if scope == "history" else PER_TOOL_SECONDS
-        with set_aside(run.workspace, (".gitleaksignore",), settings / "aside"):
-            ran = run.call("gitleaks", gitleaks_argv(gitleaks, scope, base, head, report, settings), limit=limit)
+        problems: List[str] = []
+        try:
+            with set_aside(run.workspace, (".gitleaksignore",), settings / "aside", problems):
+                ran = run.call("gitleaks", gitleaks_argv(gitleaks, scope, base, head, report, settings), limit=limit)
+        except SetAsideError as error:  # Gitleaks would honour the file: better no secret scan than a hidden one
+            run.status["gitleaks"]["status"] = "failed"
+            run.notices.append(f"gitleaks was not run: {error}.")
+            ran = None
+        run.notices.extend(problems)
         if ran is not None:
             try:
                 secrets = secrets_from_gitleaks(json.loads(report.read_text(encoding="utf-8") or "[]"),
