@@ -74,7 +74,7 @@ prompt and writes its whole reply to `report-file`, and `submit` checks and send
 
 ```yaml
       - id: prepare
-        uses: securacy/gate@v1
+        uses: securacy/gate@2372901907eaec02bbc532124fe10a928c52747d  # v1.2.0
         with:
           command: prepare
           api-key: ${{ secrets.SECURACY_CI_KEY }}
@@ -86,7 +86,7 @@ prompt and writes its whole reply to `report-file`, and `submit` checks and send
           REPORT_FILE: ${{ steps.prepare.outputs.report-file }}
         run: my-agent --read-only --prompt-file "$PROMPT_FILE" > "$REPORT_FILE"   # your agent here
       - id: securacy
-        uses: securacy/gate@v1
+        uses: securacy/gate@2372901907eaec02bbc532124fe10a928c52747d  # v1.2.0
         with:
           command: submit
           api-key: ${{ secrets.SECURACY_CI_KEY }}
@@ -123,6 +123,12 @@ By hand: `gh secret set SECURACY_CI_KEY --repo <owner>/<repo>`, then the agent's
 `gh secret set ANTHROPIC_API_KEY --repo <owner>/<repo>` (both prompt, so nothing lands in shell
 history), and commit the files from the setup zip. See [examples/securacy.yml](examples/securacy.yml)
 for the workflow.
+
+The setup files pin every action to a release's commit, with the version in a comment, and so do the
+snippets here. Keep that in a workflow of your own: a tag can be moved, and the gate's step gets your
+Securacy key and your model key. Dependabot's `github-actions` updates keep the commit and the comment
+in step. The workflow also gives each job only the permissions it needs and keeps the checkout's token
+out of `.git/config`, so it passes the zizmor audit the action runs on your workflows.
 
 Don't add a `paths:` filter. If you make the check required, GitHub leaves PRs that a path filter
 skipped waiting forever. A change that touches no files sends an empty report without running the agent.
@@ -225,11 +231,15 @@ change through.
 
 An organisation admin can turn on **Require signed reports** for a repository in Securacy. Securacy
 then accepts a report only with the workflow's GitHub OIDC token for that repository, commit and ref,
-so a leaked `SECURACY_CI_KEY` alone can't send one. Add this to the workflow's permissions:
+so a leaked `SECURACY_CI_KEY` alone can't send one. Uncomment this line in the `threat-check` job's
+permissions in `.github/workflows/securacy.yml` (in a workflow of your own, add it to the permissions
+of the job that runs the gate):
 
 ```yaml
-permissions:
-  id-token: write
+  threat-check:
+    permissions:
+      # ...the permissions already there
+      id-token: write
 ```
 
 The action asks GitHub for a token with the audience `securacy`, masks it in the log, and sends it

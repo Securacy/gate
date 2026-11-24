@@ -4,3 +4,6 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    # Releases at least two weeks old, the rule the pinned actions and scanners follow.
+    cooldown:
+      default-days: 14

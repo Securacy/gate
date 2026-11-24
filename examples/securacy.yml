@@ -3,6 +3,8 @@
 # SecuracyAI Gate: checks the code against the project's threat model.
 # Claude Code reads the code here, in your CI, with your model key.
 # Securacy gets only its report: rule IDs, statuses and file locations.
+# Every action is pinned to a commit, with its release in a comment. Dependabot's
+# github-actions updates (.github/dependabot.yml) keep both current.
 # Docs: https://platform.securacy.ai/home/settings?section=cicd
 name: SecuracyAI Gate
 
@@ -13,13 +15,7 @@ on:
     branches: ["main"]
   workflow_dispatch:
 
-permissions:
-  contents: read          # read the code
-  pull-requests: write    # post the result as a PR comment
-  checks: write           # show the result as a check: green, grey (needs a look) or red
-  issues: read            # see who added the securacy-override label
-  security-events: write  # upload SARIF to code scanning
-  actions: read           # the Claude Code step reads its own workflow run
+permissions: {}   # each job asks for what it needs
 
 concurrency:
   group: securacy-${{ github.event.pull_request.number || github.ref }}
@@ -30,12 +26,22 @@ jobs:
     name: SecuracyAI Gate
     runs-on: ubuntu-latest
     timeout-minutes: 45
+    permissions:
+      contents: read          # read the code
+      pull-requests: write    # post the result as a PR comment
+      checks: write           # show the result as a check: green, grey (needs a look) or red
+      issues: read            # see who added the securacy-override label
+      security-events: write  # upload SARIF to code scanning
+      actions: read           # the Claude Code step reads its own workflow run
+      # id-token: write      # signed reports: uncomment if Securacy requires them; every step in the job can then get a GitHub OIDC token
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4.4.0
         with:
-          fetch-depth: 0      # the agent reads the change with git diff
-      - id: securacy
-        uses: securacy/gate@v1
+          fetch-depth: 0               # the agent reads the change with git diff
+          persist-credentials: false   # nothing here pushes, so the token stays out of .git/config
+      - name: SecuracyAI Gate
+        id: securacy
+        uses: securacy/gate@2372901907eaec02bbc532124fe10a928c52747d  # v1.2.0
         with:
           api-key: ${{ secrets.SECURACY_CI_KEY }}
           server-url: "https://api.example.securacy.ai"
@@ -45,7 +51,7 @@ jobs:
       - name: Upload to GitHub code scanning
         if: always() && steps.securacy.outputs.sarif-file != ''
         continue-on-error: true   # private repos need GitHub Code Security for this step
-        uses: github/codeql-action/upload-sarif@v4
+        uses: github/codeql-action/upload-sarif@33d7b85da1a04171e211befe2c739303b9a4c066  # v4.39.3
         with:
           sarif_file: ${{ steps.securacy.outputs.sarif-file }}
           category: securacy
@@ -53,17 +59,20 @@ jobs:
   # Securacy regenerates the guardrail files when the rule state changes.
   # This job opens a pull request with them; nothing else writes to the repo.
   guardrails:
-    name: Update Securacy guardrails
+    name: SecuracyAI Gate guardrails
     needs: threat-check
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
-      contents: write
-      pull-requests: write
+      contents: write         # create the branch with the updated guardrail files
+      pull-requests: write    # open the pull request for it
     steps:
-      - uses: actions/checkout@v4
-      - uses: securacy/gate@v1
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4.4.0
+        with:
+          persist-credentials: false   # the pull request goes through the GitHub API, not git push
+      - name: SecuracyAI Gate guardrails
+        uses: securacy/gate@2372901907eaec02bbc532124fe10a928c52747d  # v1.2.0
         with:
           command: sync-guardrails
           api-key: ${{ secrets.SECURACY_CI_KEY }}

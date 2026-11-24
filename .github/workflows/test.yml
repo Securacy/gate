@@ -23,9 +23,31 @@ jobs:
             python: "3.8"
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v7
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4.4.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0  # v7.1.0
         with:
           python-version: ${{ matrix.python }}
       - run: python -m pip install pytest
       - run: python -m pytest tests -q
+
+  # The action runs this zizmor (scanners.lock.json, checksum-checked) with these flags on every
+  # customer's workflows, so the workflow customers copy and this repository's own files must pass it.
+  zizmor:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4.4.0
+        with:
+          persist-credentials: false
+      - name: Audit the workflows, the action and the example workflow
+        run: |
+          python3 - "$RUNNER_TEMP/tools" > "$RUNNER_TEMP/zizmor-path" <<'EOF'
+          import pathlib, sys
+          import securacy_tools
+          result = securacy_tools.fetch_tool("zizmor", securacy_tools.load_lock(), pathlib.Path(sys.argv[1]))
+          if result.status != "ok":
+              sys.exit(f"zizmor download: {result.status}")
+          print(result.path)
+          EOF
+          "$(cat "$RUNNER_TEMP/zizmor-path")" --offline --no-config --no-ignores . examples/securacy.yml
