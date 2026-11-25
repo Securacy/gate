@@ -268,8 +268,8 @@ with a warning, which is fine while the setting is off. Two things to know befor
 
 To Securacy: the agent's report (rule and control IDs, statuses, file paths and line numbers), the
 list of files the change touched, the commit's metadata, and the supply-chain scan (package names,
-versions, licenses and manifest paths; advisory ids; rule ids with file, line and commit). **Never your
-source code or a secret's value**: the agent and the scanners read the code on your runner. OSV-Scanner
+versions, licenses and manifest paths; advisory ids and their one-line titles; rule ids, with Checkov's
+check titles, and file, line and commit). **Never your source code or a secret's value**: the agent and the scanners read the code on your runner. OSV-Scanner
 sends package names and versions to OSV and deps.dev unless `osv-offline: true`; Grype and Checkov
 download their databases or images. On **public** repositories the PR comment shows counts
 only (vulnerable packages are named, since the dependency list is public anyway), and no SARIF, report or guardrails pull request is produced, since anyone can read those.

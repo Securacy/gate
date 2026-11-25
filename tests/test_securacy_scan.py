@@ -125,7 +125,8 @@ def test_checkov_findings_and_resources():
     findings, resources = scan.iac_from_checkov(load("checkov.json"))
     by_rule = {f["rule"]: f for f in findings}
     assert by_rule["CKV_AWS_20"] == {"rule": "CKV_AWS_20", "severity": "high", "resource": "aws_s3_bucket.invoices",
-                                     "path": "terraform/s3.tf", "lines": "1-12"}
+                                     "path": "terraform/s3.tf", "lines": "1-12",
+                                     "title": "S3 Bucket has an ACL defined which allows public READ access."}
     assert by_rule["CKV_AWS_355"]["severity"] == "medium"   # Checkov's own severity wins
     assert by_rule["CKV_AWS_18"]["severity"] == "unknown"   # no severity and not in our short list
     assert by_rule["CKV_K8S_16"]["path"] == "k8s/orders-api.yaml"
@@ -154,3 +155,43 @@ def test_bad_items_are_skipped_not_fatal():
     assert scan.vulns_from_osv({"results": "nope"}) == []
     assert scan.workflows_from_zizmor([{"ident": "x"}]) == []
     assert scan.iac_from_checkov("nope") == ([], [])
+
+
+def test_osv_items_carry_the_advisorys_summary_when_it_has_one():
+    vulns = scan.vulns_from_osv(load("osv.json"))
+    cmd_injection = next(v for v in vulns if v["id"] == "GHSA-35jh-r3h4-6jhm")
+    assert cmd_injection["summary"] == "Command Injection in lodash"
+    assert all(v.get("summary") for v in vulns)  # a PYSEC record has none, but its GHSA alias in the group does
+    doc = load("osv.json")
+    for result in doc["results"]:
+        for pkg in result["packages"]:
+            for v in pkg.get("vulnerabilities") or []:
+                v.pop("summary", None)
+    assert all("summary" not in v for v in scan.vulns_from_osv(doc))
+
+
+def test_grype_items_carry_the_description_as_summary_and_none_when_it_is_empty():
+    vulns = {v["id"]: v for v in scan.vulns_from_grype(load("grype.json"))}
+    assert vulns["GHSA-35jh-r3h4-6jhm"]["summary"] == "Command Injection in lodash"
+    assert "summary" not in vulns["MAL-2025-9999"]
+
+
+def test_merging_keeps_osvs_short_summary_over_grypes_long_description():
+    lodash = {"purl": "pkg:npm/lodash@4.17.20", "name": "lodash", "version": "4.17.20", "ecosystem": "npm"}
+    base = {"id": "GHSA-35jh-r3h4-6jhm", "aliases": [], "purl": lodash["purl"], "severity": "high", "cvss": None,
+            "fixed_in": [], "cwes": [], "malicious": False}
+    grype = {**base, "tools": ["grype"], "summary": "Lodash versions prior to 4.17.21 are vulnerable to Command "
+                                                    "Injection via the template function."}
+    osv = {**base, "tools": ["osv-scanner"], "summary": "Command Injection in lodash"}
+    assert scan.merge_vulns([lodash], [grype], [osv])[0]["summary"] == "Command Injection in lodash"
+    assert scan.merge_vulns([lodash], [grype], [{**osv, "summary": None}])[0]["summary"] == grype["summary"]
+    only_osv = scan.merge_vulns([lodash], [{k: v for k, v in grype.items() if k != "summary"}], [osv])
+    assert only_osv[0]["summary"] == "Command Injection in lodash"
+
+
+def test_scanner_text_is_one_short_line_without_hidden_characters():
+    assert scan.clean_text("  Two\x0a lines\x09and  spaces ") == "Two lines and spaces"
+    assert scan.clean_text("bidi‮ reversed​ zero-width﻿") == "bidi reversed zero-width"
+    long = scan.clean_text("word " * 100)
+    assert len(long) == 200 and long.endswith("...")
+    assert scan.clean_text("") is None and scan.clean_text("​") is None and scan.clean_text(42) is None

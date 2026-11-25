@@ -218,7 +218,8 @@
          "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L",
          "type": "CVSS_V3"
         }
-       ]
+       ],
+       "summary": "Regular Expression Denial of Service (ReDoS) in lodash"
       },
       {
        "affected": [
@@ -417,7 +418,8 @@
          "score": "CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:H/I:H/A:H",
          "type": "CVSS_V3"
         }
-       ]
+       ],
+       "summary": "Command Injection in lodash"
       },
       {
        "affected": [
@@ -538,7 +540,8 @@
          "score": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H",
          "type": "CVSS_V3"
         }
-       ]
+       ],
+       "summary": "lodash vulnerable to Code Injection via `_.template` imports key names"
       },
       {
        "affected": [
@@ -685,7 +688,8 @@
          "score": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:N/VI:L/VA:L/SC:H/SI:H/SA:H/E:P",
          "type": "CVSS_V4"
         }
-       ]
+       ],
+       "summary": "Lodash has Prototype Pollution Vulnerability in `_.unset`, `_.omit`, and `_.pullAt` functions"
       }
      ]
     }
@@ -906,7 +910,8 @@
          "score": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N",
          "type": "CVSS_V4"
         }
-       ]
+       ],
+       "summary": "Improper Input Validation in PyYAML"
       },
       {
        "affected": [
@@ -997,7 +1002,8 @@
          "score": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N",
          "type": "CVSS_V4"
         }
-       ]
+       ],
+       "summary": "Improper Input Validation in PyYAML"
       }
      ]
     },
@@ -1565,7 +1571,8 @@
          "score": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:H/I:N/A:N",
          "type": "CVSS_V3"
         }
-       ]
+       ],
+       "summary": "Requests vulnerable to .netrc credentials leak via malicious URLs"
       },
       {
        "affected": [
@@ -1759,7 +1766,8 @@
          "score": "CVSS:3.1/AV:L/AC:H/PR:H/UI:R/S:U/C:H/I:H/A:N",
          "type": "CVSS_V3"
         }
-       ]
+       ],
+       "summary": "Requests `Session` object does not verify requests after making first request with verify=False"
       },
       {
        "affected": [
@@ -2167,7 +2175,8 @@
          "score": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:H/I:N/A:N",
          "type": "CVSS_V3"
         }
-       ]
+       ],
+       "summary": "Requests vulnerable to .netrc credentials leak via malicious URLs"
       },
       {
        "affected": [
@@ -2370,7 +2379,8 @@
          "score": "CVSS:3.1/AV:L/AC:H/PR:H/UI:R/S:U/C:H/I:H/A:N",
          "type": "CVSS_V3"
         }
-       ]
+       ],
+       "summary": "Requests `Session` object does not verify requests after making first request with verify=False"
       },
       {
        "affected": [
@@ -2579,7 +2589,8 @@
          "score": "CVSS:3.1/AV:L/AC:H/PR:L/UI:R/S:U/C:N/I:H/A:N",
          "type": "CVSS_V3"
         }
-       ]
+       ],
+       "summary": "Requests has Insecure Temp File Reuse in its extract_zipped_paths() utility function"
       },
       {
        "affected": [
@@ -2697,7 +2708,8 @@
          "score": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:C/C:H/I:N/A:N",
          "type": "CVSS_V3"
         }
-       ]
+       ],
+       "summary": "Unintended leak of Proxy-Authorization header in requests"
       },
       {
        "affected": [
@@ -2884,7 +2896,8 @@
          "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N",
          "type": "CVSS_V3"
         }
-       ]
+       ],
+       "summary": "Insufficiently Protected Credentials in Requests"
       }
      ]
     }
@@ -2999,7 +3012,8 @@
          "score": "CVSS:4.0/AV:N/AC:H/AT:P/PR:N/UI:N/VC:H/VI:H/VA:N/SC:N/SI:N/SA:N",
          "type": "CVSS_V4"
         }
-       ]
+       ],
+       "summary": "certifi bundles emSign root CAs with compromised intermediate CA keys"
       },
       {
        "affected": [
@@ -3092,7 +3106,8 @@
          "score": "CVSS:4.0/AV:N/AC:H/AT:P/PR:N/UI:N/VC:H/VI:H/VA:N/SC:N/SI:N/SA:N",
          "type": "CVSS_V4"
         }
-       ]
+       ],
+       "summary": "certifi bundles emSign root CAs with compromised intermediate CA keys"
       }
      ]
     },
@@ -3411,7 +3426,8 @@
          "score": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:N/VI:N/VA:L/SC:N/SI:N/SA:N",
          "type": "CVSS_V4"
         }
-       ]
+       ],
+       "summary": "Internationalized Domain Names in Applications (IDNA): Specially crafted inputs to idna.encode() can bypass CVE-2024-3651 fix"
       },
       {
        "affected": [
@@ -3497,7 +3513,8 @@
          "score": "CVSS:4.0/AV:L/AC:L/AT:N/PR:N/UI:N/VC:N/VI:N/VA:H/SC:N/SI:N/SA:N",
          "type": "CVSS_V4"
         }
-       ]
+       ],
+       "summary": "Internationalized Domain Names in Applications (IDNA) vulnerable to denial of service from specially crafted inputs to idna.encode"
       }
      ]
     },
@@ -4579,7 +4596,8 @@
          "score": "CVSS:4.0/AV:N/AC:L/AT:P/PR:N/UI:N/VC:N/VI:N/VA:H/SC:N/SI:N/SA:H",
          "type": "CVSS_V4"
         }
-       ]
+       ],
+       "summary": "urllib3 streaming API improperly handles highly compressed data"
       },
       {
        "affected": [
@@ -4720,7 +4738,8 @@
          "score": "CVSS:3.1/AV:N/AC:H/PR:H/UI:N/S:U/C:H/I:N/A:N",
          "type": "CVSS_V3"
         }
-       ]
+       ],
+       "summary": "urllib3's Proxy-Authorization request header isn't stripped during cross-origin redirects"
       },
       {
        "affected": [
@@ -4829,7 +4848,8 @@
          "score": "CVSS:4.0/AV:N/AC:L/AT:P/PR:N/UI:N/VC:N/VI:N/VA:H/SC:N/SI:N/SA:H",
          "type": "CVSS_V4"
         }
-       ]
+       ],
+       "summary": "Decompression-bomb safeguards bypassed when following HTTP redirects (streaming API)"
       },
       {
        "affected": [
@@ -4974,7 +4994,8 @@
          "score": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:H/I:N/A:N",
          "type": "CVSS_V3"
         }
-       ]
+       ],
+       "summary": "urllib3 redirects are not disabled when retries are disabled on PoolManager instantiation"
       },
       {
        "affected": [
@@ -5099,7 +5120,8 @@
          "score": "CVSS:4.0/AV:N/AC:L/AT:P/PR:N/UI:N/VC:N/VI:N/VA:H/SC:N/SI:N/SA:H",
          "type": "CVSS_V4"
         }
-       ]
+       ],
+       "summary": "urllib3: HTTPResponse.stream()/read_chunked() buffers an unbounded chunk-size line into memory"
       },
       {
        "affected": [
@@ -5249,7 +5271,8 @@
          "score": "CVSS:4.0/AV:N/AC:L/AT:P/PR:N/UI:N/VC:N/VI:N/VA:H/SC:N/SI:N/SA:H",
          "type": "CVSS_V4"
         }
-       ]
+       ],
+       "summary": "urllib3 streaming API improperly handles highly compressed data"
       },
       {
        "affected": [
@@ -5418,7 +5441,8 @@
          "score": "CVSS:3.1/AV:N/AC:H/PR:H/UI:N/S:U/C:H/I:N/A:N",
          "type": "CVSS_V3"
         }
-       ]
+       ],
+       "summary": "urllib3's Proxy-Authorization request header isn't stripped during cross-origin redirects"
       },
       {
        "affected": [
@@ -5536,7 +5560,8 @@
          "score": "CVSS:4.0/AV:N/AC:L/AT:P/PR:N/UI:N/VC:N/VI:N/VA:H/SC:N/SI:N/SA:H",
          "type": "CVSS_V4"
         }
-       ]
+       ],
+       "summary": "Decompression-bomb safeguards bypassed when following HTTP redirects (streaming API)"
       },
       {
        "affected": [
@@ -5704,7 +5729,8 @@
          "score": "CVSS:4.0/AV:A/AC:L/AT:P/PR:H/UI:N/VC:H/VI:N/VA:N/SC:N/SI:N/SA:N",
          "type": "CVSS_V4"
         }
-       ]
+       ],
+       "summary": "urllib3's request body not stripped after redirect from 303 status changes request method to GET"
       },
       {
        "affected": [
@@ -5809,7 +5835,8 @@
          "score": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:P/VC:N/VI:N/VA:N/SC:L/SI:L/SA:N",
          "type": "CVSS_V4"
         }
-       ]
+       ],
+       "summary": "Authorization Header forwarded on redirect"
       },
       {
        "affected": [
@@ -5913,7 +5940,8 @@
          "score": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:N/VI:H/VA:N/SC:N/SI:N/SA:N",
          "type": "CVSS_V4"
         }
-       ]
+       ],
+       "summary": "Improper Certificate Validation in urllib3"
       },
       {
        "affected": [
@@ -6067,7 +6095,8 @@
          "score": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:H/I:N/A:N",
          "type": "CVSS_V3"
         }
-       ]
+       ],
+       "summary": "urllib3 redirects are not disabled when retries are disabled on PoolManager instantiation"
       },
       {
        "affected": [
@@ -6185,7 +6214,8 @@
          "score": "CVSS:4.0/AV:N/AC:H/AT:P/PR:N/UI:N/VC:H/VI:N/VA:N/SC:N/SI:N/SA:N",
          "type": "CVSS_V4"
         }
-       ]
+       ],
+       "summary": "urllib3: Sensitive headers forwarded across origins in proxied low-level redirects"
       },
       {
        "affected": [
@@ -6291,7 +6321,8 @@
          "score": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:P/VC:N/VI:N/VA:N/SC:L/SI:L/SA:N",
          "type": "CVSS_V4"
         }
-       ]
+       ],
+       "summary": "Improper Neutralization of CRLF Sequences in urllib3 library for Python"
       },
       {
        "affected": [
@@ -6457,7 +6488,8 @@
          "score": "CVSS:4.0/AV:N/AC:L/AT:P/PR:H/UI:N/VC:H/VI:H/VA:N/SC:N/SI:N/SA:N",
          "type": "CVSS_V4"
         }
-       ]
+       ],
+       "summary": "`Cookie` HTTP header isn't stripped on cross-origin redirects"
       },
       {
        "affected": [
@@ -6591,7 +6623,8 @@
          "score": "CVSS:4.0/AV:N/AC:L/AT:P/PR:N/UI:N/VC:N/VI:N/VA:H/SC:N/SI:N/SA:H",
          "type": "CVSS_V4"
         }
-       ]
+       ],
+       "summary": "urllib3: HTTPResponse.stream()/read_chunked() buffers an unbounded chunk-size line into memory"
       },
       {
        "affected": [
@@ -6706,7 +6739,8 @@
          "score": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:L/VI:L/VA:N/SC:N/SI:N/SA:N",
          "type": "CVSS_V4"
         }
-       ]
+       ],
+       "summary": "CRLF injection in urllib3"
       }
      ]
     }

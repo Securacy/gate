@@ -18,6 +18,7 @@ import shutil
 import subprocess  # nosec B404
 import tempfile
 import time
+import unicodedata
 from pathlib import Path, PurePosixPath
 from typing import Any, Dict, Iterable, Iterator, List, Optional, Tuple
 
@@ -47,6 +48,11 @@ _CWE = re.compile(r"^CWE-\d{1,5}$")
 _RULE = re.compile(r"^[A-Za-z0-9_.:-]{1,80}$")
 _RESOURCE = re.compile(r"^[A-Za-z0-9_.\[\]:/-]{1,200}$")
 _SHA = re.compile(r"^[0-9a-f]{7,64}$")
+# An advisory's summary and a Checkov check's title go to Securacy as one line of printable text: control,
+# format (bidi, zero-width), surrogate, private-use and unassigned characters are dropped, since they can hide
+# or reorder what a reader sees. Securacy checks the same again.
+TEXT_LIMIT = 200
+_HIDDEN = ("Cc", "Cf", "Cs", "Co", "Cn", "Zl", "Zp")
 
 
 # ---------------------------------------------------------------------------
@@ -55,6 +61,17 @@ _SHA = re.compile(r"^[0-9a-f]{7,64}$")
 
 def _ok(pattern: "re.Pattern[str]", value: Any) -> bool:
     return isinstance(value, str) and bool(pattern.fullmatch(value))
+
+
+def clean_text(raw: Any, limit: int = TEXT_LIMIT) -> Optional[str]:
+    """Scanner text as one short line: whitespace collapsed, hidden characters dropped, cut at `limit`."""
+    if not isinstance(raw, str):
+        return None
+    text = "".join(c for c in " ".join(raw.split()) if unicodedata.category(c) not in _HIDDEN)
+    text = " ".join(text.split())
+    if len(text) > limit:
+        text = text[: limit - 3].rstrip() + "..."
+    return text or None
 
 
 def clean_path(raw: Any, workspace: Optional[PurePosixPath] = None) -> Optional[str]:
@@ -262,10 +279,14 @@ def vulns_from_grype(doc: Any) -> List[Dict[str, Any]]:
         severity = str(v.get("severity") or "unknown").lower()
         severity = {"negligible": "low", "moderate": "medium"}.get(severity, severity)
         fixed = [f for f in (v.get("fix") or {}).get("versions") or [] if _ok(_VERSION, f)]
-        out.append({"id": main, "aliases": aliases[:20], "purl": purl,
-                    "severity": severity if severity in SEVERITY_RANK else "unknown",
-                    "cvss": max(scores) if scores else None, "fixed_in": fixed[:10], "cwes": [],
-                    "malicious": any(i.startswith("MAL-") for i in [main] + aliases), "tools": ["grype"]})
+        item = {"id": main, "aliases": aliases[:20], "purl": purl,
+                "severity": severity if severity in SEVERITY_RANK else "unknown",
+                "cvss": max(scores) if scores else None, "fixed_in": fixed[:10], "cwes": [],
+                "malicious": any(i.startswith("MAL-") for i in [main] + aliases), "tools": ["grype"]}
+        summary = clean_text(v.get("description"))
+        if summary:
+            item["summary"] = summary
+        out.append(item)
     return out
 
 
@@ -320,11 +341,15 @@ def vulns_from_osv(doc: Any) -> List[Dict[str, Any]]:
                     for c in (v.get("database_specific") or {}).get("cwe_ids") or []:
                         if _ok(_CWE, c) and c not in cwes:
                             cwes.append(c)
-                out.append({"id": main, "aliases": aliases[:20], "purl": purl, "severity": severity,
-                            "cvss": score if score is not None and 0 <= score <= 10 else None,
-                            "fixed_in": _osv_fixed(members, ecosystem, name), "cwes": cwes[:10],
-                            "malicious": any(i.startswith("MAL-") for i in [main] + aliases),
-                            "tools": ["osv-scanner"]})
+                item = {"id": main, "aliases": aliases[:20], "purl": purl, "severity": severity,
+                        "cvss": score if score is not None and 0 <= score <= 10 else None,
+                        "fixed_in": _osv_fixed(members, ecosystem, name), "cwes": cwes[:10],
+                        "malicious": any(i.startswith("MAL-") for i in [main] + aliases),
+                        "tools": ["osv-scanner"]}
+                summary = next((s for s in (clean_text(v.get("summary")) for v in members) if s), None)
+                if summary:
+                    item["summary"] = summary
+                out.append(item)
     return out
 
 
@@ -356,6 +381,9 @@ def merge_vulns(components: List[Dict[str, Any]], *lists: List[Dict[str, Any]]) 
                     if value not in same[key] and len(same[key]) < limit:
                         same[key].append(value)
             same["malicious"] = same["malicious"] or item["malicious"]
+            # OSV's summary is the advisory's one-line title; Grype's is often a long description.
+            if item.get("summary") and (not same.get("summary") or "osv-scanner" in item["tools"]):
+                same["summary"] = item["summary"]
     for item in merged:
         item["tools"] = sorted(item["tools"])
     return merged
@@ -505,8 +533,12 @@ def iac_from_checkov(doc: Any) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any
                     continue
                 if state == "failed_checks" and _ok(_RULE, rule):
                     severity = str(check.get("severity") or CHECKOV_SEVERITY.get(rule) or "unknown").lower()
-                    findings.append({"rule": rule, "severity": severity if severity in SEVERITY_RANK else "unknown",
-                                     "resource": resource, "path": path, "lines": lines})
+                    finding = {"rule": rule, "severity": severity if severity in SEVERITY_RANK else "unknown",
+                               "resource": resource, "path": path, "lines": lines}
+                    title = clean_text(check.get("check_name"))
+                    if title:
+                        finding["title"] = title
+                    findings.append(finding)
                 parts = resource.split(".")
                 if terraform and len(parts) >= 2 and parts[0] != "data":
                     rtype, name = parts[-2], re.sub(r"\[.*\]$", "", parts[-1])
