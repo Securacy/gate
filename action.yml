@@ -132,7 +132,7 @@ runs:
       if: inputs.command == 'check' && inputs.agent == 'codex' && steps.prepare.outputs.run-agent == 'true'
       continue-on-error: true
       # Pinned to a commit: this action gets the customer's model key.
-      uses: openai/codex-action@bdf19a4a223ec2549a3e2274a0cf61556bc07675 # v1
+      uses: openai/codex-action@306c6a196a99dcc6582530c396a19d2672d5e9ec # v1
       with:
         openai-api-key: ${{ steps.keys.outputs.agent-api-key }}
         prompt: ${{ steps.prepare.outputs.prompt }}
