@@ -262,6 +262,15 @@ def test_no_docker_skips_checkov(workspace, tmp_path):
     assert any("Docker" in n for n in result.notices)
 
 
+def test_notices_say_what_was_not_scanned_without_naming_the_scanner(workspace, tmp_path):
+    result, _ = run(workspace, tmp_path, runner=FakeRunner(fail={"grype", "gitleaks", "zizmor"}), docker=None)
+    assert len(result.notices) >= 4
+    for notice in result.notices:
+        for name in ("syft", "grype", "osv", "gitleaks", "trufflehog", "zizmor", "checkov"):
+            assert name not in notice.lower().replace(".gitleaksignore", ""), notice
+    assert set(scan.CHECK_LABELS) == set(scan.TOOL_NAMES)
+
+
 def test_no_iac_files_skips_checkov_and_no_workflows_skips_zizmor(tmp_path):
     ws = tmp_path / "plain"
     ws.mkdir()

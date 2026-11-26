@@ -577,6 +577,23 @@ PER_TOOL_SECONDS = 240
 HISTORY_SECONDS = 300
 ZERO_SHA = "0" * 40
 TOOL_NAMES = ("syft", "grype", "osv-scanner", "gitleaks", "trufflehog", "zizmor", "checkov")
+
+# What each scanner checks, for the run log: the notices say what wasn't scanned, not which tool did it.
+CHECK_LABELS = {
+    "syft": "The package inventory",
+    "grype": "The vulnerability scan",
+    "osv-scanner": "The second vulnerability scan",
+    "gitleaks": "The secret scan",
+    "trufflehog": "Secret verification",
+    "zizmor": "The workflow scan",
+    "checkov": "The infrastructure-code scan",
+}
+
+
+def check_label(name: str) -> str:
+    return CHECK_LABELS.get(name, "A scan")
+
+
 _SKIP_DIRS = {".git", "node_modules", "vendor", ".terraform", ".venv", "venv", "dist", "build"}
 _MAX_WALK = 20000
 
@@ -743,7 +760,7 @@ class _Runner:
         result = self.fetch(name, self.lock, self.tools_dir)
         self.status[name]["status"] = result.status
         if result.status != "ok":
-            self.notices.append(f"{name} was not run: its download was {result.status}.")
+            self.notices.append(f"{check_label(name)} was not run: its download was {result.status}.")
         return result.path if result.status == "ok" else None
 
     def call(self, name: str, argv: List[str], ok_codes: Tuple[int, ...] = (0,), limit: int = PER_TOOL_SECONDS,
@@ -751,7 +768,7 @@ class _Runner:
         remaining = self.deadline - time.monotonic()
         if remaining < 5:
             self.status[name]["status"] = "timeout"
-            self.notices.append(f"{name} was not run: the scan ran out of time.")
+            self.notices.append(f"{check_label(name)} was not run: the scan ran out of time.")
             return None
         started = time.monotonic()
         try:
@@ -760,16 +777,16 @@ class _Runner:
                                timeout=min(limit, remaining))
         except subprocess.TimeoutExpired:
             self.status[name]["status"] = "timeout"
-            self.notices.append(f"{name} timed out.")
+            self.notices.append(f"{check_label(name)} timed out.")
             return None
         except OSError as error:
             self.status[name]["status"] = "failed"
-            self.notices.append(f"{name} could not start ({type(error).__name__}).")
+            self.notices.append(f"{check_label(name)} could not start ({type(error).__name__}).")
             return None
         self.status[name]["seconds"] = int(time.monotonic() - started)
         if proc.returncode not in ok_codes:
             self.status[name]["status"] = "failed"
-            self.notices.append(f"{name} failed (exit {proc.returncode}).")
+            self.notices.append(f"{check_label(name)} failed (exit {proc.returncode}).")
             return None
         self.status[name]["status"] = "ok"
         return proc.stdout or b""
@@ -781,7 +798,7 @@ class _Runner:
             return json.loads(raw.decode("utf-8", "replace") or "null")
         except ValueError:
             self.status[name]["status"] = "failed"
-            self.notices.append(f"{name} output could not be read.")
+            self.notices.append(f"{check_label(name)}'s output could not be read.")
             return None
 
     def commit_exists(self, sha: str) -> bool:
@@ -800,7 +817,7 @@ def _dependencies(run: _Runner, workspace: Path, sbom: Path, offline: bool, sett
             components = components_from_cyclonedx(json.loads(sbom.read_text(encoding="utf-8")))
         except (OSError, ValueError):
             run.status["syft"]["status"] = "failed"
-            run.notices.append("The SBOM Syft wrote could not be read.")
+            run.notices.append("The SBOM could not be read.")
     if run.status["syft"]["status"] == "ok":
         grype = run.binary("grype")
         if grype:
@@ -832,7 +849,7 @@ def _secrets(run: _Runner, out_dir: Path, scope: str, base: Optional[str], head:
                 ran = run.call("gitleaks", gitleaks_argv(gitleaks, scope, base, head, report, settings), limit=limit)
         except SetAsideError as error:  # Gitleaks would honour the file: better no secret scan than a hidden one
             run.status["gitleaks"]["status"] = "failed"
-            run.notices.append(f"gitleaks was not run: {error}.")
+            run.notices.append(f"{check_label('gitleaks')} was not run: {error}.")
             ran = None
         run.notices.extend(problems)
         if ran is not None:
@@ -889,7 +906,7 @@ def run_scan(workspace: Path, event_name: str, event: Dict[str, Any], options: S
     resources: List[Dict[str, Any]] = []
     if _has_iac(workspace):
         if not docker:
-            run.notices.append("Checkov was not run: Docker is not available on this runner.")
+            run.notices.append(f"{check_label('checkov')} was not run: Docker is not available on this runner.")
         else:
             image = str((lock.get("checkov") or {}).get("image") or "")
             iac, resources = iac_from_checkov(run.parse("checkov", run.call(
